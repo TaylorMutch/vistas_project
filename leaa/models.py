@@ -12,6 +12,7 @@ class Terrain(models.Model):
     sLong = models.FloatField()
     eLong = models.FloatField()
     wLong = models.FloatField()
+    user = models.ManyToManyField(User)
     #path = models.FilePathField() #do we need this?
 
 # Contains Latitude/Longitude to orient the station with a terrain
@@ -23,15 +24,15 @@ class Station(models.Model):
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 # We then collect the height readings, and then we related tables off of those heights
 class Sodar(models.Model):
-    beginTimestamp = models.DateTimeField(auto_now=False, auto_now_add=False)
-    endTimestamp = models.DateTimeField(auto_now=False, auto_now_add=False)
+    timeStamp = models.DateTimeField(auto_now=False, auto_now_add=False)
     station = models.ForeignKey('Station') # A station can have many SODAR files
-    #TODO: How do we do heights in Django model/database in general?
 
-class SodarInstance(models.Model):  #maybe add heightID of some kind to allow us the proper model generation?
+# Relates the arrow vectors with each specific height, speed and direction
+class Arrow(models.Model):
+    height = models.PositiveIntegerField()
     sodar = models.ForeignKey('Sodar')
-    #TODO: Figure out how to add in the correct model for the arrays
-
+    vcl = models.IntegerField() # speed
+    dcl = models.IntegerField() # direction in degrees
 
 class Setting(models.Model):
     vectorLength = models.IntegerField()
