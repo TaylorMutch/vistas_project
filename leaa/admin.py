@@ -7,5 +7,5 @@ from .models import *
 admin.site.register(Terrain)
 admin.site.register(Station)
 admin.site.register(Sodar)
-admin.site.register(SodarInstance)
+admin.site.register(Record)
 admin.site.register(Setting)
