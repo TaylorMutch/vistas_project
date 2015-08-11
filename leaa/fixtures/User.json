@@ -1,0 +1,18 @@
+[
+  {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "username": "test1",
+        "first_name": "Trouble",
+        "last_name": "Maker",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "groups": [],
+        "user_permissions": [],
+        "password": "password",
+        "email": "test1@leaa.com"
+      }
+  }
+]

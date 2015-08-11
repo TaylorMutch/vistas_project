@@ -1,0 +1,14 @@
+[
+  {
+    "pk" : 1,
+    "model" : "leaa.Station",
+    "fields" : {
+      "name": "McRae",
+      "utmX": 563962,
+      "utmY": 4898882,
+      "lat": 44.24037,
+      "lon": -122.19897,
+      "terrain": 1
+    }
+  }
+]

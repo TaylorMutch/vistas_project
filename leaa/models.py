@@ -4,17 +4,30 @@ from django.contrib.auth.models import User
 
 # Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
-    yMin = models.FloatField()
-    yMax = models.FloatField()
-    xMin = models.FloatField()
-    xMax = models.FloatField()
-    user = models.ManyToManyField(User)
-    #path = models.FilePathField() #do we need this?
+    name     = models.CharField(max_length=100)
+    utm_MINy = models.FloatField()
+    utm_MAXy = models.FloatField()
+    utm_MINx = models.FloatField()
+    utm_MAXx = models.FloatField()
+    NE_LAT   = models.FloatField()
+    NE_LONG  = models.FloatField()
+    NW_LAT   = models.FloatField()
+    NW_LONG  = models.FloatField()
+    SE_LAT   = models.FloatField()
+    SE_LONG  = models.FloatField()
+    SW_LAT   = models.FloatField()
+    SW_LONG  = models.FloatField()
+    user     = models.ManyToManyField(User)
+    #path = models.FilePathField() #TODO: Add mechanism to refer to a file on the server with the binary data
+                                   # so that we can submit the correct vertex data to the client
 
 # Contains Latitude/Longitude to orient the station with a terrain
 class Station(models.Model):
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    name    = models.CharField(max_length=100)
+    lat     = models.FloatField()
+    long    = models.FloatField()
+    utmX    = models.IntegerField()
+    utmY    = models.IntegerField()
     terrain = models.ForeignKey('Terrain')
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
