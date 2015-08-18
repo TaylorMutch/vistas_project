@@ -2,9 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
-#TODO: Add __str__ methods to each of the pertinent models so that we have a way to distinguish each object by their common name.
-
-
 # Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
     name     = models.CharField(max_length=100)

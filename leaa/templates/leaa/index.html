@@ -1,0 +1,124 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>LEA Analytics</title>
+    <!-- Load stylesheets -->
+    <link href="{% static "leaa/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/bootstrap/css/bootstrap-theme.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/bootstrap/css/leaa.css" %}" rel="stylesheet">
+</head>
+<body>
+    <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
+    <script src="{% static "leaa/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "leaa/js/three.min.js" %}"></script>
+    <script src="{% static "leaa/js/OrbitControls.js" %}"></script>
+    <script src="{% static "leaa/js/TerrainLoader.js" %}"></script>
+    <!--script src="{#% static "leaa/js/main.js" %#}"></script **Add this when we get back to the UI -->
+
+    <div id="wrapper" class="container">
+        <nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand">LEAA</a>
+				</div>
+			</div>
+		</nav>
+		<div id="top-controls" class="row">
+			<div id="file-selector" class="col-xs-5 col-md-3">
+				<h4 class="text-center">Available Files</h4>
+				<!--center>
+				<?php include("php/fileLoader.php"); ?>
+				</center-->
+			</div>
+			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
+				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
+				<div id="current-timestamp-container">
+					<h3 id="current-timestamp-label" class="text-center"></h3>
+				</div>
+			</div>
+		</div>
+        <div id="top-wrapper" class="row">
+            <div id="scene"></div>
+        </div>
+        <div id="bottom-wrapper" class="row">
+			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
+					<h4 class="text-center">Visualization Controls</h4>
+				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
+				 data-original-title="Set the visualization to the first SODAR reading in the file" onclick="resetVis()">Start From Beginning</button>
+				<button id="stepButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
+				 data-original-title="Go to the next SODAR reading" onclick="stepVectors()">Next Time Step</button>
+				<button id="animateButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
+				 data-original-title="Turn On/Off animation" onclick="startAnimation();changeAnimateButtonText(this.id)">Animate</button>
+				<button id="resetButton" type="button" class="btn btn-default" onclick="resetScene()">Reset Scene</button>
+				<!--div class ="checkbox">
+					<label>
+						<input id="flycheck" type="checkbox" data-toggle="tooltip-std" data-original-title="UNDER CONSTRUCTION" onchange="activateFlyControls()"> Enable Flythrough Controls
+						<!--input id="flycheck" type="checkbox" onchange="activateControls()"> Enable Flythrough Controls-->
+					<!--/label>
+				</div-->
+			</div>
+			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
+				<h4 class="text-center">Views</h4>
+				<div class="dropdown">
+					<button class="btn btn-default btn-block dropdown-toggle" type="button" id="camera-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Camera Type
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="camera-toggle">
+						<li><a href="#" onclick="setOrthographic();return false;">Orthographic</a></li>
+						<li><a href="#" onclick="setPerspective();return false;">Perspective</a></li>
+					</ul>
+				</div>
+				<button id="top-view" type="button" class="btn btn-default" onclick="topView()">Top</button>
+				<button id="valley-view" type="button" class="btn btn-default" onclick="valleyView()">Valley</button>
+				<button id="contourToggle" type="button" class="btn btn-default" onclick="toggleContours()">Toggle Contours</button>
+			</div>
+
+			<div id="controls-3">
+					<h4 class="text-center">Wind Vector Controls</h4>
+				<form>
+					Scene Height:
+					<br/>
+					x0.1<input id="scaleDem" type="range" min="0.1" max="1" step="0.1" value="0" onchange="updateDemScale(this.value)">x1
+				</form>
+				<br/>
+				<form>
+					Vector Length:
+					<br/>
+					x1<input id="scaleLength" type="range" min="1" max="10" step="1" value="0" onchange="updateSpeedScale(this.value)">x10
+				</form>
+				<br/>
+				<form>
+					Vector Height:
+					<br/>
+					x0.5<input id="scaleHeight" type="range" min="0.5" max="2" step="0.1" value="0" onchange="updateHeightScale(this.value)">x2
+				</form>
+				<br/>
+				<form>
+					Vector Color:
+					<br/>
+					<input id="colorPicker" type="color" value="#000000" onchange="updateColor(this.value)">
+				</form>
+			</div>
+	        <div id="sidebar">
+				<h4 class="text-center" data-toggle="tooltip" data-placement="top"
+				data-original-title="List of all SODAR readings shown in the scene">SODAR Log</h4>
+				<div id="console"></div>
+			</div>
+			<!-- This is possibly going to be removed -->
+			<!--div id="controls-4">
+				<h2>Available Stations</h2>
+				<div id="station-list"></div>
+					<button id="addStationButton" type="button" onclick="createNewStations()">Add Station</button>
+					<br/>
+			</div-->
+		</div>
+    </div>
+
+    <div id="footer"></div>
+
+</body>
+</html>
