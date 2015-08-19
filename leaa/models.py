@@ -52,7 +52,7 @@ class Record(models.Model):
     dcl = models.IntegerField()             # direction in degrees
 
     def __str__(self):
-        return self.height
+        return str(self.height) + ' - ' + str(self.sodar)
 
 class Setting(models.Model):
     vectorLength = models.IntegerField()
