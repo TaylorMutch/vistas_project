@@ -62,6 +62,10 @@ class Setting(models.Model):
     animationSpeed = models.IntegerField()
     user = models.OneToOneField(User, primary_key=True)
 
+    def __str__(self):
+        user_name = "testname"
+        return user_name + ' ' + str(self.user_id)
+
 class TerrainView(models.Model):
     controlPos = (models.FloatField(), models.FloatField(), models.FloatField())
     cameraPos = (models.FloatField(), models.FloatField(), models.FloatField())

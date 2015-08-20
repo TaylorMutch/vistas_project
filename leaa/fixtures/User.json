@@ -14,5 +14,21 @@
         "password": "password",
         "email": "test1@leaa.com"
       }
+  },
+  {
+    "pk": 2,
+    "model": "auth.user",
+    "fields": {
+        "username": "test2",
+        "first_name": "Double",
+        "last_name": "Trouble",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "groups": [],
+        "user_permissions": [],
+        "password": "password",
+        "email": "test2@leaa.com"
+      }
   }
 ]
