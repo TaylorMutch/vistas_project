@@ -13,12 +13,12 @@
 <body>
     <!-- Load scripts -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
-    <script src="{% static "leaa/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "leaa/js/bootstrap.min.js" %}"></script>
     <script src="{% static "leaa/js/three.min.js" %}"></script>
+    <script src="{% static "leaa/js/activaters.js" %}"></script>
+    <script src="{% static "leaa/js/CombinedCamera.js" %}"></script>
     <script src="{% static "leaa/js/OrbitControls.js" %}"></script>
     <script src="{% static "leaa/js/TerrainLoader.js" %}"></script>
-    <script src="{% static "leaa/js/activaters.js" %}"></script>
-    <!--script src="{#% static "leaa/js/main.js" %#}"></script **Add this when we get back to the UI -->
 
     <div id="wrapper" class="container">
         <nav class="navbar navbar-default">
@@ -28,24 +28,20 @@
 				</div>
 			</div>
 		</nav>
-		<div id="top-controls" class="row">
-			<div id="file-selector" class="col-xs-5 col-md-3">
-				<h4 class="text-center">Available Files</h4>
-				<!--center>
-				<?php include("php/fileLoader.php"); ?>
-				</center-->
-			</div>
+		<!--div id="top-controls" class="row">
 			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
 				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
 				<div id="current-timestamp-container">
 					<h3 id="current-timestamp-label" class="text-center"></h3>
 				</div>
 			</div>
-		</div>
+		</div-->
         <div id="top-wrapper" class="row">
+            <script src="{% static "leaa/js/Terrain.js" %}"></script>
             <div id="scene"></div>
         </div>
-        <div id="bottom-wrapper" class="row">
+        <!--div id="bottom-wrapper" class="row">
+
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
 					<h4 class="text-center">Visualization Controls</h4>
 				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
@@ -55,12 +51,12 @@
 				<button id="animateButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
 				 data-original-title="Turn On/Off animation" onclick="startAnimation();changeAnimateButtonText(this.id)">Animate</button>
 				<button id="resetButton" type="button" class="btn btn-default" onclick="resetScene()">Reset Scene</button>
-				<!--div class ="checkbox">
+				<div class ="checkbox">
 					<label>
 						<input id="flycheck" type="checkbox" data-toggle="tooltip-std" data-original-title="UNDER CONSTRUCTION" onchange="activateFlyControls()"> Enable Flythrough Controls
-						<!--input id="flycheck" type="checkbox" onchange="activateControls()"> Enable Flythrough Controls-->
-					<!--/label>
-				</div-->
+						<input id="flycheck" type="checkbox" onchange="activateControls()"> Enable Flythrough Controls>
+					</label>
+				</div>
 			</div>
 			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
 				<h4 class="text-center">Views</h4>
@@ -110,17 +106,8 @@
 				data-original-title="List of all SODAR readings shown in the scene">SODAR Log</h4>
 				<div id="console"></div>
 			</div>
-			<!-- This is possibly going to be removed -->
-			<!--div id="controls-4">
-				<h2>Available Stations</h2>
-				<div id="station-list"></div>
-					<button id="addStationButton" type="button" onclick="createNewStations()">Add Station</button>
-					<br/>
-			</div-->
-		</div>
+			<!-- This is possibly going to be removed >
+		</div-->
     </div>
-
-    <div id="footer"></div>
-
 </body>
 </html>

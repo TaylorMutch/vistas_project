@@ -6,4 +6,8 @@ from leaa import templates
 # Create your views here.
 
 def index(request):
+    return render(request, 'leaa/base_terrain.html')
+
+def tester(request):
     return render(request, 'leaa/index.html')
+
