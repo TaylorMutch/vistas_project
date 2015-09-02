@@ -28,20 +28,19 @@
 				</div>
 			</div>
 		</nav>
-		<!--div id="top-controls" class="row">
+		<div id="top-controls" class="row">
 			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
 				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
 				<div id="current-timestamp-container">
 					<h3 id="current-timestamp-label" class="text-center"></h3>
 				</div>
 			</div>
-		</div-->
+		</div>
         <div id="top-wrapper" class="row">
-            <script src="{% static "leaa/js/Terrain.js" %}"></script>
             <div id="scene"></div>
         </div>
-        <!--div id="bottom-wrapper" class="row">
-
+        <div id="bottom-wrapper" class="row">
+            <script src="{% static "leaa/js/Terrain.js" %}"></script>
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
 					<h4 class="text-center">Visualization Controls</h4>
 				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
@@ -51,12 +50,12 @@
 				<button id="animateButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
 				 data-original-title="Turn On/Off animation" onclick="startAnimation();changeAnimateButtonText(this.id)">Animate</button>
 				<button id="resetButton" type="button" class="btn btn-default" onclick="resetScene()">Reset Scene</button>
-				<div class ="checkbox">
+				<!--div class ="checkbox">
 					<label>
 						<input id="flycheck" type="checkbox" data-toggle="tooltip-std" data-original-title="UNDER CONSTRUCTION" onchange="activateFlyControls()"> Enable Flythrough Controls
 						<input id="flycheck" type="checkbox" onchange="activateControls()"> Enable Flythrough Controls>
 					</label>
-				</div>
+				</div-->
 			</div>
 			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
 				<h4 class="text-center">Views</h4>
@@ -106,8 +105,7 @@
 				data-original-title="List of all SODAR readings shown in the scene">SODAR Log</h4>
 				<div id="console"></div>
 			</div>
-			<!-- This is possibly going to be removed >
-		</div-->
+		</div>
     </div>
 </body>
 </html>
