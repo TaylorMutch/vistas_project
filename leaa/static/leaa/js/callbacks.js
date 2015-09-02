@@ -249,7 +249,7 @@ function promptEasting(defVal) {
 		}
 	}
 	return easting;
-}
+};
 
 // prompt the user for NORTHING when updating stations
 function promptNorthing(defVal) {
@@ -261,7 +261,7 @@ function promptNorthing(defVal) {
 		}
 	}
 	return northing;
-}
+};
 
 //update stations, save them to the server
 function reloadStations() {
@@ -291,7 +291,7 @@ function reloadStations() {
 	var ns = JSON.stringify({array:temp});
 	console.log(ns);
 	writeStations(ns);
-}
+};
 
 // takes an array of scene objects, and removes them
 function removeFromScene(array) {
@@ -301,7 +301,7 @@ function removeFromScene(array) {
 			delete array[k];
 		}
 	}
-}
+};
 
 // RESET
 function resetScene() {
@@ -328,7 +328,7 @@ function resetScene() {
 	}
 	*/
 // Reset terrain
-	terrainMaterial.map = THREE.ImageUtils.loadTexture('resources/relief.png')
+	terrainMaterial.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png')
 	terrain.material = terrainMaterial;
 
 // Reset Animation button
@@ -337,7 +337,7 @@ function resetScene() {
 	$("#current-timestamp-label").html("Scene Reset");
 	
 	
-}
+};
 
 // Start over from time step 1
 function resetVis() {
@@ -354,19 +354,19 @@ function resetVis() {
 	}
 	else {
 	}
-}
+};
 
 // CAMERA VIEWS
 // Top view
 function topView() {
 	camera.position.set(0,0,80);
 	//controls.reset();
-}
+};
 
 // Valley View ** placeholder until I can implement a "snap" feature
 function valleyView() {
 	camera.position.set(-130,-80,60);
-}
+};
 
 
 // toggles Animation 
@@ -379,7 +379,7 @@ function startAnimation() {
 		animating = true;
 		intervalID = setInterval(animateVectors, 1000/4);
 	}
-}
+};
 
 // Progress visualization by one step
 function stepVectors() {
@@ -409,7 +409,7 @@ function stepVectors() {
 		alert("Oops you forgot to load in a file!");
 		stopAnimation();
 	}
-}
+};
 
 //toggle Animation
 function stopAnimation()
@@ -417,13 +417,13 @@ function stopAnimation()
 	animating = false;
 	//$("#animateButton").html("Animate");
 	clearInterval(intervalID);
-}
+};
 
 // TOGGLE CONTOURS
 function toggleContours(){
 	if (showContours){
 	// turn contours off
-		terrainMaterial.map = THREE.ImageUtils.loadTexture('resources/relief.png');
+		terrainMaterial.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png');
 		terrain.material = terrainMaterial;
 		showContours=false;
 	}
@@ -433,7 +433,7 @@ function toggleContours(){
 		terrain.material = terrainMaterial;
 		showContours=true;
 	}
-}
+};
 
 // update color of vectors 
 function updateColor(nHex) {
@@ -447,13 +447,13 @@ function updateColor(nHex) {
 	
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
-}
+};
 
 // updates vis
 function updateData(k) {
 	clearArrows();
 	displaySet(k);
-}
+};
 
 // update vertical distance between vectors
 function updateHeightScale(nScale) {
@@ -464,7 +464,7 @@ function updateHeightScale(nScale) {
 	
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
-}
+};
 
 // update length of vectors
 function updateSpeedScale(nScale) {
@@ -476,7 +476,7 @@ function updateSpeedScale(nScale) {
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
 	
-}
+};
 
 // update height of terrain map
 function updateDemScale(nScale) {
@@ -487,6 +487,7 @@ function updateDemScale(nScale) {
 		updateData(step);
 	}
 	*/
+	
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
 	
@@ -495,12 +496,13 @@ function updateDemScale(nScale) {
 	console.log("Removed terrain");
 	for (var i = 0, l = terrainGeometry.vertices.length; i < l; i++) {
 		terrainGeometry.vertices[i].z = terrainGeometry.vertices[i].z*settings.demScale/old_scale;
-	}
+	};
 	terrain = new THREE.Mesh(terrainGeometry, terrainMaterial);
 	scene.add(terrain);
 	console.log("Readded terrain");
 	//render();
-}
+};
+
 //callback to load settings into the UI after JSON data has loaded
 function updateSettings() {
 	console.log(settings);
@@ -510,7 +512,7 @@ function updateSettings() {
 	var htmlcolor = "#" + settings.vectorColor.substring(2, settings.vectorColor.length);
 	
 	document.getElementById("colorPicker").value = htmlcolor;
-}
+};
 
 //save settings to the server
 function writeSettings(ns) {

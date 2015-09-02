@@ -118,13 +118,13 @@ terrainGeometry.computeVertexNormals();
 	
 var terrainMaterial = new THREE.MeshPhongMaterial(
 	{
-	map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief.png')
+	map: THREE.ImageUtils.loadTexture('static/leaa/resources/reliefHJAndrews.png')
 	});
 var terrain;
 var heightMap = [];
 //var newScaler = 2.0;
 
-terrainLoader.load('{% static "leaa/resources/dem.bin" %}', function(data) {
+terrainLoader.load('{% static "leaa/resources/demHJAndrews.bin" %}', function(data) {
 	for (var i = 0, l = terrainGeometry.vertices.length; i < l; i++) {
 		//terrainGeometry.vertices[i].z = (settings.demScale)*data[i]/65535*1215;
 		terrainGeometry.vertices[i].z = data[i]/65535*1215;

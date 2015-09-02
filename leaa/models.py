@@ -4,22 +4,29 @@ from django.contrib.auth.models import User
 
 # Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
-    name     = models.CharField(max_length=100)
-    utm_MINy = models.FloatField()
-    utm_MAXy = models.FloatField()
-    utm_MINx = models.FloatField()
-    utm_MAXx = models.FloatField()
-    NE_LAT   = models.FloatField()
-    NE_LONG  = models.FloatField()
-    NW_LAT   = models.FloatField()
-    NW_LONG  = models.FloatField()
-    SE_LAT   = models.FloatField()
-    SE_LONG  = models.FloatField()
-    SW_LAT   = models.FloatField()
-    SW_LONG  = models.FloatField()
-    user     = models.ManyToManyField(User)
+    name = models.CharField(max_length=100)
+    MAPx = models.IntegerField()
+    MAPy = models.IntegerField()
+    DEMx = models.IntegerField()
+    DEMy = models.IntegerField()
+    maxHeight = models.IntegerField()
+    user = models.ManyToManyField(User)
     #path = models.FilePathField() #TODO: Add mechanism to refer to a file on the server with the binary data
-                                   # so that we can submit the correct vertex data to the client
+                                   # so that we can submit the correct data to the client
+
+    #utm_MINy = models.FloatField() #TODO: Determine whether these are actually necessary for any of this.
+    #utm_MAXy = models.FloatField()
+    #utm_MINx = models.FloatField()
+    #utm_MAXx = models.FloatField()
+    #NE_LAT   = models.FloatField()
+    #NE_LONG  = models.FloatField()
+    #NW_LAT   = models.FloatField()
+    #NW_LONG  = models.FloatField()
+    #SE_LAT   = models.FloatField()
+    #SE_LONG  = models.FloatField()
+    #SW_LAT   = models.FloatField()
+    #SW_LONG  = models.FloatField()
+
     def __str__(self):
         return self.name
 

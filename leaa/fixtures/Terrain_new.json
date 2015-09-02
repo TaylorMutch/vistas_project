@@ -1,0 +1,38 @@
+[
+  {
+    "pk": 1,
+    "model": "leaa.Terrain",
+    "fields": {
+      "name" : "HJAndrews",
+      "MAPx" : 100,
+      "MAPy" : 76,
+      "DEMx" : 458,
+      "DEMy" : 344,
+      "maxHeight" : 1215
+    }
+  },
+  {
+    "pk": 2,
+    "model": "leaa.Terrain",
+    "fields": {
+      "name" : "Besseggen",
+      "MAPx" : 200,
+      "MAPy" : 200,
+      "DEMx" : 199,
+      "DEMy" : 199,
+      "maxHeight" : 100
+    }
+  },
+  {
+    "pk": 3,
+    "model": "leaa.Terrain",
+    "fields": {
+      "name" : "Jotunheimen",
+      "MAPx" : 60,
+      "MAPy" : 60,
+      "DEMx" : 199,
+      "DEMy" : 199,
+      "maxHeight" : 10
+    }
+  }
+]

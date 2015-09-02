@@ -3,7 +3,7 @@
     "pk": 1,
     "model": "leaa.Terrain",
     "fields": {
-      "name"     : "H.J. Andrews",
+      "name"     : "HJAndrews",
       "utm_MINy" : 4893633.876,
       "utm_MAXy" : 4903953.876,
       "utm_MINx" : 558369.034,
