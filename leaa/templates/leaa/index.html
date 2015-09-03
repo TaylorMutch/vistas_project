@@ -36,8 +36,8 @@
 					<span class="caret"></span>
 				</button>
                 <ul class="dropdown-menu">
-                    {% for name,coords in terrain_list %}
-                    <li><a href="#" onclick="getDEM('{{name}}',{{ coords }})">{{name}}</a></li>
+                    {% for name,TerrainCoords in terrain_list %}
+                        <li><a href="#" onclick="getDEM('{{name}}',{{ TerrainCoords }})">{{name}}</a></li>
                     {% empty %}
                         <li>No DEMs available</li>
                     {% endfor %}
@@ -49,9 +49,14 @@
                     Select Data
                     <span class="caret"></span>
                 </button>
+                <!--script type="text/javascript">
+                    var data_from_django = {{ sodar_list }};
+                    var test = JSON.parse(data_from_django);
+                    console.log(test);
+                </script-->
                 <ul class="dropdown-menu scrollable-menu">
-                    {% for file in sodar_list %}
-                        <li><a href="#"></a> </li>
+                    {% for SodarIDs, SodarDates in sodar_list %}
+                        <li><a href="#">{{ SodarDates }}</a> </li>
                     {% empty %}
                         <li>No SoDAR data available for this region</li>
                     {% endfor %}
@@ -60,7 +65,7 @@
 			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
 				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
 				<div id="current-timestamp-container">
-					<h3 id="current-timestamp-label" class="text-center"></h3>
+					<h3 id="current-timestamp-label" class="text-center">Scene Empty - Select Terrain</h3>
 				</div>
 			</div>
 		</div>
@@ -69,6 +74,7 @@
         </div>
         <div id="bottom-wrapper" class="row">
             <script src="{% static "leaa/js/Terrain.js" %}"></script>
+            <script src="{% static "leaa/js/utility.js" %}"></script>
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
 					<h4 class="text-center">Visualization Controls</h4>
 				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"

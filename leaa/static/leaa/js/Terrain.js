@@ -1,57 +1,69 @@
 /**
  * Created by Taylor on 9/1/2015.
  */
-/*  TODO: Obtain these from a settings request from controller
-    We should be able to re-render the scene with new data obtained from the server, using an ajax request,
-    and then update the variable within the scene instead of the whole page.
- */
+//General purpose manager for obtaining items.
+var manager = new THREE.LoadingManager();
+manager.onProgress = function( item, loaded, total) {
+    console.log( item, loaded, total);
+};
 
-var activeDEM;
+// Globals
+var camera, scene, renderer, activeDEM, terrain;
+var cameraMode = true;  // true (default) is Perspective, false is Orthographic
+var CAM_START = new THREE.Vector3(0,-80,80);
+var container = document.getElementById("scene");
+WIDTH = container.offsetWidth;
+HEIGHT = container.offsetHeight;
+init();
+render(); // One call to render to prep the workspace.
 
-function getDEM(name, coords) {
+function getDEM(name, coordinates) {
     if (name !== activeDEM) {
-
-        $("#current-timestamp-label").html("Loading " + name);
         if (activeDEM !== undefined) {
             cleanup();
         }
-        init(name, coords);
-        //init();
+        $("#current-timestamp-label").html("Loading " + name);
+        activeDEM = name;
+        var MAPx = coordinates[0];
+        var MAPy = coordinates[1];
+        var DEMx = coordinates[2];
+        var DEMy = coordinates[3];
+        var maxHeight = coordinates[4];
+
+        // Get initial terrain geo, to be updated with DEM data
+        var terrainGeo = new THREE.PlaneGeometry(MAPx, MAPy, DEMx-1, DEMy-1);
+        terrainGeo.computeFaceNormals();
+        terrainGeo.computeVertexNormals();
+
+	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
+	    var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+        texture.flipY = true;
+	    // Edit the height to match the DEM we requested
+        var heightMap = [];
+
+	    // Declare the final terrain object to be added
+        var loader = new THREE.TerrainLoader(manager);
+        loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+        //console.log("Raw DEM data: " + data);
+            for (var i = 0, l = terrainGeo.vertices.length; i < l; i++ ) {
+                //terrainGeo.vertices[i].z = data[i]/65535*1215;
+                terrainGeo.vertices[i].z = data[i]/65535*maxHeight;
+                heightMap[i] = data[i];
+            }
+            terrain = new THREE.Mesh(terrainGeo, texture);
+            scene.add(terrain);
+            //console.log("Heights: " + heightMap);
+        });
+        camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         animate();
     }
 }
 
-// Size of the object projected on the screen
-//MAPx = 100;
-//MAPy = 76;
-// Segments within the DEM binary file
-//DEMx = 458;
-//DEMy = 344;
-
-// Globals
-var camera, scene, renderer;
-var cameraMode = true;  // true (default) is Perspective, false is Orthographic
-var CAM_START = new THREE.Vector3(0,-80,80);
-
-// Get the element of the scene we want to render
-var container = document.getElementById("scene");
-
-
-WIDTH = container.offsetWidth;
-HEIGHT = container.offsetHeight;
-
-//init();
-//animate();
-
-function init(name,coordinates) {
-    var MAPx = coordinates[0];
-    var MAPy = coordinates[1];
-    var DEMx = coordinates[2];
-    var DEMy = coordinates[3];
-    var maxHeight = coordinates[4];
+function init() {
 
 	// Setup Camera
-    camera = new THREE.PerspectiveCamera(45 , WIDTH/HEIGHT, 0.1, 1000);
+    //camera = new THREE.PerspectiveCamera(45 , WIDTH/HEIGHT, 0.1, 1000);
+    camera = new THREE.CombinedCamera(WIDTH, HEIGHT, 60, 0.1, 500, -500, 1000); //TODO: Edit combined camera to take proper resizing calls
     camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
 	camera.up.set(0,0,1);
 
@@ -62,38 +74,6 @@ function init(name,coordinates) {
 
 	// Initialize Controls
 	orbit = new THREE.OrbitControls(camera, container);
-
-    // General purpose manager for obtaining items.
-    var manager = new THREE.LoadingManager();
-    manager.onProgress = function( item, loaded, total) {
-        console.log( item, loaded, total);
-    };
-
-    // Get initial terrain geo, to be updated with DEM data
-    var terrainGeo = new THREE.PlaneGeometry(MAPx, MAPy, DEMx-1, DEMy-1);
-    terrainGeo.computeFaceNormals();
-    terrainGeo.computeVertexNormals();
-
-	// Import texture
-	var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
-
-	// Edit the height to match the DEM we requested
-    var heightMap = [];
-
-	// Declare the final terrain object to be added
-	var terrain;
-    var loader = new THREE.TerrainLoader(manager);
-    loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
-        //console.log("Raw DEM data: " + data);
-        for (var i = 0, l = terrainGeo.vertices.length; i < l; i++ ) {
-            //terrainGeo.vertices[i].z = data[i]/65535*1215;
-            terrainGeo.vertices[i].z = data[i]/65535*maxHeight;
-            heightMap[i] = data[i];
-        }
-        terrain = new THREE.Mesh(terrainGeo, texture);
-        scene.add(terrain);
-        //console.log("Heights: " + heightMap);
-    });
 
     // Declare renderer settings
     renderer = new THREE.WebGLRenderer();
@@ -114,8 +94,9 @@ function onWindowResize() {
     renderer.setSize( WIDTH, HEIGHT);
 }
 
-function cleanup() {
+function cleanup() { //TODO: Add code to remove wind vectors when we create them above
     scene.remove(terrain);
+    render();
 }
 
 function animate() {
@@ -124,7 +105,6 @@ function animate() {
 }
 
 function render () {
-    //camera.lookAt(scene.position);
 	orbit.update();
     renderer.render(scene,camera);
 }

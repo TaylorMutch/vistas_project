@@ -35,6 +35,8 @@ class Station(models.Model):
     name    = models.CharField(max_length=100)
     lat     = models.FloatField()
     long    = models.FloatField()
+    demX    = models.IntegerField()
+    demY    = models.IntegerField()
     utmX    = models.IntegerField()
     utmY    = models.IntegerField()
     terrain = models.ForeignKey('Terrain')

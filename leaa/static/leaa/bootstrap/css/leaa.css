@@ -41,6 +41,7 @@ button
 {
     height:30em;
     padding:0.5em;
+    border:1px solid black;
 }
 
 #scene, #sidebar, #controls-1, #controls-2, #controls-3
