@@ -14,7 +14,6 @@ def index(request):
     for item in Terrains.values('name'):
         value = item.get('name')
         names.append(value)
-
     # Get the coordinates from models
     coords = []
     for item in Terrains.values('MAPx','MAPy','DEMx','DEMy','maxHeight'): #TODO: Probably a more elegant way to do this.
@@ -26,6 +25,10 @@ def index(request):
         result = [MAPx,MAPy,DEMx,DEMy,maxHeight]
         coords.append(result)
     terrain_list = zip(names,coords)
+
+    # Get the SoDAR data
+    Stations = models.Station.objects
+
     return render(request, 'leaa/index.html', {'terrain_list': terrain_list})
 
 def tester(request):

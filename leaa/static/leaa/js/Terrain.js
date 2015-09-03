@@ -6,10 +6,19 @@
     and then update the variable within the scene instead of the whole page.
  */
 
+var activeDEM;
+
 function getDEM(name, coords) {
-    init(name,coords);
-    //init();
-    animate();
+    if (name !== activeDEM) {
+
+        $("#current-timestamp-label").html("Loading " + name);
+        if (activeDEM !== undefined) {
+            cleanup();
+        }
+        init(name, coords);
+        //init();
+        animate();
+    }
 }
 
 // Size of the object projected on the screen
@@ -103,6 +112,10 @@ function onWindowResize() {
     camera.aspect = WIDTH / HEIGHT;
     camera.updateProjectionMatrix();
     renderer.setSize( WIDTH, HEIGHT);
+}
+
+function cleanup() {
+    scene.remove(terrain);
 }
 
 function animate() {

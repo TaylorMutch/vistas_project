@@ -29,8 +29,9 @@
 			</div>
 		</nav>
 		<div id="top-controls" class="row">
+            <!-- Select DEM -->
             <div class="col-xs-2 col-mid-1 dropdown">
-                <button id="demPicker" class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button id="demPicker" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Select Terrain
 					<span class="caret"></span>
 				</button>
@@ -38,7 +39,21 @@
                     {% for name,coords in terrain_list %}
                     <li><a href="#" onclick="getDEM('{{name}}',{{ coords }})">{{name}}</a></li>
                     {% empty %}
-                        <li>Sorry, no DEMs available.</li>
+                        <li>No DEMs available</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- Select Sodar Data -->
+            <div class="col-xs-2 col-mid-1 dropdown">
+                <button id="sodarPicker" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Select Data
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu">
+                    {% for file in sodar_list %}
+                        <li><a href="#"></a> </li>
+                    {% empty %}
+                        <li>No SoDAR data available for this region</li>
                     {% endfor %}
                 </ul>
             </div>
