@@ -50,9 +50,8 @@
                     <span class="caret"></span>
                 </button>
                 <!--script type="text/javascript">
-                    var data_from_django = {{ sodar_list }};
-                    var test = JSON.parse(data_from_django);
-                    console.log(test);
+                    var data_from_django = jQuery.parseJSON({{ sodar_list }});
+                    console.log(data_from_django);
                 </script-->
                 <ul class="dropdown-menu scrollable-menu">
                     {% for SodarIDs, SodarDates in sodar_list %}
