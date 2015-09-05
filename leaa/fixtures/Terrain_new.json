@@ -28,8 +28,8 @@
     "model": "leaa.Terrain",
     "fields": {
       "name" : "Jotunheimen",
-      "MAPx" : 100,
-      "MAPy" : 100,
+      "MAPx" : 60,
+      "MAPy" : 60,
       "DEMx" : 199,
       "DEMy" : 199,
       "maxHeight" : 5

@@ -36,14 +36,17 @@ function getDEM(name, coordinates) {
         terrainGeo.computeVertexNormals();
 
 	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	    var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+	    //var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+        var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/jotunheimen-texture.jpg')});
+
         texture.flipY = true;
 	    // Edit the height to match the DEM we requested
         var heightMap = [];
 
 	    // Declare the final terrain object to be added
         var loader = new THREE.TerrainLoader(manager);
-        loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+        //loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+        loader.load('static/leaa/resources/jotunheimen.bin', function(data) {
         //console.log("Raw DEM data: " + data);
             for (var i = 0, l = terrainGeo.vertices.length; i < l; i++ ) {
                 //terrainGeo.vertices[i].z = data[i]/65535*1215;
@@ -62,8 +65,8 @@ function getDEM(name, coordinates) {
 function init() {
 
 	// Setup Camera
-    //camera = new THREE.PerspectiveCamera(45 , WIDTH/HEIGHT, 0.1, 1000);
-    camera = new THREE.CombinedCamera(WIDTH, HEIGHT, 60, 0.1, 500, -500, 1000); //TODO: Edit combined camera to take proper resizing calls
+    camera = new THREE.PerspectiveCamera(45 , WIDTH/HEIGHT, 0.1, 1000);
+    // = new THREE.CombinedCamera(WIDTH, HEIGHT, 60, 0.1, 500, -500, 1000); //TODO: Edit combined camera to take proper resizing calls
     camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
 	camera.up.set(0,0,1);
 
