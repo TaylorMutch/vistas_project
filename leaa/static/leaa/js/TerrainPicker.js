@@ -36,8 +36,8 @@ function getDEM(name, coordinates) {
         plane.computeVertexNormals();
 
 	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	    //var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
-        var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/jotunheimen-texture.jpg')});
+	    var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+        //var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/jotunheimen-texture.jpg')});
 
         texture.flipY = true;
 	    // Edit the height to match the DEM we requested
@@ -45,8 +45,8 @@ function getDEM(name, coordinates) {
 
 	    // Declare the final terrain object to be added
         var loader = new THREE.TerrainLoader(manager);
-        //loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
-        loader.load('static/leaa/resources/jotunheimen.bin', function(data) {
+        loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+        //loader.load('static/leaa/resources/jotunheimen.bin', function(data) {
         //console.log("Raw DEM data: " + data);
             for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                 //terrainGeo.vertices[i].z = data[i]/65535*1215;
@@ -98,7 +98,7 @@ function onWindowResize() {
 }
 
 function cleanup() { //TODO: Add code to remove wind vectors when we create them above
-    scene.remove(terrain);
+    scene.remove(terrainGeo);
     render();
 }
 
