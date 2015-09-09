@@ -5,7 +5,7 @@ from leaa import views
 
 
 urlpatterns = [
-    url(r'^$', views.index, name="index"),
+    url(r'^old/', views.index, name="index"),
     url(r'^api-root/', views.api_root),
     url(r'^users/', views.UserList.as_view(),
         name='user-list'),
@@ -27,7 +27,8 @@ urlpatterns = [
         name='record-list'),
     url(r'^records/(?P<pk>[0-9]+)/$', views.RecordDetail.as_view(),
         name='record-detail'),
-    url(r'^test/', views.tester),
+    url(r'^$', views.tester),
+    url(r'^base/', views.base_terrain),
 ]
 
 urlpatterns += [

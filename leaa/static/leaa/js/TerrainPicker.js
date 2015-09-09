@@ -34,11 +34,16 @@ function getDEM(index) {
         //var DEMy = coordinates[3];
         //var maxHeight = coordinates[4];
 
-        var MAPx = temp_terrain.MAPx;
-        var MAPy = temp_terrain.MAPy;
-        var DEMx = temp_terrain.DEMx;
-        var DEMy = temp_terrain.DEMy;
-        var maxHeight = temp_terrain.maxHeight;
+        //var MAPx = temp_terrain.MAPx;
+        //var MAPy = temp_terrain.MAPy;
+        //var DEMx = temp_terrain.DEMx;
+        //var DEMy = temp_terrain.DEMy;
+        //var maxHeight = temp_terrain.maxHeight;
+
+        var MAPx = 100;
+        var MAPy = 76;
+        var DEMx = 458;
+        var DEMy = 344;
 
         // Get initial terrain geo, to be updated with DEM data
         var plane = new THREE.PlaneGeometry(MAPx, MAPy, DEMx-1, DEMy-1);
@@ -59,8 +64,8 @@ function getDEM(index) {
         //loader.load('static/leaa/resources/jotunheimen.bin', function(data) {
         //console.log("Raw DEM data: " + data);
             for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
-                //terrainGeo.vertices[i].z = data[i]/65535*1215;
-                plane.vertices[i].z = data[i]/65535*maxHeight;
+                plane.vertices[i].z = data[i]/65535*1215;
+                //plane.vertices[i].z = data[i]/65535*maxHeight;
                 heightMap[i] = data[i];
             }
             terrainGeo = new THREE.Mesh(plane, texture);

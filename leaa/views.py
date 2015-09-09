@@ -157,5 +157,10 @@ def index(request):
 
 
 def tester(request):
-    return render(request, 'leaa/base_terrain.html')
+    #return render(request, 'leaa/base_terrain.html')
+    #return render(request, 'leaa/test_index.html')
+    return render(request, 'leaa/jquery_index.html')
+
+def base_terrain(request):
+    return render(request, 'leaa/test_index.html')
 

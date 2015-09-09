@@ -53,18 +53,18 @@
             terrainGeo.computeVertexNormals();
 
             // Get terrain texture **TODO: make this malleable for taking arbitrary relief textures.
-            var texture = new THREE.Texture();
-            var loader = new THREE.ImageLoader( manager );
-            loader.load( 'static/leaa/resources/relief.png', function (image) {
-                texture.image = image;
-                texture.needsUpdate = true;
-            });
+            var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/reliefHJAndrews.png')});
+            //ar loader = new THREE.ImageLoader( manager );
+            //loader.load( 'static/leaa/resources/reliefHJAndrews.png', function (image) {
+            //    texture.image = image;
+            //    texture.needsUpdate = true;
+            //});
 
 
 
             var heightMap = [];
-            var loader = new THREE.TerrainLoader(manager);
-            loader.load('static/leaa/resources/dem.bin', function(data) {
+            var loader = new THREE.TerrainLoader();
+            loader.load('/static/leaa/resources/demHJAndrews.bin', function(data) {
                 for (var i = 0, l = terrainGeo.vertices.length; i < l; i++ ) {
                     terrainGeo.vertices[i].z = data[i]/65636*1215;
                     heightMap[i] = data[i];
