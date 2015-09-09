@@ -163,4 +163,3 @@ def tester(request):
 
 def base_terrain(request):
     return render(request, 'leaa/test_index.html')
-

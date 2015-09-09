@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
     <title>LEA Analytics</title>
         <!-- Load stylesheets -->
     <link href="{% static "leaa/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
@@ -41,11 +43,11 @@
             </div>
             <!-- Select Sodar Data -->
             <div class="col-xs-2 col-mid-1 dropdown">
-                <button id="sodarPicker" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <button  class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     Select Data
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu scrollable-menu">
+                <ul id="sodarPicker" class="dropdown-menu scrollable-menu">
                    <!-- Generate choosable data here dynamically -->
                 </ul>
             </div>

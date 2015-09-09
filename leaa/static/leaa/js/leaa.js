@@ -24,58 +24,7 @@ $(document).ready(function() {
     });
 
     steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
-
-    /*
-    // Retrieve stations from API
-    stations = [];
-    stationNames = [];
-    $.getJSON('/stations/', function(json) {
-        $.each(json, function(id, item) {
-            stations.push(item);
-        });
-    }).done(function(stations) {
-        $.each(stations, function(id, station) {
-            stationNames.push(station.name);
-        })
-    });
-
-    // Retreive sodars from API
-    sodars = [];
-    //sodarNames = [];
-    $.getJSON('/sodars/', function(json) {
-        $.each(json, function(id, item) {
-            sodars.push(item);
-        });
-    }).done(function(stations) {
-        $.each(stations, function(id, station) {
-            //stationNames.push(station.name);
-        })
-    });
-    */
-    // Retrieve records from API
-    records = [];
-    //recordNames = [];
-    $.getJSON('/records/', function(json) {
-        $.each(json, function(id, item) {
-            records.push(item);
-        });
-    }).done(function(stations) {
-        $.each(stations, function(id, station) {
-            //stationNames.push(station.name);
-        })
-    });
-
-
-
-
-
-
-
-
-
-
-
-
+    steal("leaa/js/loadWind.js", function() {}); // Load wind creation tools
 
     // Toggles for tooltips, etc.
     $(function () {
