@@ -14,15 +14,13 @@
 <body>
     <!-- Load scripts -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
-    <!--script src="{% static "can/lib/jquery-1.11.3.min.js" %}"></script-->
-    <!--script src="{% static "steal/steal.js" %}"></script-->
-    <!--script src="{%  static "leaa/js/models/terrain.js" %}"></script-->
     <script src="{% static "leaa/js/bootstrap.min.js" %}"></script>
     <script src="{% static "leaa/js/three.min.js" %}"></script>
     <script src="{% static "leaa/js/activaters.js" %}"></script>
     <script src="{% static "leaa/js/CombinedCamera.js" %}"></script>
     <script src="{% static "leaa/js/OrbitControls.js" %}"></script>
     <script src="{% static "leaa/js/TerrainLoader.js" %}"></script>
+    <script src="{% static "leaa/js/utility.js" %}"></script>
 
     <div id="wrapper" class="container">
         <nav class="navbar navbar-default">
@@ -35,17 +33,11 @@
 		<div id="top-controls" class="row">
             <!-- Select DEM -->
             <div class="col-xs-2 col-mid-1 dropdown">
-                <button id="demPicker" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button  class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Select Terrain
 					<span class="caret"></span>
 				</button>
-                <ul class="dropdown-menu">
-                    {% for name,TerrainCoords in terrain_list %}
-                        <li><a href="#" onclick="getDEM('{{name}}',{{ TerrainCoords }})">{{name}}</a></li>
-                    {% empty %}
-                        <li>No DEMs available</li>
-                    {% endfor %}
-                </ul>
+                <ul id="demPicker" class="dropdown-menu"></ul>
             </div>
             <!-- Select Sodar Data -->
             <div class="col-xs-2 col-mid-1 dropdown">
@@ -58,11 +50,11 @@
                     console.log(data_from_django);
                 </script-->
                 <ul class="dropdown-menu scrollable-menu">
-                    {% for SodarIDs, SodarDates in sodar_list %}
+                   <!-- {% for SodarIDs, SodarDates in sodar_list %}
                         <li><a href="#">{{ SodarDates }}</a> </li>
                     {% empty %}
                         <li>No SoDAR data available for this region</li>
-                    {% endfor %}
+                    {% endfor %}-->
                 </ul>
             </div>
 			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
@@ -77,7 +69,6 @@
         </div>
         <div id="bottom-wrapper" class="row">
             <script src="{% static "leaa/js/TerrainPicker.js" %}"></script>
-            <script src="{% static "leaa/js/utility.js" %}"></script>
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
 					<h4 class="text-center">Visualization Controls</h4>
 				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
