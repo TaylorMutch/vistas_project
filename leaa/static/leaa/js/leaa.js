@@ -25,6 +25,7 @@ $(document).ready(function() {
 
     steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
 
+    /*
     // Retrieve stations from API
     stations = [];
     stationNames = [];
@@ -50,7 +51,7 @@ $(document).ready(function() {
             //stationNames.push(station.name);
         })
     });
-
+    */
     // Retrieve records from API
     records = [];
     //recordNames = [];

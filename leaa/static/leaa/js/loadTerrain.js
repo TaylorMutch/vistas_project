@@ -3,13 +3,7 @@
  */
 steal(function () {
 
-    var manager = new THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
-        console.log( item, loaded, total);
-    };
-
-    var camera, scene, renderer, activeDEM, terrainGeo;
-    var cameraMode = true;  // true (default) is Perspective, false is Orthographic
+    var camera, scene, renderer, activeDEM, terrainGeo, terrainMap;
     var CAM_START = new THREE.Vector3(0,-80,80);
     var container = document.getElementById("scene");
     WIDTH = container.offsetWidth;
@@ -17,10 +11,12 @@ steal(function () {
     init();
     render(); // One call to render to prep the workspace.
 
+    // demPicker
     $("a.dem").click(function() {
-        var tag_id = this.id;     // html id of the correct li
+        //var tag_id = this.id;     // html id of the correct li
         var index = $(this).attr('value');   // index of the terrain we want
-        var name = $(this).html();  // name of the terrain
+        var temp_terrain = terrains[index];
+        var name = temp_terrain.name;
 
         if (name !== activeDEM) {
             if (activeDEM !== undefined) {
@@ -28,7 +24,6 @@ steal(function () {
             }
             activeDEM = name;
             $("#current-timestamp-label").html("Loading " + name);
-            var temp_terrain = terrains[index];
             //console.log(temp_terrain);
             var MAPx = temp_terrain.MAPx;
             var MAPy = temp_terrain.MAPy;
@@ -53,19 +48,52 @@ steal(function () {
             loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
                 // console.log("Raw DEM data: " + data);
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
-                    //terrainGeo.vertices[i].z = data[i]/65535*1215;
                     plane.vertices[i].z = data[i]/65535*maxHeight;
                     heightMap[i] = data[i];
                 }
                 terrainGeo = new THREE.Mesh(plane, texture);
+                terrainMap = plane.vertices;
                 scene.add(terrainGeo);
+
             //console.log("Heights: " + heightMap);
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-            animate();
+            //animate();
         }
 
-        //TODO: Get Station/Sodar data and load up the correct HTML elements on the page.
+        index = temp_terrain.id;
+        console.log(index);
+        stations = [];
+        $.getJSON('/stations', function(json) {
+            $.each(json, function(id, item) {
+                stations.push(item);
+            });
+        }).done(function(stations) { //TODO: Get the station vis_models working properly
+            $.each(stations, function(id, station) {
+                console.log(station.terrain);
+                if (index == station.terrain) {
+                    // Create station in DEM
+                    var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX];
+                    console.log(pos);
+                    var axes = new THREE.AxisHelper(20);
+                    //axes.position.set = (pos.x, pos.y, pos.z);
+                    //axes.translateX(pos.x);
+                    //axes.translateY(pos.y);
+                    //axes.translateZ(pos.z);
+                    scene.add(axes);
+                    var markerGeo = new THREE.BoxGeometry(1,1,1);
+                    var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
+                    var marker = new THREE.Mesh(markerGeo, markerMat);
+                    marker.position.set = (pos.x, pos.y, pos.z);
+                    scene.add(marker);
+                }
+            });
+        });
+        // Animate the scene with all the correct stations loaded
+        animate();
+
+        //TODO: retrieve the Sodar data and load up the correct HTML elements on the page.
+
     });
 
     function init() {
