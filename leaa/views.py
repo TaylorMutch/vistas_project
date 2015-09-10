@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404
 import json
 from django.core.serializers.json import DjangoJSONEncoder
-from leaa.models import Terrain,Station,Sodar,Record,TerrainView,Setting
+from leaa.models import Terrain,Station,DataFile,Record,WindVector,TerrainView,Setting
 from leaa.serializers import *
-from rest_framework import generics, permissions, renderers
+from rest_framework import generics, permissions, renderers, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+
 # Create your views here.
 
 
@@ -17,8 +19,9 @@ def api_root(request):
         'users': reverse('user-list', request=request),
         'terrains': reverse('terrain-list', request=request),
         'stations': reverse('station-list', request=request),
-        'sodars': reverse('sodar-list', request=request),
-        'records': reverse('record-list',request=request),
+        'datafiles': reverse('datafile-list', request=request),
+        'records': reverse('record-list', request=request),
+        'windvectors': reverse('windvector-list', request=request),
     })
 
 
@@ -51,18 +54,18 @@ class StationDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class SodarList(generics.ListAPIView):
-    queryset = Sodar.objects.all()
-    serializer_class = SodarSerializer
+class DataFileList(generics.ListAPIView):
+    queryset = DataFile.objects.all()
+    serializer_class = DataFileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
-class SodarDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Sodar.objects.all()
-    serializer_class = SodarSerializer
+class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DataFile.objects.all()
+    serializer_class = DataFileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
@@ -78,6 +81,20 @@ class RecordList(generics.ListAPIView):
 class RecordDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Record.objects.all()
     serializer_class = RecordSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class WindVectorList(generics.ListAPIView):
+    queryset = WindVector.objects.all()
+    serializer_class = WindVectorSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+class WindVectorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WindVector.objects.all()
+    serializer_class = WindVectorSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
@@ -97,3 +114,21 @@ def index(request):
 
 def base_terrain(request):
     return render(request, 'leaa/test_index.html')
+
+
+def getVectors(request):
+    #recordIDs = request.GET.getlist(u'recordIDs[]')
+    recordIDs = [1,2]
+    results = {}
+    for id in recordIDs:
+        vectors = WindVector.objects.filter(record=id)
+        speeds = []
+        directions = []
+        heights = []
+        for vector in vectors:
+            speeds = speeds + [vector.vcl]
+            directions = directions + [vector.dcl]
+            heights = heights + [vector.height]
+        results[id] = [speeds,directions,heights]
+
+    return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)

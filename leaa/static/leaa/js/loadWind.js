@@ -11,20 +11,38 @@
 //TODO: Update the UI controls to be useful
 
 steal(function () {
-    $("ul").on("click", "a.sodar", function () {
-        var sodar_id = this.id;
-        records = [];
+    $("ul").on("click", "a.datafile", function () {
+
+        // Get the record handles
+        var datafile_id = this.id;
+        //console.log(datafile_id);
+        all_records = [];
         temp_records = [];
+        recordIDs = [];
         $.getJSON('/records/', function(json) {
-            records = json;
-            console.log(records);
-        }).done(function(records) {
-            $.each(records, function(id, record) {
-                if (sodar_id == record.sodar) {
+            all_records = json;
+            $.each(all_records, function(id, record) {
+                if (datafile_id == record.dataFile) {
+                    recordIDs.push(record.id);
                     temp_records.push(record);
                 }
+                //TODO: Store the recordDates somewhere so that we can access them later for the UI
             });
-            console.log(temp_records);
+            console.log(recordIDs);
+        });
+
+        // Extract the wind data from the records
+        speeds = [];
+        directions = [];
+        heights = [];
+        $.getJSON('/getVectors/', {'recordIDs[]': recordIDs}, function(result) {
+            //TODO: Create THREE.ArrowHelper objects based on response.
+            //console.log(result);
+            $.each(result, function(key, value) {
+                speeds.push(value[0]);
+                directions.push(value[1]);
+                heights.push(value[2]);
+            });
         });
 
     });
