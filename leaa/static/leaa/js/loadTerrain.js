@@ -114,6 +114,7 @@ steal(function () {
         //TODO: retrieve the Sodar data and load up the correct HTML elements on the page.
         all_sodars = [];
         temp_sodars = [];
+        $("#sodarPicker").empty();
         $.getJSON('/sodars/', function(json) { //TODO: Optimize how this retrieves sodars
             all_sodars = json;
             $.each(temp_stations, function(station_id, station) {
@@ -124,6 +125,9 @@ steal(function () {
                     }
                 });
             });
+            if (temp_sodars[0] == undefined) {
+                $("#sodarPicker").append('<li>No data for this terrain</li>');
+            }
         });
     });
 
