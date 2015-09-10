@@ -1,92 +1,91 @@
 [
   {
     "pk" : 1,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:00:00",
-      "station" : 1
+      "dataFile" : 1
     }
   },
 
     {
     "pk" : 2,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:05:00",
-      "station" : 1
+      "dataFile" : 1
     }
   },
     {
     "pk" : 3,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:10:00",
-      "station" : 1
+      "dataFile" : 1
     }
   },
     {
     "pk" : 4,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:15:00",
-      "station" : 1
+      "dataFile" : 1
     }
   },
     {
     "pk" : 5,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:20:00",
-      "station" : 1
+      "dataFile" : 1
     }
   },
     {
     "pk" : 6,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:00:00",
-      "station" : 2
+      "dataFile" : 2
     }
   },
-
     {
     "pk" : 7,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:05:00",
-      "station" : 2
+      "dataFile" : 2
     }
   },
     {
     "pk" : 8,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:10:00",
-      "station" : 2
+      "dataFile" : 2
     }
   },
     {
     "pk" : 9,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:15:00",
-      "station" : 2
+      "dataFile" : 2
     }
   },
     {
     "pk" : 10,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2012-01-01 00:20:00",
-      "station" : 2
+      "dataFile" : 2
     }
   },
   {
     "pk" : 11,
-    "model": "leaa.Sodar",
+    "model": "leaa.Record",
     "fields": {
       "recordDate" : "2015-01-01 00:00:00",
-      "station" : 3
+      "dataFile" : 3
     }
   }
 ]

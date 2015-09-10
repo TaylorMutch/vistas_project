@@ -1,184 +1,184 @@
 [
   {
     "pk" : 1,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 15,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 1.2,
       "dcl" : 227
     }
   },
   {
     "pk" : 2,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 25,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 0.9,
       "dcl" : 167
     }
   },  {
     "pk" : 3,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 35,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 0.4,
       "dcl" : 359
     }
   },  {
     "pk" : 4,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 45,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 3.8,
       "dcl" : 321
     }
   },  {
     "pk" : 5,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 55,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 1.8,
       "dcl" : 306
     }
   },  {
     "pk" : 6,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 65,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 0.3,
       "dcl" : 133
     }
   },  {
     "pk" : 7,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 75,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 0.4,
       "dcl" : 59
     }
   },  {
     "pk" : 8,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 85,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 1.1,
       "dcl" : 8
     }
   },  {
     "pk" : 9,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 95,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 0.9,
       "dcl" : 7
     }
   },  {
     "pk" : 10,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 105,
-      "sodar" : 1,
+      "record" : 1,
       "vcl" : 1.1,
       "dcl" : 345
     }
   },
     {
     "pk" : 11,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 15,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 1.2,
       "dcl" : 227
     }
   },
   {
     "pk" : 12,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 25,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 0.9,
       "dcl" : 167
     }
   },  {
     "pk" : 13,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 35,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 0.4,
       "dcl" : 359
     }
   },  {
     "pk" : 14,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 45,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 3.8,
       "dcl" : 321
     }
   },  {
     "pk" : 15,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 55,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 1.8,
       "dcl" : 306
     }
   },  {
     "pk" : 16,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 65,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 0.3,
       "dcl" : 133
     }
   },  {
     "pk" : 17,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 75,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 0.4,
       "dcl" : 59
     }
   },  {
     "pk" : 18,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 85,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 1.1,
       "dcl" : 8
     }
   },  {
     "pk" : 19,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 95,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 0.9,
       "dcl" : 7
     }
   },  {
     "pk" : 20,
-    "model" : "leaa.Record",
+    "model" : "leaa.WindVector",
     "fields" : {
       "height" : 105,
-      "sodar" : 2,
+      "record" : 2,
       "vcl" : 1.1,
       "dcl" : 345
     }

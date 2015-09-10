@@ -10,25 +10,36 @@ class TerrainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Terrain
 
+
 class StationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Station
 
-class SodarSerializer(serializers.ModelSerializer):
+
+class DataFileSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Sodar
+        model = DataFile
+
 
 class RecordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Record
 
+
+class WindVectorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WindVector
+
+
 class TerrainViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TerrainView
+
 
 class UserSerializer(serializers.ModelSerializer):
 

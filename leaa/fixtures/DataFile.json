@@ -1,0 +1,29 @@
+[
+  {
+    "pk": 1,
+    "model": "leaa.DataFile",
+    "fields" : {
+      "station": 1,
+      "fileName": "Primet 2012",
+      "creationDate": "2012-01-01"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "leaa.DataFile",
+    "fields" : {
+      "station": 2,
+      "fileName": "McRae 2012",
+      "creationDate": "2012-01-01"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "leaa.DataFile",
+    "fields" : {
+      "station": 2,
+      "fileName": "Dummy file1",
+      "creationDate": "2015-09-10"
+    }
+  }
+]

@@ -19,14 +19,18 @@ urlpatterns = [
         name='station-list'),
     url(r'^stations/(?P<pk>[0-9]+)/$', views.StationDetail.as_view(),
         name='station-detail'),
-    url(r'^sodars/$', views.SodarList.as_view(),
-        name='sodar-list'),
-    url(r'^sodars/(?P<pk>[0-9]+)/$', views.SodarDetail.as_view(),
-        name='sodar-detail'),
+    url(r'^datafiles/$', views.DataFileList.as_view(),
+        name='datafile-list'),
+    url(r'^datafiles/(?P<pk>[0-9]+)/$', views.DataFileDetail.as_view(),
+        name='datafile-detail'),
     url(r'^records/$', views.RecordList.as_view(),
         name='record-list'),
     url(r'^records/(?P<pk>[0-9]+)/$', views.RecordDetail.as_view(),
         name='record-detail'),
+    url(r'^windvectors/$', views.WindVectorList.as_view(),
+        name='windvector-list'),
+    url(r'^windvectors/(?P<pk>[0-9]+)/$', views.WindVectorDetail.as_view(),
+        name='windvector-detail'),
 ]
 
 urlpatterns += [

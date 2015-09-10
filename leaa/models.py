@@ -45,18 +45,26 @@ class Station(models.Model):
         return self.name
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
-# We then collect the height readings, and then we related tables off of those heights
-class Sodar(models.Model):
+class DataFile(models.Model):
+    creationDate = models.DateField(auto_now_add=True)
+    station = models.ForeignKey('Station')
+    fileName = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.fileName + ' - ' + str(self.creationDate)
+
+# Mimic a single recording from a sodar stations
+class Record(models.Model):
     recordDate = models.DateTimeField(auto_now=False, auto_now_add=False)
-    station = models.ForeignKey('Station')  # A station can have many SODAR files
+    dataFile = models.ForeignKey('DataFile')
 
     def __str__(self):
         return str(self.recordDate)
 
-# Relates the arrow vectors with each specific height, speed and direction
-class Record(models.Model):
+# Mimic wind vectors with each specific height, speed and direction
+class WindVector(models.Model):
     height = models.PositiveIntegerField()
-    sodar = models.ForeignKey('Sodar')
+    record = models.ForeignKey('Record')
     vcl = models.FloatField()               # speed
     dcl = models.IntegerField()             # direction in degrees
 
