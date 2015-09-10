@@ -4,25 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
     <title>LEA Analytics</title>
-    <!-- Load stylesheets -->
+        <!-- Load stylesheets -->
     <link href="{% static "leaa/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/bootstrap/css/bootstrap-theme.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/bootstrap/css/leaa.css" %}" rel="stylesheet">
-    <link rel="shortcut icon" type="image/ping" href="{% static "favicon.ico" %}">
+    <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
 </head>
 <body>
-    <!-- Load scripts -->
+    <!-- External Libraries -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
-    <!--script src="{% static "can/lib/jquery-1.11.3.min.js" %}"></script-->
-    <!--script src="{% static "steal/steal.js" %}"></script-->
-    <!--script src="{%  static "leaa/js/models/terrain.js" %}"></script-->
-    <script src="{% static "leaa/js/bootstrap.min.js" %}"></script>
     <script src="{% static "leaa/js/three.min.js" %}"></script>
-    <script src="{% static "leaa/js/activaters.js" %}"></script>
     <script src="{% static "leaa/js/CombinedCamera.js" %}"></script>
     <script src="{% static "leaa/js/OrbitControls.js" %}"></script>
     <script src="{% static "leaa/js/TerrainLoader.js" %}"></script>
+    <script src="{% static "leaa/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "steal/steal.js" %}"></script>
+    <!-- Load LEAA Scripts via steal.js -->
+    <script src="{% static "leaa/js/leaa.js" %}"></script>
 
     <div id="wrapper" class="container">
         <nav class="navbar navbar-default">
@@ -35,34 +35,21 @@
 		<div id="top-controls" class="row">
             <!-- Select DEM -->
             <div class="col-xs-2 col-mid-1 dropdown">
-                <button id="demPicker" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <button  class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Select Terrain
 					<span class="caret"></span>
 				</button>
-                <ul class="dropdown-menu">
-                    {% for name,TerrainCoords in terrain_list %}
-                        <li><a href="#" onclick="getDEM('{{name}}',{{ TerrainCoords }})">{{name}}</a></li>
-                    {% empty %}
-                        <li>No DEMs available</li>
-                    {% endfor %}
-                </ul>
+                <ul id="demPicker" class="dropdown-menu"></ul>
             </div>
             <!-- Select Sodar Data -->
             <div class="col-xs-2 col-mid-1 dropdown">
-                <button id="sodarPicker" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <button  class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     Select Data
                     <span class="caret"></span>
                 </button>
-                <!--script type="text/javascript">
-                    var data_from_django = jQuery.parseJSON({{ sodar_list }});
-                    console.log(data_from_django);
-                </script-->
-                <ul class="dropdown-menu scrollable-menu">
-                    {% for SodarIDs, SodarDates in sodar_list %}
-                        <li><a href="#">{{ SodarDates }}</a> </li>
-                    {% empty %}
-                        <li>No SoDAR data available for this region</li>
-                    {% endfor %}
+                <ul id="sodarPicker" class="dropdown-menu scrollable-menu">
+                    <li>No Data, Load a Terrain</li>
+                   <!-- Generate choosable data here dynamically -->
                 </ul>
             </div>
 			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
@@ -76,8 +63,6 @@
             <div id="scene"></div>
         </div>
         <div id="bottom-wrapper" class="row">
-            <script src="{% static "leaa/js/TerrainPicker.js" %}"></script>
-            <script src="{% static "leaa/js/utility.js" %}"></script>
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
 					<h4 class="text-center">Visualization Controls</h4>
 				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
@@ -87,12 +72,6 @@
 				<button id="animateButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
 				 data-original-title="Turn On/Off animation" onclick="startAnimation();changeAnimateButtonText(this.id)">Animate</button>
 				<button id="resetButton" type="button" class="btn btn-default" onclick="resetScene()">Reset Scene</button>
-				<!--div class ="checkbox">
-					<label>
-						<input id="flycheck" type="checkbox" data-toggle="tooltip-std" data-original-title="UNDER CONSTRUCTION" onchange="activateFlyControls()"> Enable Flythrough Controls
-						<input id="flycheck" type="checkbox" onchange="activateControls()"> Enable Flythrough Controls>
-					</label>
-				</div-->
 			</div>
 			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
 				<h4 class="text-center">Views</h4>
@@ -102,8 +81,8 @@
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="camera-toggle">
-						<li><a href="#" onclick="setOrthographic();return false;">Orthographic</a></li>
-						<li><a href="#" onclick="setPerspective();return false;">Perspective</a></li>
+						<li><a id="setOrthographic" href="#">Orthographic</a></li>
+						<li><a id="setPerspective" href="#">Perspective</a></li>
 					</ul>
 				</div>
 				<button id="top-view" type="button" class="btn btn-default" onclick="topView()">Top</button>

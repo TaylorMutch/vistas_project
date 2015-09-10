@@ -27,7 +27,6 @@ urlpatterns = [
         name='record-list'),
     url(r'^records/(?P<pk>[0-9]+)/$', views.RecordDetail.as_view(),
         name='record-detail'),
-    url(r'^test/', views.tester),
 ]
 
 urlpatterns += [
