@@ -69,7 +69,7 @@ class WindVector(models.Model):
     dcl = models.IntegerField()             # direction in degrees
 
     def __str__(self):
-        return str(self.height) + ' - ' + str(self.sodar)
+        return str(self.height) + ' - ' + str(self.record)
 
 class Setting(models.Model):
     vectorLength = models.IntegerField()

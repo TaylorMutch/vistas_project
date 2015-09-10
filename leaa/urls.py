@@ -31,6 +31,8 @@ urlpatterns = [
         name='windvector-list'),
     url(r'^windvectors/(?P<pk>[0-9]+)/$', views.WindVectorDetail.as_view(),
         name='windvector-detail'),
+    url(r'^getVectors/$', views.getVectors),
+
 ]
 
 urlpatterns += [

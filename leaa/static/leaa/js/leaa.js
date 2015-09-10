@@ -7,6 +7,12 @@
     right as the DOM finishes loading. This ensures that all assets are loaded before
     the user tries to do anything initially.
  */
+//$.ajaxSetup({
+//   async: true
+//});
+
+var terrainMap;
+
 $(document).ready(function() {
 
     // Retrieve terrains from API

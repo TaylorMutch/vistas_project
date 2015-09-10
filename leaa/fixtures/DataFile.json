@@ -21,7 +21,7 @@
     "pk": 3,
     "model": "leaa.DataFile",
     "fields" : {
-      "station": 2,
+      "station": 3,
       "fileName": "Dummy file1",
       "creationDate": "2015-09-10"
     }

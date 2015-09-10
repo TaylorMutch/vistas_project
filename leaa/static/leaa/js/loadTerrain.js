@@ -22,18 +22,16 @@ steal(function () {
     init();
     render(); // One call to render to prep the workspace.
 
-    // demPicker
+    // Retreives and renders selected terrain.
     $("a.dem").click(function() {
         var index = $(this).attr('value');   // index of the terrain we want
         var temp_terrain = terrains[index];
         var name = temp_terrain.name;
-        var terrainMap = [];
         if (name !== activeDEM) {
             if (activeDEM !== undefined) {
                 cleanup();
             }
             activeDEM = name;
-            $("#current-timestamp-label").html("Loading " + name);
             //console.log(temp_terrain);
             var MAPx = temp_terrain.MAPx;
             var MAPy = temp_terrain.MAPy;
@@ -70,8 +68,10 @@ steal(function () {
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
             //animate();
+            $("#current-timestamp-label").html(name + "")
         }
 
+        // Retreive stations
         index = temp_terrain.id; //TODO: Cleanup these stations declarations
         //console.log(index);
         all_stations = [];
@@ -82,51 +82,55 @@ steal(function () {
                 if (station.terrain == index) {
                     temp_stations.push(station);
                 }
-            })
-        }).done(function(stations) {
+            }); // Render stations
+        }).done(function(temp_stations) {
             $.each(temp_stations, function(id, station) {
-                console.log("Terrain <--> Station link:" + station.terrain);
-                console.log("Station ID:" + station.id);
-                 //TODO: Get the station vis_models working properly - redo/replace terrainMap?
+                //console.log("Terrain <--> Station link:" + station.terrain);
+                //console.log("Station ID:" + station.id);
                     // Create station in DEM
-                    var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX];
-                    console.log(pos);
-                    var axes = new THREE.AxisHelper(20);
-                    axes.position = pos;
-                    //axes.position.set = (pos.x, pos.y, pos.z);
-                    //axes.translateX(pos.x);
-                    //axes.translateY(pos.y);
-                    //axes.translateZ(pos.z);
-                    scene.add(axes);
-                    sceneObjects.push(axes);
-                    var markerGeo = new THREE.BoxGeometry(1,1,1);
-                    var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
-                    var marker = new THREE.Mesh(markerGeo, markerMat);
-                    //marker.position.set = (pos.x, pos.y, pos.z);
-                    marker.position = pos;
-                    scene.add(marker);
-                    sceneObjects.push(marker);
+                //var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX]; //TODO: Get the station vis_models working properly - redo/replace terrainMap?
+                //console.log(pos);
+                var axes = new THREE.AxisHelper(20);
+                //axes.position = pos;
+                //axes.position.set = (pos.x, pos.y, pos.z);
+                //axes.translateX(pos.x);
+                //axes.translateY(pos.y);
+                //axes.translateZ(pos.z);
+                scene.add(axes);
+                sceneObjects.push(axes);
+                var markerGeo = new THREE.BoxGeometry(1,1,1);
+                var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
+                var marker = new THREE.Mesh(markerGeo, markerMat);
+                //marker.position.set = (pos.x, pos.y, pos.z);
+                //marker.position = pos;
+                scene.add(marker);
+                sceneObjects.push(marker);
             });
         });
         // Animate the scene with all the correct stations loaded
         animate();
 
-        //TODO: retrieve the Sodar data and load up the correct HTML elements on the page.
-        all_sodars = [];
-        temp_sodars = [];
-        $("#sodarPicker").empty();
-        $.getJSON('/sodars/', function(json) { //TODO: Optimize how this retrieves sodars
-            all_sodars = json;
+        //TODO: retrieve dataFiles and load up the correct HTML elements on the page.
+        all_datafiles = [];
+        temp_datafiles = [];
+        $("#dataPicker").empty();
+        $.getJSON('/datafiles/', function(json) { //TODO: Optimize how this retrieves dataFiles
+            all_datafiles = json;
             $.each(temp_stations, function(station_id, station) {
-                $.each(all_sodars, function(sodar_id, sodar) {
-                    if (station.id == sodar.station) {
-                        temp_sodars.push(sodar);
-                        $("#sodarPicker").append('<li><a href="#" class="sodar" id=' + sodar.id +'>' + sodar.recordDate + '</a></li>');
+                //console.log('Station ID: ' + station.id);
+                $.each(all_datafiles, function(datafile_id, datafile) {
+                    //console.log('Datafile Station: ' + datafile.station);
+                    if (station.id == datafile.station) {
+                        temp_datafiles.push(datafile);
+                        $("#dataPicker").append('<li><a href="#" class="datafile" id=' + datafile.id +'>' + datafile.fileName + '</a></li>');
+                        console.log("Loaded a file!");
                     }
                 });
             });
-            if (temp_sodars[0] == undefined) {
-                $("#sodarPicker").append('<li>No data for this terrain</li>');
+        }).done(function () {
+            if (temp_datafiles.length == 0) {
+                console.log("No data found for this terrain");
+                $("#dataPicker").append('<li>No data for this terrain</li>');
             }
         });
     });
