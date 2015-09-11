@@ -3,7 +3,8 @@
  */
 steal(function () {
 
-    var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
+    //var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
+    var activeDEM;
     var sceneObjects = [];
     var CAM_START = new THREE.Vector3(0,-80,80);
     var container = document.getElementById("scene");
@@ -25,7 +26,7 @@ steal(function () {
     // Retreives and renders selected terrain.
     $("a.dem").click(function() {
         var index = $(this).attr('value');   // index of the terrain we want
-        var temp_terrain = terrains[index];
+        temp_terrain = terrains[index];
         var name = temp_terrain.name;
         if (name !== activeDEM) {
             if (activeDEM !== undefined) {
@@ -73,9 +74,9 @@ steal(function () {
 
         // Retreive stations
         index = temp_terrain.id; //TODO: Cleanup these stations declarations
-        //console.log(index);
         all_stations = [];
         temp_stations = [];
+        stationPositions = [];
         $.getJSON('/stations/', function(json) {
             all_stations = json;
             $.each(all_stations, function(id, station) {
@@ -85,24 +86,18 @@ steal(function () {
             }); // Render stations
         }).done(function(temp_stations) {
             $.each(temp_stations, function(id, station) {
-                //console.log("Terrain <--> Station link:" + station.terrain);
-                //console.log("Station ID:" + station.id);
-                    // Create station in DEM
-                //var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX]; //TODO: Get the station vis_models working properly - redo/replace terrainMap?
+                // Create station in DEM
+                var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX]; //TODO: Get the station vis_models working properly - redo/replace terrainMap?
+                stationPositions.push(pos);
                 //console.log(pos);
                 var axes = new THREE.AxisHelper(20);
-                //axes.position = pos;
-                //axes.position.set = (pos.x, pos.y, pos.z);
-                //axes.translateX(pos.x);
-                //axes.translateY(pos.y);
-                //axes.translateZ(pos.z);
+                axes.position = pos;
                 scene.add(axes);
                 sceneObjects.push(axes);
                 var markerGeo = new THREE.BoxGeometry(1,1,1);
                 var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
                 var marker = new THREE.Mesh(markerGeo, markerMat);
-                //marker.position.set = (pos.x, pos.y, pos.z);
-                //marker.position = pos;
+                marker.position = pos;
                 scene.add(marker);
                 sceneObjects.push(marker);
             });
@@ -195,6 +190,10 @@ steal(function () {
         camera.toPerspective();
     });
 
+
+
+
+    //TODO: See if we need this for adding arbitrary stations
     function calcStationPos(utmX, utmY) {
         var coords = [];
         var x = Math.floor(utmX - MIN_UTMx)/STEP_SIZE;

@@ -30,7 +30,8 @@ $(document).ready(function() {
     });
 
     steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
-    steal("leaa/js/loadWind.js", function() {}); // Load wind creation tools
+    steal("leaa/js/loadWind.js", function() {}); // Load data extraction tools
+    steal("leaa/js/animateWind.js", function() {});
 
     // Toggles for tooltips, etc.
     $(function () {
