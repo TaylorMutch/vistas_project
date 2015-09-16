@@ -25,5 +25,14 @@
       "fileName": "Dummy file1",
       "creationDate": "2015-09-10"
     }
+  },
+  {
+    "pk": 4,
+    "model": "leaa.DataFile",
+    "fields" : {
+      "station": 3,
+      "fileName": "Dummy file2",
+      "creationDate": "2015-09-10"
+    }
   }
 ]
