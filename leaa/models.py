@@ -87,3 +87,5 @@ class TerrainView(models.Model):
     controlPos = (models.FloatField(), models.FloatField(), models.FloatField())
     cameraPos = (models.FloatField(), models.FloatField(), models.FloatField())
     worldPos = (models.FloatField(), models.FloatField(), models.FloatField())
+
+import datetime
