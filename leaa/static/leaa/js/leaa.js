@@ -17,14 +17,14 @@ $(document).ready(function() {
 
     // Retrieve terrains from API
     terrains = [];
-    terrainNames = [];
+    // terrainNames = []; //TODO: Remove this, we don't need it
     $.getJSON('/terrains/', function(json) {
         $.each(json, function(id, item) {
             terrains.push(item);
         });
     }).done(function(terrains) {
         $.each(terrains, function (id, terrain) {
-            terrainNames.push(terrain.name);
+            // terrainNames.push(terrain.name);
             $("#demPicker").append('<li><a href="#" id="dem'+terrain.name +'" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
         });
     });

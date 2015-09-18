@@ -50,16 +50,16 @@ class DataFile(models.Model):
     station = models.ForeignKey('Station')
     fileName = models.CharField(max_length=50)
 
-    def __str__(self):
-        return self.fileName + ' - ' + str(self.creationDate)
+    #def __str__(self):
+    #    return self.fileName + ' - ' + str(self.creationDate)
 
 # Mimic a single recording from a sodar stations
 class Record(models.Model):
     recordDate = models.DateTimeField(auto_now=False, auto_now_add=False)
     dataFile = models.ForeignKey('DataFile')
 
-    def __str__(self):
-        return str(self.recordDate)
+    #def __str__(self):
+    #    return str(self.recordDate)
 
 # Mimic wind vectors with each specific height, speed and direction
 class WindVector(models.Model):

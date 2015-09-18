@@ -1,6 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-import json
-from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render
 from leaa.models import Terrain,Station,DataFile,Record,WindVector,TerrainView,Setting
 from leaa.serializers import *
 from rest_framework import generics, permissions, renderers, status
@@ -116,19 +114,3 @@ def base_terrain(request):
     return render(request, 'leaa/test_index.html')
 
 
-def getVectors(request):
-    #recordIDs = request.GET.getlist(u'recordIDs[]')
-    recordIDs = [1,2]
-    results = {}
-    for id in recordIDs:
-        vectors = WindVector.objects.filter(record=id)
-        speeds = []
-        directions = []
-        heights = []
-        for vector in vectors:
-            speeds = speeds + [vector.vcl]
-            directions = directions + [vector.dcl]
-            heights = heights + [vector.height]
-        results[id] = [speeds,directions,heights]
-
-    return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)

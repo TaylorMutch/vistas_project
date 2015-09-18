@@ -17,7 +17,7 @@ steal(function () {
         all_records = [];
         temp_records = [];
         recordIDs = [];
-        $.getJSON('/records/', function(json) {
+        $.getJSON('/records/', function(json) { //TODO: this should be done serverside
             all_records = json;
             $.each(all_records, function(id, record) {
                 if (datafile_id == record.dataFile) {
@@ -31,7 +31,7 @@ steal(function () {
                     loaded in the terrain/client.
                  */
             });
-            console.log(recordIDs);
+            //console.log(recordIDs);
         });
 
         // Extract the wind data from the records

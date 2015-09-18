@@ -5,7 +5,7 @@ steal(function () {
 
     //var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
     var activeDEM;
-    var sceneObjects = [];
+    sceneObjects = [];
     var CAM_START = new THREE.Vector3(0,-80,80);
     var container = document.getElementById("scene");
     WIDTH = container.offsetWidth;
@@ -164,11 +164,11 @@ steal(function () {
     }
 
     function cleanup() {
-        $.each(sceneObjects, function(threeObject) {
-            scene.remove(threeObject);
-            console.log("Removed object");
-        });
-        //scene.remove(terrainGeo);
+        //$.each(sceneObjects, function(threeObject) {
+            //scene.remove(threeObject);
+            //console.log("Removed object");
+        //});
+        scene.remove(terrainGeo);
         render();
     }
 
