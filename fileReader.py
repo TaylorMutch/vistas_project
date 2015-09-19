@@ -2,6 +2,8 @@ __author__ = 'Taylor'
 
 #from django.core.files.base import ContentFile, File
 from leaa.models import WindVector, Record, DataFile, Station
+import os
+from vistas_project_alpha.settings import SODAR_DIR
 from django.utils import timezone
 from datetime import datetime
 '''
@@ -16,14 +18,13 @@ file array length is a multiple of 136 because there are 1 header and 135 variab
         line i*index + 122 contains DCL array
 '''
 
-# speeds_f = [[float(i) for i in lst] for lst in speeds] #converts str vals to float vals
 
-def readSDR(filePath):
+def readSDR(fileName, stationName):
 
-    with open(filePath, 'r') as datafile:
+    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as datafile:
         data = datafile.readlines()
     datafile.close()
-    numLines = len(data)
+    numLines = len(data)  # TODO: Search for factors based on a variable flag - can't always trust the files to line up
     numRecords = int(numLines/136)  # 136 is the number of variables
     dates = []
     speeds = []
@@ -37,7 +38,8 @@ def readSDR(filePath):
         Get the direction of wind (as floats)
     '''
     for i in range(0,numRecords):
-        dates.append(sdrDateToDatetime(data[i*136][4:16]))     #can remain as strings for now
+        #dates.append(sdrDateToDatetime(data[i*136][4:16]))     #can remain as strings for now
+        dates.append(data[i*136][4:16])
         speeds.append([float(j) for j in data[i*136 + 121].strip().split()[1:]])
         directions.append([float(j) for j in data[i*136 + 122].strip().split()[1:]])
 
@@ -62,7 +64,9 @@ def sdrDateToDatetime(sdrDate):
     Generate models based off of the data retrieved from disk
 '''
 
+#TODO: Either rework or remove this.
 
+'''
 def generateModels(filePath, stationName):
 
     if (filePath is None or stationName is None):
@@ -91,4 +95,4 @@ def generateModels(filePath, stationName):
                 vector = WindVector(height=height, vcl=vcl, dcl=dcl, record=newRecord)
                 vector.save()
     print("File added - model tables updated with new data")
-
+'''

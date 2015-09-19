@@ -15,6 +15,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# TODO: determine the best way to make this more general
+SODAR_DIR = os.path.abspath(os.path.join(BASE_DIR, 'leaa/static/leaa/resources/'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

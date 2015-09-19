@@ -5,6 +5,8 @@ from leaa import visViews
 
 urlpatterns = [
     url(r'^getVectors/', visViews.getVectors),
-    url(r'^getData/', visViews.getData),
+    url(r'^getDataFiles/', visViews.getDataFiles),
+    url(r'^getStations/', visViews.getStations),
+    url(r'^getTerrainNames/', visViews.getTerrainNames),
 
     ]

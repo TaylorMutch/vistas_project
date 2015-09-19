@@ -4,10 +4,10 @@
 steal(function () {
 
     //var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
-    var activeDEM;
+    activeDEM = undefined;
     sceneObjects = [];
-    var CAM_START = new THREE.Vector3(0,-80,80);
-    var container = document.getElementById("scene");
+    CAM_START = new THREE.Vector3(0,-80,80);
+    container = document.getElementById("scene");
     WIDTH = container.offsetWidth;
     HEIGHT = container.offsetHeight;
 
@@ -72,7 +72,26 @@ steal(function () {
             $("#current-timestamp-label").html(name + "")
         }
 
-        // Retreive stations
+        // Retrieve stations TODO: make this synchronous with loading the terrain data.
+        $.getJSON('/getStations/', {'terrainName':temp_terrain.name}, function(result) {
+           stations = result;
+        }).done(function(stations) {
+            stationPositions = [];
+            $.each(stations, function(stationName, demVals) {
+                console.log(demVals);
+                var pos = terrainMap[(demVals[1]*temp_terrain.DEMx)+demVals[0]];
+                stationPositions.push(pos);
+                var axes = new THREE.AxisHelper(20);
+                axes.position = pos;
+                scene.add(axes);
+                var markerGeo = new THREE.BoxGeometry(1,1,1);
+                var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
+                var marker = new THREE.Mesh(markerGeo, markerMat);
+                marker.position = pos;
+                scene.add(marker);
+            })
+        });
+        /*
         index = temp_terrain.id; //TODO: Cleanup these stations declarations
         all_stations = [];
         temp_stations = [];
@@ -102,9 +121,11 @@ steal(function () {
                 sceneObjects.push(marker);
             });
         });
+        */
         // Animate the scene with all the correct stations loaded
         animate();
 
+        /*
         //TODO: retrieve dataFiles and load up the correct HTML elements on the page.
         all_datafiles = [];
         temp_datafiles = [];
@@ -128,6 +149,7 @@ steal(function () {
                 $("#dataPicker").append('<li>No data for this terrain</li>');
             }
         });
+        */
     });
 
     function init() {

@@ -16,8 +16,8 @@ var terrainMap;
 $(document).ready(function() {
 
     // Retrieve terrains from API
+
     terrains = [];
-    // terrainNames = []; //TODO: Remove this, we don't need it
     $.getJSON('/terrains/', function(json) {
         $.each(json, function(id, item) {
             terrains.push(item);
@@ -28,6 +28,11 @@ $(document).ready(function() {
             $("#demPicker").append('<li><a href="#" id="dem'+terrain.name +'" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
         });
     });
+
+
+
+
+
 
     steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
     steal("leaa/js/loadWind.js", function() {}); // Load data extraction tools
