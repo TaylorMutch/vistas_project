@@ -38,6 +38,8 @@ def getStations(request):
 
 '''
     Returns the necessary arrays for computing 3D vectors
+    Arrays get returned as 2D arrays
+    speeds[i][j] is the ith speed (in the ith record) at the jth height
 '''
 @api_view(['GET'])
 def getVectors(request):

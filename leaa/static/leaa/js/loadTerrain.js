@@ -63,6 +63,8 @@ steal(function () {
                 terrainGeo = new THREE.Mesh(plane, texture);
                 terrainMap = plane.vertices;
                 scene.add(terrainGeo);
+                //TODO: Add $.ajaxComplete() function here to add the stations
+                //      This should ensure that the data is in place to work on, without having to get desynced.
                 sceneObjects.push(terrainGeo);
 
             //console.log("Heights: " + heightMap);
@@ -72,7 +74,7 @@ steal(function () {
             $("#current-timestamp-label").html(name + "")
         }
 
-        // Retrieve stations TODO: make this synchronous with loading the terrain data.
+        // Retrieve stations TODO: make this synchronous with loading the terrain data (see TODO above)
         $.getJSON('/getStations/', {'terrainName':temp_terrain.name}, function(result) {
            stations = result;
         }).done(function(stations) {
@@ -127,6 +129,8 @@ steal(function () {
 
         /*
         //TODO: retrieve dataFiles and load up the correct HTML elements on the page.
+        //TODO: Make this action a following function to the loading of the stations
+        //      Added bonus of having access to the variables we want without having to make them global...!
         all_datafiles = [];
         temp_datafiles = [];
         $("#dataPicker").empty();

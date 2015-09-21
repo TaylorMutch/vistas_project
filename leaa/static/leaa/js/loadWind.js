@@ -13,7 +13,10 @@ steal(function () {
 
         // Get the record handles
         var datafile_id = this.id;
+
+        /* //TODO: Replace all this with our 'getVectors' view.
         //console.log(datafile_id);
+
         all_records = [];
         temp_records = [];
         recordIDs = [];
@@ -29,7 +32,7 @@ steal(function () {
                     Record dates will need to be stored in a global variable, and then whenever a new terrain is loaded
                     the variable needs to be emptied of its contents so that we can keep track of what actually is
                     loaded in the terrain/client.
-                 */
+
             });
             //console.log(recordIDs);
         });
@@ -47,6 +50,7 @@ steal(function () {
                 heights.push(value[2]);
             });
         });
+        */
         var name = $(this).html();
         console.log(name);
         $("#current-timestamp-label").html("Loaded " + name);
