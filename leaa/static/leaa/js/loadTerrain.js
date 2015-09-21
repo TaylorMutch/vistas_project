@@ -3,10 +3,11 @@
  */
 steal(function () {
 
-    var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
-    var sceneObjects = [];
-    var CAM_START = new THREE.Vector3(0,-80,80);
-    var container = document.getElementById("scene");
+    //var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
+    activeDEM = undefined;
+    sceneObjects = [];
+    CAM_START = new THREE.Vector3(0,-80,80);
+    container = document.getElementById("scene");
     WIDTH = container.offsetWidth;
     HEIGHT = container.offsetHeight;
 
@@ -25,14 +26,13 @@ steal(function () {
     // Retreives and renders selected terrain.
     $("a.dem").click(function() {
         var index = $(this).attr('value');   // index of the terrain we want
-        var temp_terrain = terrains[index];
+        temp_terrain = terrains[index];
         var name = temp_terrain.name;
         if (name !== activeDEM) {
             if (activeDEM !== undefined) {
                 cleanup();
             }
             activeDEM = name;
-            //console.log(temp_terrain);
             var MAPx = temp_terrain.MAPx;
             var MAPy = temp_terrain.MAPy;
             var DEMx = temp_terrain.DEMx;
@@ -45,7 +45,7 @@ steal(function () {
             plane.computeVertexNormals();
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
 
             texture.flipY = true;
 	        // Edit the height to match the DEM we requested
@@ -54,7 +54,6 @@ steal(function () {
     	    // Declare the final terrain object to be added
             var loader = new THREE.TerrainLoader();
             loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
-                // console.log("Raw DEM data: " + data);
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*maxHeight;
                     heightMap[i] = data[i];
@@ -64,75 +63,47 @@ steal(function () {
                 scene.add(terrainGeo);
                 sceneObjects.push(terrainGeo);
 
-            //console.log("Heights: " + heightMap);
+                // Get the stations now that we have the correct terrain
+                $.getJSON('/getStations/', {'terrainName':temp_terrain.name}, function(result) {
+                    stations = result;
+                }).done(function(stations) {
+                stationPositions = [];
+                stationNames = [];
+                $.each(stations, function(stationName, demVals) {
+                    console.log(demVals);
+                    stationNames.push(stationName);
+                    var pos = terrainMap[(demVals[1]*temp_terrain.DEMx)+demVals[0]];
+                    stationPositions.push(pos);
+                    var axes = new THREE.AxisHelper(20);
+                    axes.position = pos;
+                    scene.add(axes);
+                    var markerGeo = new THREE.BoxGeometry(1,1,1);
+                    var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
+                    var marker = new THREE.Mesh(markerGeo, markerMat);
+                    marker.position = pos;
+                    scene.add(marker);
+
+                });
+                     // Get the related recordDates
+                    $("#dataPicker").empty();
+                    $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
+                        dates = result;
+                    }).done(function(dates) {
+                        if (dates.length == 0) {
+                            console.log("No data found for this terrain");
+                            $("#dataPicker").append('<li>No data for this terrain</li>');
+                        } else {
+                        $.each(dates, function(id, name) {
+                            $("#dataPicker").append('<li><a href="#" class="recordDate">' + name + '</a></li>');
+                        });
+                        }
+                    })
+            });
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-            //animate();
+            animate();
             $("#current-timestamp-label").html(name + "")
         }
-
-        // Retreive stations
-        index = temp_terrain.id; //TODO: Cleanup these stations declarations
-        //console.log(index);
-        all_stations = [];
-        temp_stations = [];
-        $.getJSON('/stations/', function(json) {
-            all_stations = json;
-            $.each(all_stations, function(id, station) {
-                if (station.terrain == index) {
-                    temp_stations.push(station);
-                }
-            }); // Render stations
-        }).done(function(temp_stations) {
-            $.each(temp_stations, function(id, station) {
-                //console.log("Terrain <--> Station link:" + station.terrain);
-                //console.log("Station ID:" + station.id);
-                    // Create station in DEM
-                //var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX]; //TODO: Get the station vis_models working properly - redo/replace terrainMap?
-                //console.log(pos);
-                var axes = new THREE.AxisHelper(20);
-                //axes.position = pos;
-                //axes.position.set = (pos.x, pos.y, pos.z);
-                //axes.translateX(pos.x);
-                //axes.translateY(pos.y);
-                //axes.translateZ(pos.z);
-                scene.add(axes);
-                sceneObjects.push(axes);
-                var markerGeo = new THREE.BoxGeometry(1,1,1);
-                var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
-                var marker = new THREE.Mesh(markerGeo, markerMat);
-                //marker.position.set = (pos.x, pos.y, pos.z);
-                //marker.position = pos;
-                scene.add(marker);
-                sceneObjects.push(marker);
-            });
-        });
-        // Animate the scene with all the correct stations loaded
-        animate();
-
-        //TODO: retrieve dataFiles and load up the correct HTML elements on the page.
-        all_datafiles = [];
-        temp_datafiles = [];
-        $("#dataPicker").empty();
-        $.getJSON('/datafiles/', function(json) { //TODO: Optimize how this retrieves dataFiles
-            all_datafiles = json;
-            $.each(temp_stations, function(station_id, station) {
-                //console.log('Station ID: ' + station.id);
-                $.each(all_datafiles, function(datafile_id, datafile) {
-                    //console.log('Datafile Station: ' + datafile.station);
-                    if (station.id == datafile.station) {
-                        temp_datafiles.push(datafile);
-                        $("#dataPicker").append('<li><a href="#" class="datafile" id=' + datafile.id +'>' + datafile.fileName + '</a></li>');
-                        console.log("Loaded a file!");
-                    }
-                });
-            });
-        }).done(function () {
-            if (temp_datafiles.length == 0) {
-                console.log("No data found for this terrain");
-                $("#dataPicker").append('<li>No data for this terrain</li>');
-            }
-        });
     });
 
     function init() {
@@ -168,12 +139,12 @@ steal(function () {
         renderer.setSize(WIDTH, HEIGHT);
     }
 
-    function cleanup() {
-        $.each(sceneObjects, function(threeObject) {
-            scene.remove(threeObject);
-            console.log("Removed object");
-        });
-        //scene.remove(terrainGeo);
+    function cleanup() { //TODO: Cleanup this rendering code
+        //$.each(sceneObjects, function(threeObject) {
+            //scene.remove(threeObject);
+            //console.log("Removed object");
+        //});
+        scene.remove(terrainGeo);
         render();
     }
 
@@ -195,6 +166,10 @@ steal(function () {
         camera.toPerspective();
     });
 
+
+
+
+    //TODO: See if we need this for adding arbitrary stations
     function calcStationPos(utmX, utmY) {
         var coords = [];
         var x = Math.floor(utmX - MIN_UTMx)/STEP_SIZE;

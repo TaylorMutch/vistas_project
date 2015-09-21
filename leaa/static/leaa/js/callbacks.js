@@ -1,18 +1,4 @@
-// create axis geometry properties
-function addAxes(pos) {
-	var axes = new THREE.AxisHelper(20);
-	axes.position = pos;
-	return axes;
-};
 
-// create marker geometry properties
-function addMarker(pos) {
-	var markerGeometry = new THREE.BoxGeometry(1,1,1);
-	var markerMaterial = new THREE.MeshBasicMaterial( {color: 0xcccccc} );
-	var marker = new THREE.Mesh(markerGeometry, markerMaterial);
-	marker.position = pos;
-	return marker;
-};
 
 // takes an array of scene objects and adds them to the scene
 function addToScene(array) {
@@ -84,46 +70,9 @@ function clearArrows() {
 	}
 };
 
-// add a new station to the scene
-function createNewStations() {
-	var newStation = new Object();
-	
-	var sName = prompt("Enter Station Name", "Test");
-	var sEast = promptEasting("563800");
-	var sNorth = promptNorthing("4897002");
-	var sFile = prompt("Where will the files be located?", "resources/test/");
-	
-	newStation.name = sName;
-	newStation.utmX = sEast;
-	newStation.utmY = sNorth;
-	
-	var demCoords = calcStationPos(newStation.utmX, newStation.utmY);
-	newStation.demx = demCoords.x;
-	newStation.demy = demCoords.y;
-	newStation.sceneObjs = {};
-	newStation.sceneObjs.arrows = {};
-	newStation.data = {};
-	newStation.fileLocation = sFile;
-	
-	stations.array.push(newStation);
-	reloadStations();
-};
 
-// add loaded stations to the scene
-function createStations() {
-	for (var k in stations.array) {
-		stations.array[k].pos = terrainMap[(stations.array[k].demy * DEMx) + stations.array[k].demx];
-		console.log("Position Added");
-		//stations.array[k].sceneObjs.marker = addMarker(stations.array[k].pos);
-		scene.add(addMarker(stations.array[k].pos));
-		console.log("Marker Added");
-		//stations.array[k].sceneObjs.axes = addAxes(stations.array[k].pos);
-		scene.add(addAxes(stations.array[k].pos));
-		console.log("Axes Added");
-		//addToScene(stations.array[k].sceneObjs);
-		output("Loaded station: " + stations.array[k].name);
-	}
-};
+
+
 
 // adds vectors to the scene
 function displaySet(k) {
@@ -139,35 +88,9 @@ function displaySet(k) {
 	output(date);
 };
 
-// allows user to edit station properties
-function editStation(num) {
-	var nName = prompt("New Station Name", stations.array[num].name);
-	var nEast = promptEasting(stations.array[num].utmX);
-	var nNorth = promptNorthing(stations.array[num].utmY);
-	var nFile = prompt("New File Location", stations.array[num].fileLocation);
-	
-	var nCoords = calcStationPos(nEast, nNorth);
-	
-	stations.array[num].name = nName;
-	stations.array[num].utmX = nEast;
-	stations.array[num].utmY = nNorth;
-	stations.array[num].demx = nCoords.x;
-	stations.array[num].demy = nCoords.y;
-	stations.array[num].fileLocation = nFile;
-	
-	reloadStations();
-};
 
-// format and print time stamps
-function formatTimestamp(datestring) {
-	var year = datestring.substring(0,2);
-	var month = datestring.substring(2, 4);
-	var day = datestring.substring(4, 6);
-	var hour = datestring.substring(6, 8);
-	var minute = datestring.substring(8, 10);
-	
-	return "Timestamp: " + month + "/" + day + "/" + year + " at " + hour + ":" + minute;
-};
+
+
 
 //refreshes the data
 function keepUp(nData) {
@@ -178,48 +101,9 @@ function keepUp(nData) {
 	console.log(stations);
 };
 
-// lists stations in the UI
-function listStations() {
-	var list = "";
-	for(var k in stations.array) {
-		list += "<strong>" + stations.array[k].name + "</strong><br/>UTM East: " + stations.array[k].utmX + " UTM North: " + stations.array[k].utmY + "<br/>";
-		list += "<button type=\"button\" onclick=\"editStation(" + k.toString() + ")\">Edit</button><br/><br/>";
-		//console.log(list);
-	}
-	$("#station-list").html(list);
-};
 
-// wrapper function for loading in stations
-function loadData()
-{
-	loadStations('resources/stations.json?timestamp'+new Date().getTime());
-};
 
-//load in settings from server
-function loadSettings(callback) {
-    ($.ajax({
-	  url: 'resources/settings.json?timestamp='+new Date().getTime(),
-	  dataType: "json",
-	  success: function (data) {
-		settings = data;
-		callback.call();
-	  }
-       }));
-};
 
-// loads in station data from JSON file
-function loadStations(fileLoc)
-{
-   ($.ajax({
-      url: fileLoc,
-      dataType: "json",
-      success: function (data) {
-            stations = data;
-	    createStations();
-	    listStations();
-      }
-   }));
-};
 
 // calculate arrow properties and push the JSON
 function makeArrow(ck, originPos, cSpd, cDir) {
@@ -239,59 +123,6 @@ function makeArrow(ck, originPos, cSpd, cDir) {
 	}
 };
 
-// prompt the user for EASTING when updating stations
-function promptEasting(defVal) {
-	var easting = prompt("Enter UTM Easting", defVal);
-	if (isNaN(parseFloat(easting)) || easting > MAX_UTMx || easting < MIN_UTMx) {
-		while (isNaN(parseFloat(easting)) || easting > MAX_UTMx || easting < MIN_UTMx) {
-			alert("Oops, that value isn't valid!");
-			easting = prompt("Enter UTM East");
-		}
-	}
-	return easting;
-};
-
-// prompt the user for NORTHING when updating stations
-function promptNorthing(defVal) {
-	var northing = prompt("Enter UTM Northing", defVal);
-	if (isNaN(parseFloat(northing)) || northing > MAX_UTMy || northing < MIN_UTMy) {
-		while (isNaN(parseFloat(northing))) {
-			alert("Oops, that value isn't valid!");
-			northing = prompt("Enter UTM North");
-		}
-	}
-	return northing;
-};
-
-//update stations, save them to the server
-function reloadStations() {
-	output("Reloading Stations");
-	clearArrows();
-	createStations();
-	listStations();
-	
-	var temp = $.map(stations.array, function(station) {
-		console.log(station);
-		return {data:{},
-			demx:station.demx,
-			demy:station.demy,
-			fileLocation:station.fileLocation,
-			lat:station.lat,
-			lon:station.lon,
-			name:station.name,
-			sceneObjs:{},
-			utmX:station.utmX,
-			utmY:station.utmY
-			};
-			
-	});
-	
-	console.log(temp);
-
-	var ns = JSON.stringify({array:temp});
-	console.log(ns);
-	writeStations(ns);
-};
 
 // takes an array of scene objects, and removes them
 function removeFromScene(array) {
@@ -354,18 +185,6 @@ function resetVis() {
 	}
 	else {
 	}
-};
-
-// CAMERA VIEWS
-// Top view
-function topView() {
-	camera.position.set(0,0,80);
-	//controls.reset();
-};
-
-// Valley View ** placeholder until I can implement a "snap" feature
-function valleyView() {
-	camera.position.set(-130,-80,60);
 };
 
 
@@ -464,7 +283,7 @@ function updateHeightScale(nScale) {
 	
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
-};
+}
 
 // update length of vectors
 function updateSpeedScale(nScale) {
@@ -476,7 +295,7 @@ function updateSpeedScale(nScale) {
 	var ns = JSON.stringify(settings);
 	writeSettings(ns);
 	
-};
+}
 
 // update height of terrain map
 function updateDemScale(nScale) {
@@ -501,27 +320,6 @@ function updateDemScale(nScale) {
 	scene.add(terrain);
 	console.log("Readded terrain");
 	//render();
-};
-
-//callback to load settings into the UI after JSON data has loaded
-function updateSettings() {
-	console.log(settings);
-	document.getElementById("scaleDem").value = settings.demScale;
-	document.getElementById("scaleLength").value = settings.vectorScale;
-	document.getElementById("scaleHeight").value = settings.heightScale;
-	var htmlcolor = "#" + settings.vectorColor.substring(2, settings.vectorColor.length);
-	
-	document.getElementById("colorPicker").value = htmlcolor;
-};
-
-//save settings to the server
-function writeSettings(ns) {
-	$.post('php/saveSettings.php', {json: ns}, function() {console.log(ns);});
-}
-
-//save stations to the server
-function writeStations(ns) {
-	$.post('php/saveStations.php', {json: ns}, function() {console.log(ns);});
 }
 
 

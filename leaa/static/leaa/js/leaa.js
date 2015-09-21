@@ -16,21 +16,23 @@ var terrainMap;
 $(document).ready(function() {
 
     // Retrieve terrains from API
+
     terrains = [];
-    terrainNames = [];
     $.getJSON('/terrains/', function(json) {
         $.each(json, function(id, item) {
             terrains.push(item);
         });
     }).done(function(terrains) {
         $.each(terrains, function (id, terrain) {
-            terrainNames.push(terrain.name);
+            // terrainNames.push(terrain.name);
             $("#demPicker").append('<li><a href="#" id="dem'+terrain.name +'" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
         });
     });
 
+
     steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
-    steal("leaa/js/loadWind.js", function() {}); // Load wind creation tools
+    steal("leaa/js/loadWind.js", function() {});    // Load data extraction tools
+    steal("leaa/js/animateWind.js", function() {}); // Wind controls
 
     // Toggles for tooltips, etc.
     $(function () {
