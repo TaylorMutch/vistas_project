@@ -46,13 +46,14 @@ class Station(models.Model):
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
-    creationDate = models.DateField(auto_now_add=True)
+    creationDate = models.DateField(auto_now_add=False)  #TODO: Revise this to be the date at which the data was created
     station = models.ForeignKey('Station')
     fileName = models.CharField(max_length=50)
 
     #def __str__(self):
     #    return self.fileName + ' - ' + str(self.creationDate)
 
+#TODO: Rework or remove
 # Mimic a single recording from a sodar stations
 class Record(models.Model):
     recordDate = models.DateTimeField(auto_now=False, auto_now_add=False)
@@ -61,6 +62,7 @@ class Record(models.Model):
     #def __str__(self):
     #    return str(self.recordDate)
 
+#TODO: Remove, not viable
 # Mimic wind vectors with each specific height, speed and direction
 class WindVector(models.Model):
     height = models.PositiveIntegerField()

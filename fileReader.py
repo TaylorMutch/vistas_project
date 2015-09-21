@@ -5,7 +5,7 @@ from leaa.models import WindVector, Record, DataFile, Station
 import os
 from vistas_project_alpha.settings import SODAR_DIR
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, date
 '''
 Reads in a SoDAR file and creates entries in our database to query upon.
 
@@ -18,6 +18,10 @@ file array length is a multiple of 136 because there are 1 header and 135 variab
         line i*index + 122 contains DCL array
 '''
 
+months = [None, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+tags   = {'DCL', 'VCL', 'SDR'}
 
 def readSDR(fileName, stationName):
 
@@ -39,15 +43,43 @@ def readSDR(fileName, stationName):
     '''
     for i in range(0,numRecords):
         #dates.append(sdrDateToDatetime(data[i*136][4:16])) TODO: Remove this line if we go with string implementation
-        dates.append(data[i*136][4:16])         #dates.append(sdrDateToDatetime(data[i*136][4:16]))
+        #dates.append(data[i*136][4:16])         #dates.append(sdrDateToDatetime(data[i*136][4:16]))
+        dates.append(sdrDateToString(data[i*136][4:16]))
         speeds.append([float(j) for j in data[i*136 + 121].strip().split()[1:]])
         directions.append([float(j) for j in data[i*136 + 122].strip().split()[1:]])
 
     return heights, dates, speeds, directions
 
 
-    # Now that we have some data to work with, lets create some model instances
 
+
+def readRecordDateToDatetime(fileName, stationName):
+    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as f:
+        data = f.readline(16)
+    f.close()
+    date = sdrDateToDatetime(data[4:])
+    return date
+
+
+def readRecordDateToString(fileName, stationName):
+    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as f:
+        data = f.readline(16)
+    f.close()
+    date = sdrDateToString(data[4:])
+    date = date[:11]
+    return date
+
+
+def createDataFile(fileName, stationName, creationDate):
+    station_match = Station.objects.filter(name=stationName)[0]
+    newDataFile = DataFile(station=station_match, fileName=fileName, creationDate=creationDate)
+    newDataFile.save()
+    print('Added ' + fileName + ' to station' + stationName)
+
+
+def dateStringToDate(strDate):
+    _date = date(int(strDate[:4]),int(strDate[4:6]),int(strDate[6:]))
+    return _date
 
 def sdrDateToDatetime(sdrDate):
     year = 2000 + int(sdrDate[0:2])
@@ -60,39 +92,14 @@ def sdrDateToDatetime(sdrDate):
     return time
 
 
-'''
-    Generate models based off of the data retrieved from disk
-'''
+def sdrDateToString(sdrDate):
+    year = str(2000 + int(sdrDate[0:2]))
+    month = months[int(sdrDate[2:4])]
+    day = str(int(sdrDate[4:6]))
+    hour = sdrDate[6:8]
+    minute = sdrDate[8:10]
+    sec = sdrDate[10:12]
+    time =  day +' '+month+', ' + year +' - ' + hour+':' + minute +':'+ sec
+    return time
 
-#TODO: Either rework or remove this.
 
-'''
-def generateModels(filePath, stationName):
-
-    if (filePath is None or stationName is None):
-        return "Error - bad filepath"
-    # Identify which station we are linking the DataFile to.
-    station = Station.objects.filter(name=stationName)[0]  #should only return one station
-
-    # Generate a new DataFile model instance
-    time = timezone.now()
-    newDataFile = DataFile(creationDate=time, station=station, fileName=filePath)
-    newDataFile.save()
-    print("New DataFile - " + filePath)
-    # For each date, generate a record
-    heights, dates, speeds, directions = readSDR(filePath)
-    for date in dates:
-        newRecord = Record(recordDate=date, dataFile=newDataFile)
-        newRecord.save()
-        print("New Record - ")
-        # For each record, generate the associated vectors
-        for i in range(0, len(speeds)):
-            # For each speed, generate a vector
-            for j in range(0, len(speeds[i])):
-                vcl = speeds[i][j]
-                dcl = directions[i][j]
-                height = heights[j]
-                vector = WindVector(height=height, vcl=vcl, dcl=dcl, record=newRecord)
-                vector.save()
-    print("File added - model tables updated with new data")
-'''

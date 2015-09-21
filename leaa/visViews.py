@@ -1,12 +1,13 @@
 __author__ = 'Taylor'
-from leaa.serializers import *
-from django.contrib.auth.models import User
-from leaa.models import Terrain, Station, DataFile, Record, WindVector, TerrainView, Setting
-from django.http import HttpResponse
 import json
+
+from django.http import HttpResponse
 from rest_framework import status
+
 from rest_framework.decorators import api_view
-from fileReader import readSDR
+
+from leaa.models import Terrain, Station, DataFile
+from fileReader import readSDR, readRecordDateToString, dateStringToDate
 
 '''
     Returns a simple list of terrain names
@@ -44,16 +45,27 @@ def getStations(request):
 @api_view(['GET'])
 def getVectors(request):
     results = {}
-    stationName = request.GET.get('stationName')
-    fileName = request.GET.get('fileName')
-    heights, dates, speeds, directions = readSDR(fileName, stationName)
-    results['heights'] = heights
-    results['dates'] = dates
-    results['speeds'] = speeds
-    results['directions'] = directions
+    stationNames = request.GET.getlist('stations[]')
+    recordDate = str(request.GET.get('recordDate'))
+    #date = dateStringToDate(recordDate)
+    datafiles = DataFile.objects.filter(creationDate=recordDate)
+    for stationName in stationNames:
+        station = Station.objects.filter(name=stationName)[0]
+        for file in datafiles:
+            #if file.station is station:
+                heights, dates, speeds, directions = readSDR(file.fileName, station.name)
+                result = {'heights': heights, 'dates': dates, 'speeds': speeds, 'directions': directions}
+                results[stationName] = result
+
+    #heights, dates, speeds, directions = readSDR(fileName, stationName)
+    #results['heights'] = heights
+    #results['dates'] = dates
+    #results['speeds'] = speeds
+    #results['directions'] = directions
     return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
 
 
+#TODO: Rework or remove
 @api_view(['GET'])
 def getDataFiles(request):
     results = {}
@@ -64,10 +76,26 @@ def getDataFiles(request):
     for station in stations:
         datafile = DataFile.objects.filter(station=station)
         for file in datafile:
-            results[file.fileName] = file.id
+            #results[file.fileName] = file.id
+            results[str(file.id)] = [file.fileName, readRecordDateToString(file.fileName, station.name)]
             #names.append(file.fileName)
             #IDList.append(file.id)
 
     #results['names'] = names
     #results['IDList'] = IDList
     return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getDates(request):
+    #results = {}
+    terrainID = request.GET.get('terrainID')
+    stations = Station.objects.filter(terrain=terrainID)
+    dates = []
+    for station in stations:
+        datafile = DataFile.objects.filter(station=station)
+        for file in datafile:
+            date = str(file.creationDate)[:10]
+            if not (date in dates):
+                dates.append(date)
+    return HttpResponse(json.dumps(dates), status=status.HTTP_200_OK)

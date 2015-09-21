@@ -33,7 +33,6 @@ steal(function () {
                 cleanup();
             }
             activeDEM = name;
-            //console.log(temp_terrain);
             var MAPx = temp_terrain.MAPx;
             var MAPy = temp_terrain.MAPy;
             var DEMx = temp_terrain.DEMx;
@@ -46,7 +45,7 @@ steal(function () {
             plane.computeVertexNormals();
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
 
             texture.flipY = true;
 	        // Edit the height to match the DEM we requested
@@ -69,8 +68,10 @@ steal(function () {
                     stations = result;
                 }).done(function(stations) {
                 stationPositions = [];
+                stationNames = [];
                 $.each(stations, function(stationName, demVals) {
                     console.log(demVals);
+                    stationNames.push(stationName);
                     var pos = terrainMap[(demVals[1]*temp_terrain.DEMx)+demVals[0]];
                     stationPositions.push(pos);
                     var axes = new THREE.AxisHelper(20);
@@ -83,17 +84,17 @@ steal(function () {
                     scene.add(marker);
 
                 });
-                     // Get the related datafiles
+                     // Get the related recordDates
                     $("#dataPicker").empty();
-                    $.getJSON('/getDataFiles/', {'terrainID': temp_terrain.id}, function(result) {
-                        datafiles = result;
-                    }).done(function(datafiles) {
-                        if (datafiles.length == 0) {
+                    $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
+                        dates = result;
+                    }).done(function(dates) {
+                        if (dates.length == 0) {
                             console.log("No data found for this terrain");
                             $("#dataPicker").append('<li>No data for this terrain</li>');
                         } else {
-                        $.each(datafiles, function(name, id) {
-                            $("#dataPicker").append('<li><a href="#" class="datafile" id=' + id +'>' + name + '</a></li>');
+                        $.each(dates, function(id, name) {
+                            $("#dataPicker").append('<li><a href="#" class="recordDate">' + name + '</a></li>');
                         });
                         }
                     })
@@ -138,7 +139,7 @@ steal(function () {
         renderer.setSize(WIDTH, HEIGHT);
     }
 
-    function cleanup() {
+    function cleanup() { //TODO: Cleanup this rendering code
         //$.each(sceneObjects, function(threeObject) {
             //scene.remove(threeObject);
             //console.log("Removed object");

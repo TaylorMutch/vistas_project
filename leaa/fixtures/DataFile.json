@@ -4,7 +4,7 @@
     "model": "leaa.DataFile",
     "fields" : {
       "station": 1,
-      "fileName": "Primet 2012",
+      "fileName": "20120101",
       "creationDate": "2012-01-01"
     }
   },
@@ -13,7 +13,7 @@
     "model": "leaa.DataFile",
     "fields" : {
       "station": 2,
-      "fileName": "McRae 2012",
+      "fileName": "20120101",
       "creationDate": "2012-01-01"
     }
   },
@@ -21,18 +21,18 @@
     "pk": 3,
     "model": "leaa.DataFile",
     "fields" : {
-      "station": 3,
-      "fileName": "Dummy file1",
-      "creationDate": "2015-09-10"
+      "station": 1,
+      "fileName": "20120102",
+      "creationDate": "2012-01-02"
     }
   },
   {
     "pk": 4,
     "model": "leaa.DataFile",
     "fields" : {
-      "station": 3,
-      "fileName": "Dummy file2",
-      "creationDate": "2015-09-10"
+      "station": 2,
+      "fileName": "20120102",
+      "creationDate": "2012-01-02"
     }
   }
 ]
