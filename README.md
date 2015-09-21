@@ -3,7 +3,7 @@ A test repository for Django-based VISTAS applications. Currently contains the L
 
 # Development Requirements
 
-Python 3.(4.3), preferably in a virtualenv,
+Python 3.(4.3), preferably in a virtualenv
 
 Django 1.8.3
 
