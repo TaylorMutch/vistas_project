@@ -11,8 +11,7 @@ class Terrain(models.Model):
     DEMy = models.IntegerField()
     maxHeight = models.IntegerField()
     user = models.ManyToManyField(User)
-    #path = models.FilePathField() #TODO: Add mechanism to refer to a file on the server with the binary data
-                                   # so that we can submit the correct data to the client
+    fileName = models.CharField(max_length=100)
 
     #utm_MINy = models.FloatField() #TODO: Determine whether these are actually necessary for any of this.
     #utm_MAXy = models.FloatField()
@@ -53,25 +52,6 @@ class DataFile(models.Model):
     #def __str__(self):
     #    return self.fileName + ' - ' + str(self.creationDate)
 
-#TODO: Rework or remove
-# Mimic a single recording from a sodar stations
-class Record(models.Model):
-    recordDate = models.DateTimeField(auto_now=False, auto_now_add=False)
-    dataFile = models.ForeignKey('DataFile')
-
-    #def __str__(self):
-    #    return str(self.recordDate)
-
-#TODO: Remove, not viable
-# Mimic wind vectors with each specific height, speed and direction
-class WindVector(models.Model):
-    height = models.PositiveIntegerField()
-    record = models.ForeignKey('Record')
-    vcl = models.FloatField()               # speed
-    dcl = models.IntegerField()             # direction in degrees
-
-    def __str__(self):
-        return str(self.height) + ' - ' + str(self.record)
 
 class Setting(models.Model):
     vectorLength = models.IntegerField()

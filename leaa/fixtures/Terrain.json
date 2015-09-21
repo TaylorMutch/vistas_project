@@ -8,7 +8,8 @@
       "MAPy" : 76,
       "DEMx" : 458,
       "DEMy" : 344,
-      "maxHeight" : 1215
+      "maxHeight" : 1215,
+      "fileName" : "HJAndrews.bin"
     }
   },
   {
@@ -20,7 +21,8 @@
       "MAPy" : 200,
       "DEMx" : 199,
       "DEMy" : 199,
-      "maxHeight" : 100
+      "maxHeight" : 100,
+      "fileName" : "Besseggen.bin"
     }
   },
   {
@@ -32,7 +34,8 @@
       "MAPy" : 60,
       "DEMx" : 199,
       "DEMy" : 199,
-      "maxHeight" : 5
+      "maxHeight" : 5,
+      "fileName" : "Jotunheimen.bin"
     }
   }
 ]

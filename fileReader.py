@@ -1,7 +1,6 @@
 __author__ = 'Taylor'
 
-#from django.core.files.base import ContentFile, File
-from leaa.models import WindVector, Record, DataFile, Station
+from leaa.models import DataFile, Station
 import os
 from vistas_project_alpha.settings import SODAR_DIR
 from django.utils import timezone

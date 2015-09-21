@@ -23,18 +23,6 @@ class DataFileSerializer(serializers.ModelSerializer):
         model = DataFile
 
 
-class RecordSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Record
-
-
-class WindVectorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = WindVector
-
-
 class TerrainViewSerializer(serializers.ModelSerializer):
 
     class Meta:
