@@ -64,9 +64,10 @@ def getDataFiles(request):
     for station in stations:
         datafile = DataFile.objects.filter(station=station)
         for file in datafile:
-            names.append(file.fileName)
-            IDList.append(file.id)
+            results[file.fileName] = file.id
+            #names.append(file.fileName)
+            #IDList.append(file.id)
 
-    results['names'] = names
-    results['IDList'] = IDList
+    #results['names'] = names
+    #results['IDList'] = IDList
     return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)

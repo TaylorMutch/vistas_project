@@ -55,7 +55,6 @@ steal(function () {
     	    // Declare the final terrain object to be added
             var loader = new THREE.TerrainLoader();
             loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
-                // console.log("Raw DEM data: " + data);
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*maxHeight;
                     heightMap[i] = data[i];
@@ -63,97 +62,47 @@ steal(function () {
                 terrainGeo = new THREE.Mesh(plane, texture);
                 terrainMap = plane.vertices;
                 scene.add(terrainGeo);
-                //TODO: Add $.ajaxComplete() function here to add the stations
-                //      This should ensure that the data is in place to work on, without having to get desynced.
                 sceneObjects.push(terrainGeo);
 
-            //console.log("Heights: " + heightMap);
+                // Get the stations now that we have the correct terrain
+                $.getJSON('/getStations/', {'terrainName':temp_terrain.name}, function(result) {
+                    stations = result;
+                }).done(function(stations) {
+                stationPositions = [];
+                $.each(stations, function(stationName, demVals) {
+                    console.log(demVals);
+                    var pos = terrainMap[(demVals[1]*temp_terrain.DEMx)+demVals[0]];
+                    stationPositions.push(pos);
+                    var axes = new THREE.AxisHelper(20);
+                    axes.position = pos;
+                    scene.add(axes);
+                    var markerGeo = new THREE.BoxGeometry(1,1,1);
+                    var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
+                    var marker = new THREE.Mesh(markerGeo, markerMat);
+                    marker.position = pos;
+                    scene.add(marker);
+
+                });
+                     // Get the related datafiles
+                    $("#dataPicker").empty();
+                    $.getJSON('/getDataFiles/', {'terrainID': temp_terrain.id}, function(result) {
+                        datafiles = result;
+                    }).done(function(datafiles) {
+                        if (datafiles.length == 0) {
+                            console.log("No data found for this terrain");
+                            $("#dataPicker").append('<li>No data for this terrain</li>');
+                        } else {
+                        $.each(datafiles, function(name, id) {
+                            $("#dataPicker").append('<li><a href="#" class="datafile" id=' + id +'>' + name + '</a></li>');
+                        });
+                        }
+                    })
+            });
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-            //animate();
+            animate();
             $("#current-timestamp-label").html(name + "")
         }
-
-        // Retrieve stations TODO: make this synchronous with loading the terrain data (see TODO above)
-        $.getJSON('/getStations/', {'terrainName':temp_terrain.name}, function(result) {
-           stations = result;
-        }).done(function(stations) {
-            stationPositions = [];
-            $.each(stations, function(stationName, demVals) {
-                console.log(demVals);
-                var pos = terrainMap[(demVals[1]*temp_terrain.DEMx)+demVals[0]];
-                stationPositions.push(pos);
-                var axes = new THREE.AxisHelper(20);
-                axes.position = pos;
-                scene.add(axes);
-                var markerGeo = new THREE.BoxGeometry(1,1,1);
-                var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
-                var marker = new THREE.Mesh(markerGeo, markerMat);
-                marker.position = pos;
-                scene.add(marker);
-            })
-        });
-        /*
-        index = temp_terrain.id; //TODO: Cleanup these stations declarations
-        all_stations = [];
-        temp_stations = [];
-        stationPositions = [];
-        $.getJSON('/stations/', function(json) {
-            all_stations = json;
-            $.each(all_stations, function(id, station) {
-                if (station.terrain == index) {
-                    temp_stations.push(station);
-                }
-            }); // Render stations
-        }).done(function(temp_stations) {
-            $.each(temp_stations, function(id, station) {
-                // Create station in DEM
-                var pos = terrainMap[(station.demY*temp_terrain.DEMx) + station.demX]; //TODO: Get the station vis_models working properly - redo/replace terrainMap?
-                stationPositions.push(pos);
-                //console.log(pos);
-                var axes = new THREE.AxisHelper(20);
-                axes.position = pos;
-                scene.add(axes);
-                sceneObjects.push(axes);
-                var markerGeo = new THREE.BoxGeometry(1,1,1);
-                var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
-                var marker = new THREE.Mesh(markerGeo, markerMat);
-                marker.position = pos;
-                scene.add(marker);
-                sceneObjects.push(marker);
-            });
-        });
-        */
-        // Animate the scene with all the correct stations loaded
-        animate();
-
-        /*
-        //TODO: retrieve dataFiles and load up the correct HTML elements on the page.
-        //TODO: Make this action a following function to the loading of the stations
-        //      Added bonus of having access to the variables we want without having to make them global...!
-        all_datafiles = [];
-        temp_datafiles = [];
-        $("#dataPicker").empty();
-        $.getJSON('/datafiles/', function(json) { //TODO: Optimize how this retrieves dataFiles
-            all_datafiles = json;
-            $.each(temp_stations, function(station_id, station) {
-                //console.log('Station ID: ' + station.id);
-                $.each(all_datafiles, function(datafile_id, datafile) {
-                    //console.log('Datafile Station: ' + datafile.station);
-                    if (station.id == datafile.station) {
-                        temp_datafiles.push(datafile);
-                        $("#dataPicker").append('<li><a href="#" class="datafile" id=' + datafile.id +'>' + datafile.fileName + '</a></li>');
-                        console.log("Loaded a file!");
-                    }
-                });
-            });
-        }).done(function () {
-            if (temp_datafiles.length == 0) {
-                console.log("No data found for this terrain");
-                $("#dataPicker").append('<li>No data for this terrain</li>');
-            }
-        });
-        */
     });
 
     function init() {

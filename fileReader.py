@@ -38,8 +38,8 @@ def readSDR(fileName, stationName):
         Get the direction of wind (as floats)
     '''
     for i in range(0,numRecords):
-        #dates.append(sdrDateToDatetime(data[i*136][4:16]))     #can remain as strings for now
-        dates.append(data[i*136][4:16])
+        #dates.append(sdrDateToDatetime(data[i*136][4:16])) TODO: Remove this line if we go with string implementation
+        dates.append(data[i*136][4:16])         #dates.append(sdrDateToDatetime(data[i*136][4:16]))
         speeds.append([float(j) for j in data[i*136 + 121].strip().split()[1:]])
         directions.append([float(j) for j in data[i*136 + 122].strip().split()[1:]])
 
