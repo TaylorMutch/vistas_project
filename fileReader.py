@@ -20,36 +20,34 @@ file array length is a multiple of 136 because there are 1 header and 135 variab
 months = [None, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-tags   = {'DCL', 'VCL', 'SDR'}
+tags   = {'DCL', 'VCL', 'SDR', 'H  '}
+
 
 def readSDR(fileName, stationName):
 
     with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as datafile:
         data = datafile.readlines()
     datafile.close()
-    numLines = len(data)  # TODO: Search for factors based on a variable flag - can't always trust the files to line up
-    numRecords = int(numLines/136)  # 136 is the number of variables
+    numLines = len(data)
+
     dates = []
     speeds = []
     directions = []
-
-    heights = [int(i) for i in data[1].strip().split()[1:]]
-    '''
-    For each record in the datafile
-        Get the date of the record (as datetime)
-        Get the array of wind speeds (as floats)
-        Get the direction of wind (as floats)
-    '''
-    for i in range(0,numRecords):
-        #dates.append(sdrDateToDatetime(data[i*136][4:16])) TODO: Remove this line if we go with string implementation
-        #dates.append(data[i*136][4:16])         #dates.append(sdrDateToDatetime(data[i*136][4:16]))
-        dates.append(sdrDateToString(data[i*136][4:16]))
-        speeds.append([float(j) for j in data[i*136 + 121].strip().split()[1:]])
-        directions.append([float(j) for j in data[i*136 + 122].strip().split()[1:]])
+    heights = []
+    for i in range(0,numLines):
+        line = data[i]
+        tag = line[:3]
+        if tag in tags:
+            if tag == 'H  ' and len(heights) == 0:
+                heights = [int(j) for j in line.strip().split()[1:]]
+            elif tag == 'VCL':
+                speeds.append([float(j) for j in line.strip().split()[1:]])
+            elif tag == 'DCL':
+                directions.append([float(j) for j in line.strip().split()[1:]])
+            elif tag == 'SDR':
+                dates.append(sdrDateToString(line[4:16]))
 
     return heights, dates, speeds, directions
-
-
 
 
 def readRecordDateToDatetime(fileName, stationName):
