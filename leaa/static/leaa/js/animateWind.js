@@ -3,11 +3,40 @@
  */
 steal(function () {
 
-	function stepForward() {
-		compareDates(); //TODO: Get the indices of the stations that we need to render on this pass
-		render();
 
-	}
+	$('#stepForward').on('click', function() {
+        clearArrows();
+        //console.log(dispIndexArray);
+		if (isMaxed) {setMaxBack()}
+		var stationsToRender = compareDates(); //TODO: revert this change
+        //var stationsToRender = [0,1];
+        //console.log(stationsToRender);
+		$.each(stationsToRender, function(id, stationIndex) {
+            var stationName = stationNames[stationIndex];
+            var renderIndex = dispIndexArray[stationIndex];
+            //console.log('Rendering arrows for ' + stationName);
+            var data = stationData[stationName];
+
+            var recordDate = data.dates[renderIndex];
+            //TODO: Update SODAR Log with date of the record
+            var speedArray = data.speeds[renderIndex];
+            var dirArray = data.directions[renderIndex];
+            var heightArray = data.heights;
+            var stationPos = stationPositions[stationIndex];
+
+            var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
+            $.each(arrowSet, function(handle, arrow) {
+                if (arrow !== null) {
+                    arrow.name = "windvector";
+                    scene.add(arrow);
+                }
+            });
+            //console.log(dispIndexArray[stationIndex]);
+            dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
+            //console.log(dispIndexArray[stationIndex]);
+		});
+        console.log(dispIndexArray);
+	});
 
 	function animation() {
 		//TODO: Create animation for the arrows by calling stepForward() for each interval
@@ -26,8 +55,34 @@ steal(function () {
 			// update log
 	}
 
+	/*
+	Returns a list of station indices to determine whether we render that station on this date
+	 */
 	function compareDates() {
-		//for each index in dispIndexArray
+		var datesToCompare = [];
+		var stationsToUpdate = [];
+        var allStationIDs = [];
+		// Get the dates to check against
+		$.each(dispIndexArray, function(id, index) {
+            allStationIDs.push(id);
+			var stationName = stationNames[id];
+			datesToCompare.push(stationData[stationName].dates[index]);
+		});
+		if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
+            //console.log('All dates match');
+			stationsToUpdate = allStationIDs;
+			return stationsToUpdate;
+		} else {
+            //console.log('Date mismatch');
+			var minimum = Math.max.apply(Math, datesToCompare);
+			$.each(datesToCompare, function(id, date) {
+				if (date == minimum) {
+					stationsToUpdate.push(id)
+				}
+			});
+            return stationsToUpdate;
+		}
+
 			//get the date that we need to check against
 		// if max date equals min date
 			// increment all entries in dispIndexArray
@@ -41,13 +96,38 @@ steal(function () {
 			// create the arrow sets for each of these stations
 	}
 
-	function allZero() {
+	function isMaxed() {
 		$.each(dispIndexArray, function(index, value) {
-			if (value !== 0) {
-				return false;
+			if (value == dispIndexMax) {
+				return true;
 			}
 		});
-		return true;
+		return false;
+	}
+
+	function allSentinal() {
+        var flag = true;
+		$.each(dispIndexArray, function(index, value) {
+			if (value !== -1) {
+                console.log('Not sentinal values');
+				flag = true;
+			}
+		});
+		return flag;
+	}
+
+	function setMaxBack() {
+		$.each(dispIndexArray, function(index, value) {
+			if (value >= dispIndexMax) {
+				dispIndexArray[index] = dispIndexArray-1;
+			}
+		});
+	}
+
+	function setToZero() {
+		$.each(dispIndexArray, function(index, value) {
+			dispIndexArray[index] = 0;
+		})
 	}
 
 	/*
@@ -55,7 +135,7 @@ steal(function () {
 	 */
 	function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 		var arrowSet = [];
-		for (var i in speedsArray) {
+		for (var i in spdArray) {
 			var arrow = makeArrow(stationPos, spdArray[i], dirArray[i], heightArray[i]);
 			arrowSet.push(arrow);
 		}
@@ -106,6 +186,34 @@ steal(function () {
 	return new THREE.Vector3(u, v, 0);
     }
 
+    function clearArrows() {
+        /*
+        $.each(arrowObjects, function(id, arrow) {
+            scene.remove(arrow);
+            var deleteArrow = arrowObjects.pop();
+            delete deleteArrow;
+        })
+        */
+        /*
+        $.each(scene.children, function(id, threeObject) {
+            if (threeObject.name == 'windvector') {
+                scene.remove(threeObject);
+            }
+        });*/
+        var obj, i;
+        for (i = scene.children.length -1; i >= 0; i--) {
+            obj = scene.children[i];
+            if (obj.name == 'windvector') {
+                scene.remove(obj);
+                console.log('removed windvector');
+            }
+        }
+    }
+
+    /*
+    TODO: OLD STUFF, delete it eventually
+     */
+
 	// updates vis
 	function updateData(k) {
 		clearArrows();
@@ -113,35 +221,7 @@ steal(function () {
 	}
 
 
-	// Progress visualization by one step
-	function stepVectors() {
-		if (typeof stationData !== 'undefined')
-		{
-			if (step == -1) {
-				step = 0;
-				keepUp(nuData);
-				displaySet(0);
-				step = step + 1;
-			}
-			else if (step == 0) {
-				keepUp(nuData);
-				displaySet(0);
-				step = step + 1;
-			}
-			else if (step >= 0 && step < 288) {
-				updateData(step);
-				step = step + 1;
-			}
-			else {
-				alert("Sorry, there isn't any more data in this file!");
-				stopAnimation();
-			}
-		}
-	else {
-		alert("Oops you forgot to load in a file!");
-		stopAnimation();
-	}
-	}
+
 
 	// TOGGLE CONTOURS
 	function toggleContours(){
@@ -167,8 +247,8 @@ steal(function () {
 		//resetVis();
 
 		// Reset toggles
-		showContours = false;
-		showAxes = true;
+		//showContours = false;
+		//showAxes = true;
 
 		// Reset camera
 		camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
@@ -183,7 +263,7 @@ steal(function () {
 		}
 		*/
 		// Reset terrain
-		texture.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png')
+		texture.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png');
 		terrainGeo.material = texture.map;
 
 // Reset Animation button

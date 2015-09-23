@@ -8,6 +8,10 @@
 //TODO: Update the UI controls to be useful
 
 steal(function () {
+
+    //dispIndexArray = [];
+    //dispIndexMax = null;
+
     // Load a set of data from the server
     $("ul").on("click", "a.recordDate", function () {
 

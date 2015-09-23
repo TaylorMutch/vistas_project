@@ -77,12 +77,13 @@ steal(function () {
                     var axes = new THREE.AxisHelper(20);
                     axes.position = pos;
                     scene.add(axes);
+                    sceneObjects.push(axes);
                     var markerGeo = new THREE.BoxGeometry(1,1,1);
                     var markerMat = new THREE.MeshBasicMaterial( {color: 0xcccccc});
                     var marker = new THREE.Mesh(markerGeo, markerMat);
                     marker.position = pos;
                     scene.add(marker);
-
+                    sceneObjects.push(marker);
                 });
                      // Get the related recordDates
                     $("#dataPicker").empty();
@@ -139,12 +140,13 @@ steal(function () {
         renderer.setSize(WIDTH, HEIGHT);
     }
 
-    function cleanup() { //TODO: Cleanup this rendering code
-        //$.each(sceneObjects, function(threeObject) {
-            //scene.remove(threeObject);
-            //console.log("Removed object");
-        //});
-        scene.remove(terrainGeo);
+    function cleanup() {
+        $.each(sceneObjects, function(handle, threeObject) {
+            scene.remove(threeObject);
+            console.log("Removed object");
+            delete sceneObjects.pop();
+        });
+        //scene.remove(terrainGeo);
         render();
     }
 
