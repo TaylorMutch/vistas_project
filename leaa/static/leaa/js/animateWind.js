@@ -3,7 +3,52 @@
  */
 steal(function () {
 
+	function stepForward() {
+		compareDates(); //TODO: Get the indices of the stations that we need to render on this pass
+		render();
 
+	}
+
+	function animation() {
+		//TODO: Create animation for the arrows by calling stepForward() for each interval
+		// Catch the error for when we have reached the end of all dates, found with dispIndexMax
+	}
+
+	function stepBack() {
+		//TODO: Design a mechanism for going back one step in the visualization. Consider the logic we already have
+	}
+
+	function resetScene() {
+		//TODO:
+			//Reset camera
+			//reset controls
+			// set dispIndexArray to sentinal -1
+			// update log
+	}
+
+	function compareDates() {
+		//for each index in dispIndexArray
+			//get the date that we need to check against
+		// if max date equals min date
+			// increment all entries in dispIndexArray
+			// all dates are the same
+			// get the date
+			// create the arrow sets for each station
+		// else
+			// get the minimum date
+			// get the indices of the stations with the minimum date
+			// increment the entries in dispIndexArray that match the minimum date
+			// create the arrow sets for each of these stations
+	}
+
+	function allZero() {
+		$.each(dispIndexArray, function(index, value) {
+			if (value !== 0) {
+				return false;
+			}
+		});
+		return true;
+	}
 
 	/*
 	Generates a moment of arrows for a single render.
@@ -14,6 +59,7 @@ steal(function () {
 			var arrow = makeArrow(stationPos, spdArray[i], dirArray[i], heightArray[i]);
 			arrowSet.push(arrow);
 		}
+		return arrowSet;
 	}
 
 
@@ -115,10 +161,10 @@ steal(function () {
 	// RESET
 	function resetScene() {
 
-		clearArrows();
-		step = -1;
-		stopAnimation();
-		resetVis();
+		//clearArrows();
+		//step = -1;
+		//stopAnimation();
+		//resetVis();
 
 		// Reset toggles
 		showContours = false;
