@@ -23,14 +23,6 @@ urlpatterns = [
         name='datafile-list'),
     url(r'^datafiles/(?P<pk>[0-9]+)/$', views.DataFileDetail.as_view(),
         name='datafile-detail'),
-    url(r'^records/$', views.RecordList.as_view(),
-        name='record-list'),
-    url(r'^records/(?P<pk>[0-9]+)/$', views.RecordDetail.as_view(),
-        name='record-detail'),
-    url(r'^windvectors/$', views.WindVectorList.as_view(),
-        name='windvector-list'),
-    url(r'^windvectors/(?P<pk>[0-9]+)/$', views.WindVectorDetail.as_view(),
-        name='windvector-detail'),
     url(r'^', include('leaa.visUrls')),
 
 ]

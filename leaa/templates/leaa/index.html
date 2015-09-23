@@ -64,14 +64,16 @@
         </div>
         <div id="bottom-wrapper" class="row">
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
-					<h4 class="text-center">Visualization Controls</h4>
-				<button id="visButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
-				 data-original-title="Set the visualization to the first SODAR reading in the file" onclick="resetVis()">Start From Beginning</button>
-				<button id="stepButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
-				 data-original-title="Go to the next SODAR reading" onclick="stepVectors()">Next Time Step</button>
+                <h4 class="text-center">Visualization Controls</h4>
+                <button id="beginStep" type="button" class="btn btn-default" data-toggle="tooltip-std"
+				        data-original-title="Set the visualization to the first SODAR reading in the file">Start From Beginning</button>
+                <button id="stepForward" type="button" class="btn btn-default" data-toggle="tooltip-std"
+                        data-original-title="Go to the next SODAR reading">Step Forward</button>
+				<button id="stepBack" type="button" class="btn btn-default" data-toggle="tooltip-std"
+				        data-original-title="Go to the previous SODAR reading" >Step Back</button>
 				<button id="animateButton" type="button" class="btn btn-default" data-toggle="tooltip-std"
-				 data-original-title="Turn On/Off animation" onclick="startAnimation();changeAnimateButtonText(this.id)">Animate</button>
-				<button id="resetButton" type="button" class="btn btn-default" onclick="resetScene()">Reset Scene</button>
+				        data-original-title="Turn On/Off animation" >Animate</button>
+				<button id="resetButton" type="button" class="btn btn-default">Reset Scene</button>
 			</div>
 			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
 				<h4 class="text-center">Views</h4>
@@ -85,9 +87,8 @@
 						<li><a id="setPerspective" href="#">Perspective</a></li>
 					</ul>
 				</div>
-				<button id="top-view" type="button" class="btn btn-default" onclick="topView()">Top</button>
-				<button id="valley-view" type="button" class="btn btn-default" onclick="valleyView()">Valley</button>
-				<button id="contourToggle" type="button" class="btn btn-default" onclick="toggleContours()">Toggle Contours</button>
+                <!-- Remove contours? TODO: See if we need this anymore -->
+				<button id="contourToggle" type="button" class="btn btn-default">Toggle Contours</button>
 			</div>
 
 			<div id="controls-3">

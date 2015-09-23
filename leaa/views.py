@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from leaa.models import Terrain,Station,DataFile,Record,WindVector,TerrainView,Setting
+from leaa.models import Terrain,Station,DataFile,TerrainView,Setting
 from leaa.serializers import *
 from rest_framework import generics, permissions, renderers, status
 from rest_framework.decorators import api_view
@@ -64,35 +64,6 @@ class DataFileList(generics.ListAPIView):
 class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DataFile.objects.all()
     serializer_class = DataFileSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-
-class RecordList(generics.ListAPIView):
-    queryset = Record.objects.all()
-    serializer_class = RecordSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class RecordDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Record.objects.all()
-    serializer_class = RecordSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-
-class WindVectorList(generics.ListAPIView):
-    queryset = WindVector.objects.all()
-    serializer_class = WindVectorSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-class WindVectorDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = WindVector.objects.all()
-    serializer_class = WindVectorSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 

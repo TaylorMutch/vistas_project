@@ -4,16 +4,140 @@
 steal(function () {
 
 
+	$('#stepForward').on('click', function() {
+        stepForward();
+	});
+
+
+    function stepForward() {
+        clearArrows();
+		var stationsToRender = compareDates();
+        if (stationsToRender.length !== 0) {
+            // Render the arrows we want to see
+            $.each(stationsToRender, function (id, stationIndex) {
+                var stationName = stationNames[stationIndex];
+                var renderIndex = dispIndexArray[stationIndex];
+                if (renderIndex >= dispIndexMax) {
+                    //renderIndex = dispIndexMax-1;
+                    dispIndexArray[stationIndex] = dispIndexMax - 1;
+                }
+                else {
+                    //console.log('Rendering arrows for ' + stationName);
+                    var data = stationData[stationName];
+
+                    //TODO: Update SODAR Log with date of the record
+                    //var recordDate = data.dates[renderIndex];
+                    //console.log(recordDate);
+
+                    // Get the specific arrays we want
+                    var speedArray = data.speeds[renderIndex];
+                    var dirArray = data.directions[renderIndex];
+                    var heightArray = data.heights;
+                    var stationPos = stationPositions[stationIndex];
+
+                    // Render the arrows in the scene
+                    var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
+                    $.each(arrowSet, function (handle, arrow) {
+                        if (arrow !== null) {
+                            arrow.name = "windvector";
+                            scene.add(arrow);
+                        }
+                    });
+                    dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
+                }
+            });
+            console.log(dispIndexArray);
+        }
+    }
+
+    $('#beginStep').on('click', function() {
+        dispIndexArray = dispIndexArray_reset.slice();
+        stepForward();
+    });
+
+    /*
+    Main Animation code
+     */
+    animating = false;
+    isMaxed = false;
+
+    // Enable animation
+	$('#animateButton').on('click', function() {
+        if (animating) {
+            stopAnimation();
+            $(this).html('Animate')
+        }
+        else {
+            stepForward();
+            animating = true;
+            intervalID = setInterval(animateStepForward, 1000/4);
+            $(this).html('Stop Animating')
+        }
+	});
+
+    // Animation loop
+    function animateStepForward() {
+        stepForward();
+    }
+
+    // Disable animation
+    function stopAnimation() {
+        animating = false;
+        clearInterval(intervalID);
+    }
+
+	function stepBack() {
+		//TODO: Design a mechanism for going back one step in the visualization. Consider the logic we already have
+	}
+
+
+	/*
+	Returns a list of station indices to determine whether we render that station on this date
+	 */
+	function compareDates() {
+		var datesToCompare = [];
+		var stationsToUpdate = [];
+        var allStationIDs = [];
+		// Get the dates to check against
+		$.each(dispIndexArray, function(id, index) {
+            allStationIDs.push(id);
+			var stationName = stationNames[id];
+			datesToCompare.push(stationData[stationName].dates[index]);
+		});
+        // If the max date equals the max date, then all the dates must be the same
+		if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
+            //console.log('All dates match');
+			stationsToUpdate = allStationIDs;
+            //Otherwise, we need to get the precise stations that need updating and render them.
+		} else {
+            //console.log('Date mismatch');
+			var minimum = Math.min.apply(Math, datesToCompare);
+			//console.log(minimum);
+            $.each(datesToCompare, function(id, date) {
+				if (date == minimum) {
+					stationsToUpdate.push(id);
+                    console.log('Pushed station: ' + id);
+				} else if (isNaN(date)) {
+                    stationsToUpdate = [];
+                    isMaxed = true;
+                }
+			});
+		}
+        return stationsToUpdate;
+	}
+
+
 
 	/*
 	Generates a moment of arrows for a single render.
 	 */
 	function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 		var arrowSet = [];
-		for (var i in speedsArray) {
+		for (var i in spdArray) {
 			var arrow = makeArrow(stationPos, spdArray[i], dirArray[i], heightArray[i]);
 			arrowSet.push(arrow);
 		}
+		return arrowSet;
 	}
 
 
@@ -34,7 +158,9 @@ steal(function () {
         }
     }
 
-
+    /*
+    Calculates the direction of the wind vector based on polor coordinates
+     */
     function calcDirection(dir) {
 	var dirRadians = (dir/360.0)*2*Math.PI;
 	var u = 0;
@@ -60,44 +186,21 @@ steal(function () {
 	return new THREE.Vector3(u, v, 0);
     }
 
-	// updates vis
-	function updateData(k) {
-		clearArrows();
-		displaySet(k);
-	}
+    /*
+    Remove all arrows from a scene
+     */
+    function clearArrows() {
+        var obj, i;
+        for (i = scene.children.length -1; i >= 0; i--) {
+            obj = scene.children[i];
+            if (obj.name == 'windvector') {
+                scene.remove(obj);
+                console.log('removed windvector');
+            }
+        }
+    }
 
-
-	// Progress visualization by one step
-	function stepVectors() {
-		if (typeof stationData !== 'undefined')
-		{
-			if (step == -1) {
-				step = 0;
-				keepUp(nuData);
-				displaySet(0);
-				step = step + 1;
-			}
-			else if (step == 0) {
-				keepUp(nuData);
-				displaySet(0);
-				step = step + 1;
-			}
-			else if (step >= 0 && step < 288) {
-				updateData(step);
-				step = step + 1;
-			}
-			else {
-				alert("Sorry, there isn't any more data in this file!");
-				stopAnimation();
-			}
-		}
-	else {
-		alert("Oops you forgot to load in a file!");
-		stopAnimation();
-	}
-	}
-
-	// TOGGLE CONTOURS
+	// TOGGLE CONTOURS //TODO: Reuse or remove this code somehow
 	function toggleContours(){
 		if (showContours){
 	// turn contours off
@@ -113,21 +216,24 @@ steal(function () {
 		}
 	}
 	// RESET
-	function resetScene() {
+	$('#resetButton').on('click', function() {
+        if (animating) {
+            stopAnimation();
+            $('#animateButton').html('Animate');
+        }
 
 		clearArrows();
-		step = -1;
-		stopAnimation();
-		resetVis();
+
 
 		// Reset toggles
-		showContours = false;
-		showAxes = true;
+		//showContours = false;
+		//showAxes = true;
 
 		// Reset camera
 		camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-		//camera.translateY( - 10);
 		orbit.reset();
+
+        dispIndexArray = dispIndexArray_reset.slice();
 		//flycontrols.reset();
 		/*
 		if (!flyThroughEnabled)
@@ -137,14 +243,14 @@ steal(function () {
 		}
 		*/
 		// Reset terrain
-		texture.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png')
-		terrainGeo.material = texture.map;
+		//texture.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png');
+		//terrainGeo.material = texture.map;
 
-// Reset Animation button
+    // Reset Animation button
 
-// Reset current-timestamp-label
-	$("#current-timestamp-label").html("Scene Reset");
+    // Reset current-timestamp-label
+	    $("#current-timestamp-label").html("Scene Reset");
 
 
-	}
+	});
 });
