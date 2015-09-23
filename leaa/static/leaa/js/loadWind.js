@@ -25,6 +25,7 @@ steal(function () {
                     dispIndexArray.push(0);
                 });
                 dispIndexMax = getMaxList();
+                dispIndexArray_reset = dispIndexArray.slice();
             }
         );
         console.log(recordDate);
