@@ -3,22 +3,12 @@
  */
 steal(function () {
 
-    //var camera, scene, renderer, activeDEM, terrainGeo; //,terrainMap;
     activeDEM = undefined;
     sceneObjects = [];
     CAM_START = new THREE.Vector3(0,-80,80);
     container = document.getElementById("scene");
     WIDTH = container.offsetWidth;
     HEIGHT = container.offsetHeight;
-
-    //TODO: Remove these \/ global variables and replace them in the terrain -> model.py
-    var MAX_UTMx = 572109.034; // rightmost
-    var MIN_UTMx = 558369.034; // leftmost
-    var MAX_UTMy = 4903953.876; //nortmost
-    var MIN_UTMy = 4893633.876; //southmost
-    // UTM stepsize is 30 meters per square
-    var STEP_SIZE = 30; //TODO: Generalize this when we remove it
-
 
     init();
     render(); // One call to render to prep the workspace.
@@ -33,14 +23,9 @@ steal(function () {
                 cleanup();
             }
             activeDEM = name;
-            var MAPx = temp_terrain.MAPx;
-            var MAPy = temp_terrain.MAPy;
-            var DEMx = temp_terrain.DEMx;
-            var DEMy = temp_terrain.DEMy;
-            var maxHeight = temp_terrain.maxHeight;
 
             // Get initial terrain geo, to be updated with DEM data
-            var plane = new THREE.PlaneGeometry(MAPx, MAPy, DEMx-1, DEMy-1);
+            var plane = new THREE.PlaneGeometry(temp_terrain.MAPx, temp_terrain.MAPy, temp_terrain.DEMx-1, temp_terrain.DEMy-1);
             plane.computeFaceNormals();
             plane.computeVertexNormals();
 
@@ -48,15 +33,12 @@ steal(function () {
 	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
 
             texture.flipY = true;
-	        // Edit the height to match the DEM we requested
-            var heightMap = [];
 
-    	    // Declare the final terrain object to be added
+            // Load the terrain and all stations
             var loader = new THREE.TerrainLoader();
             loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
-                    plane.vertices[i].z = data[i]/65535*maxHeight;
-                    heightMap[i] = data[i];
+                    plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
                 terrainGeo = new THREE.Mesh(plane, texture);
                 terrainMap = plane.vertices;
@@ -85,13 +67,13 @@ steal(function () {
                     scene.add(marker);
                     sceneObjects.push(marker);
                 });
-                     // Get the related recordDates
+                // Get the related recordDates
                     $("#dataPicker").empty();
                     $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
                         dates = result;
                     }).done(function(dates) {
                         if (dates.length == 0) {
-                            console.log("No data found for this terrain");
+                            console.log(" No data found for this terrain ");
                             $("#dataPicker").append('<li>No data for this terrain</li>');
                         } else {
                         $.each(dates, function(id, name) {
@@ -99,7 +81,7 @@ steal(function () {
                         });
                         }
                     })
-            });
+                });
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
             animate();
@@ -110,14 +92,13 @@ steal(function () {
     function init() {
 
         // Setup Camera
-        //camera = new THREE.PerspectiveCamera(45, WIDTH/HEIGHT, 0.1, 1000);
         camera = new THREE.CombinedCamera(WIDTH, HEIGHT, 60, 0.1, 500, -500, 1000);
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         camera.up.set(0,0,1);
 
         // Setup Scene
         scene = new THREE.Scene();
-        var ambient = new THREE.AmbientLight(0xffffff);
+        ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
 
         // Initialze controls
@@ -167,8 +148,6 @@ steal(function () {
     $("#setPerspective").click(function () {
         camera.toPerspective();
     });
-
-
 
 
     //TODO: See if we need this for adding arbitrary stations

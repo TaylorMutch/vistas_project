@@ -11,49 +11,53 @@ steal(function () {
 
     function stepForward() {
         clearArrows();
-		var stationsToRender = compareDates();
+        var isDecreasing = false;
+		var stationsToRender = compareDates(dispIndexArray, isDecreasing);
         if (stationsToRender.length !== 0) {
-            // Render the arrows we want to see
+            console.log(dispIndexArray + ' is now: ');
             $.each(stationsToRender, function (id, stationIndex) {
-                var stationName = stationNames[stationIndex];
-                var renderIndex = dispIndexArray[stationIndex];
-                if (renderIndex >= dispIndexMax) {
-                    //renderIndex = dispIndexMax-1;
-                    dispIndexArray[stationIndex] = dispIndexMax - 1;
-                }
-                else {
-                    //console.log('Rendering arrows for ' + stationName);
-                    var data = stationData[stationName];
-
-                    //TODO: Update SODAR Log with date of the record
-                    //var recordDate = data.dates[renderIndex];
-                    //console.log(recordDate);
-
-                    // Get the specific arrays we want
-                    var speedArray = data.speeds[renderIndex];
-                    var dirArray = data.directions[renderIndex];
-                    var heightArray = data.heights;
-                    var stationPos = stationPositions[stationIndex];
-
-                    // Render the arrows in the scene
-                    var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
-                    $.each(arrowSet, function (handle, arrow) {
-                        if (arrow !== null) {
-                            arrow.name = "windvector";
-                            scene.add(arrow);
-                        }
-                    });
-                    dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
-                }
+                renderArrows(stationIndex);
+                dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
+                updateFollowers(stationIndex, isDecreasing);
             });
             console.log(dispIndexArray);
         }
     }
 
+	$('#stepBack').on('click', function() {
+		stepBack();
+	});
+
+	function stepBack() {
+		clearArrows();
+        var isDecreasing = true;
+        var stationsToRender = compareDates(dispIndexArray_follower, isDecreasing);
+        if (stationsToRender.length !== 0) {
+            dispIndexArray = dispIndexArray_follower.slice();
+            $.each(stationsToRender, function(id, stationIndex) {
+                //dispIndexArray[stationIndex] = dispIndexArray[stationIndex] - 1;
+                updateFollowers(stationIndex, isDecreasing);
+                renderArrows(stationIndex, isDecreasing);
+            });
+            console.log(dispIndexArray);
+        }
+
+	}
+
     $('#beginStep').on('click', function() {
         dispIndexArray = dispIndexArray_reset.slice();
+		dispIndexArray_follower = dispIndexArray_follower_reset.slice();
         stepForward();
     });
+
+
+	function updateFollowers(stationIndex, isDecreasing) { //TODO: Make this more sensical - it works, but its weird...
+		if (!isDecreasing) {
+			dispIndexArray_follower[stationIndex] = dispIndexArray_follower[stationIndex] + 1;
+		} else {
+			dispIndexArray_follower[stationIndex] = dispIndexArray_follower[stationIndex] - 1;
+		}
+	}
 
     /*
     Main Animation code
@@ -86,47 +90,78 @@ steal(function () {
         clearInterval(intervalID);
     }
 
-	function stepBack() {
-		//TODO: Design a mechanism for going back one step in the visualization. Consider the logic we already have
-	}
-
 
 	/*
 	Returns a list of station indices to determine whether we render that station on this date
 	 */
-	function compareDates() {
+	function compareDates(indexArray, isDecreasing) {
 		var datesToCompare = [];
 		var stationsToUpdate = [];
         var allStationIDs = [];
 		// Get the dates to check against
-		$.each(dispIndexArray, function(id, index) {
+		$.each(indexArray, function(id, index) {
             allStationIDs.push(id);
 			var stationName = stationNames[id];
 			datesToCompare.push(stationData[stationName].dates[index]);
 		});
         // If the max date equals the max date, then all the dates must be the same
 		if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
-            //console.log('All dates match');
+            console.log('All dates match');
 			stationsToUpdate = allStationIDs;
             //Otherwise, we need to get the precise stations that need updating and render them.
 		} else {
-            //console.log('Date mismatch');
-			var minimum = Math.min.apply(Math, datesToCompare);
-			//console.log(minimum);
-            $.each(datesToCompare, function(id, date) {
-				if (date == minimum) {
-					stationsToUpdate.push(id);
-                    console.log('Pushed station: ' + id);
-				} else if (isNaN(date)) {
-                    stationsToUpdate = [];
-                    isMaxed = true;
-                }
-			});
+            var checkDate;
+            if (isDecreasing) {   //stepBack branch
+                checkDate = Math.max.apply(Math, datesToCompare);
+            } else {    // stepForward branch
+                //console.log('Date mismatch');
+                checkDate = Math.min.apply(Math, datesToCompare);
+                //console.log(minimum);
+            }
+            $.each(datesToCompare, function (id, date) {
+                if (date == checkDate) {
+                        stationsToUpdate.push(id);
+                        console.log('Pushed station: ' + id);
+                    } else if (isNaN(date)) {
+                        stationsToUpdate = [];
+                        isMaxed = true;
+                    }
+                });
+
 		}
         return stationsToUpdate;
 	}
 
+    function renderArrows(stationIndex) {
+        var stationName = stationNames[stationIndex];
+        var renderIndex = dispIndexArray[stationIndex];
 
+        if (renderIndex >= dispIndexMax) {
+            dispIndexArray[stationIndex] = dispIndexMax - 1;
+        } else {
+            //console.log('Rendering arrows for ' + stationName);
+            var data = stationData[stationName];
+
+            //TODO: Update SODAR Log with date of the record
+            //var recordDate = data.dates[renderIndex];
+            //console.log(recordDate);
+
+            // Get the specific arrays we want
+            var speedArray = data.speeds[renderIndex];
+            var dirArray = data.directions[renderIndex];
+            var heightArray = data.heights;
+            var stationPos = stationPositions[stationIndex];
+
+            // Render the arrows in the scene
+            var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
+            $.each(arrowSet, function (handle, arrow) {
+                if (arrow !== null) {
+                    arrow.name = "windvector";
+                    scene.add(arrow);
+                }
+            });
+        }
+    }
 
 	/*
 	Generates a moment of arrows for a single render.
@@ -234,6 +269,7 @@ steal(function () {
 		orbit.reset();
 
         dispIndexArray = dispIndexArray_reset.slice();
+        dispIndexArray_follower = dispIndexArray_follower_reset.slice();
 		//flycontrols.reset();
 		/*
 		if (!flyThroughEnabled)

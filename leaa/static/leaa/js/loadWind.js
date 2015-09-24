@@ -9,9 +9,6 @@
 
 steal(function () {
 
-    //dispIndexArray = [];
-    //dispIndexMax = null;
-
     // Load a set of data from the server
     $("ul").on("click", "a.recordDate", function () {
 
@@ -21,11 +18,14 @@ steal(function () {
             stationData = result;
         }).done(function() {
                 dispIndexArray = [];
+                dispIndexArray_follower = [];
                 $.each(stationData, function() {
                     dispIndexArray.push(0);
+                    dispIndexArray_follower.push(-1);
                 });
                 dispIndexMax = getMaxList();
                 dispIndexArray_reset = dispIndexArray.slice();
+                dispIndexArray_follower_reset = dispIndexArray_follower.slice();
             }
         );
         console.log(recordDate);
