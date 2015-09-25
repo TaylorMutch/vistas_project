@@ -7,11 +7,30 @@
     right as the DOM finishes loading. This ensures that all assets are loaded before
     the user tries to do anything initially.
  */
-//$.ajaxSetup({
-//   async: true
-//});
 
 var terrainMap;
+
+/**
+ * Global functions that are pretty harmless
+ */
+function updateSodarLog(string, updateCurrentLabel) {
+    $('#sodarLog').append('<li><a> ' + string + '</a></li>');
+    if (updateCurrentLabel) {
+        $('#current-timestamp-label').html(string);
+    }
+}
+
+function formatTimestamp(date) {
+    var datestring = String(date);
+    var year = datestring.substring(0,2);
+	var month = datestring.substring(2, 4);
+	var day = datestring.substring(4, 6);
+	var hour = datestring.substring(6, 8);
+	var minute = datestring.substring(8, 10);
+    var sec = datestring.substring(10,12);
+
+	return  month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + sec;
+}
 
 $(document).ready(function() {
 
@@ -34,6 +53,24 @@ $(document).ready(function() {
     steal("leaa/js/loadWind.js", function() {});    // Load data extraction tools
     steal("leaa/js/animateWind.js", function() {}); // Wind controls
 
+
+    $("#registerBtn").on("click", function (event) {
+        /**
+         * Handle user clicking register button
+         */
+        //TODO: Implement
+    });
+
+    $("#signInBtn").on("click", function(event) {
+        /**
+         * Handles user logon
+         */
+        event.preventDefault();
+        var loginForm = $("signInForm").serialize();
+        console.log(loginForm);
+        //TODO: Implement
+    });
+
     // Toggles for tooltips, etc.
     $(function () {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})
@@ -44,5 +81,10 @@ $(document).ready(function() {
     $(function () {
         $('.dropdown-toggle').dropdown();
     });
+    /*
+    $(function () {
+        $('.collapse').collapse();
+    })
+    */
 
 });

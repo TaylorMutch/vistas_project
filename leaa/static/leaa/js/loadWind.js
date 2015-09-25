@@ -13,7 +13,7 @@ steal(function () {
     $("ul").on("click", "a.recordDate", function () {
 
         // Get the record handles
-        recordDate = $(this).html();
+        var recordDate = $(this).html();
         $.getJSON('/getVectors/', {'stations[]':stationNames, 'recordDate':recordDate}, function(result) {
             stationData = result;
         }).done(function() {
@@ -21,7 +21,7 @@ steal(function () {
                 dispIndexArray_follower = [];
                 $.each(stationData, function() {
                     dispIndexArray.push(0);
-                    dispIndexArray_follower.push(-1);
+                    dispIndexArray_follower.push(-2);
                 });
                 dispIndexMax = getMaxList();
                 dispIndexArray_reset = dispIndexArray.slice();
@@ -30,14 +30,15 @@ steal(function () {
         );
         console.log(recordDate);
         $("#current-timestamp-label").html(temp_terrain.name + ': ' + recordDate);
+        updateSodarLog('Loaded records from: ' + recordDate, false);
     });
 
     function getMaxList(){
-        var maxList = [];
+        dispMaxList = [];
         $.each(stationData, function(name, arrays) {
-            maxList.push(arrays['dates'].length);
+            dispMaxList.push(arrays['dates'].length);
         });
-        return Math.max.apply(Math,maxList);
+        return Math.max.apply(Math,dispMaxList);
     }
 
 });

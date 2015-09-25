@@ -67,7 +67,6 @@ button
     font-family:'Courier New', 'Courier', 'Monaco', monospace;
     font-size:80%;
     height:90%;
-    overflow-y: scroll;
     max-height: 250px;
 }
 

@@ -43,6 +43,7 @@ steal(function () {
                 terrainGeo = new THREE.Mesh(plane, texture);
                 terrainMap = plane.vertices;
                 scene.add(terrainGeo);
+                updateSodarLog('Added terrain: ' + temp_terrain.name, false);
                 sceneObjects.push(terrainGeo);
 
                 // Get the stations now that we have the correct terrain
@@ -65,6 +66,7 @@ steal(function () {
                     var marker = new THREE.Mesh(markerGeo, markerMat);
                     marker.position = pos;
                     scene.add(marker);
+                    updateSodarLog('Added station: ' + stationName, false);
                     sceneObjects.push(marker);
                 });
                 // Get the related recordDates

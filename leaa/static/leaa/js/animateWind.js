@@ -11,16 +11,18 @@ steal(function () {
 
     function stepForward() {
         clearArrows();
-        var isDecreasing = false;
-		var stationsToRender = compareDates(dispIndexArray, isDecreasing);
-        if (stationsToRender.length !== 0) {
-            console.log(dispIndexArray + ' is now: ');
-            $.each(stationsToRender, function (id, stationIndex) {
-                renderArrows(stationIndex);
-                dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
-                updateFollowers(stationIndex, isDecreasing);
-            });
-            console.log(dispIndexArray);
+        if (!isMaxed) {
+            var isDecreasing = false;
+            console.log('Rendering: ' + dispIndexArray);
+            var stationsToRender = compareDates(dispIndexArray, isDecreasing);
+            if (stationsToRender.length !== 0) {
+                $.each(stationsToRender, function (id, stationIndex) {
+                    renderArrows(stationIndex, dispIndexArray);
+                    dispIndexArray[stationIndex] = dispIndexArray[stationIndex] + 1;
+                    updateFollowers(stationIndex, isDecreasing);
+                });
+                console.log('Next set to render: ' + dispIndexArray)
+            }
         }
     }
 
@@ -28,20 +30,22 @@ steal(function () {
 		stepBack();
 	});
 
-	function stepBack() {
+	function stepBack() { //TODO: Bug fixing - doesn't step back properly yet
 		clearArrows();
-        var isDecreasing = true;
-        var stationsToRender = compareDates(dispIndexArray_follower, isDecreasing);
-        if (stationsToRender.length !== 0) {
-            dispIndexArray = dispIndexArray_follower.slice();
-            $.each(stationsToRender, function(id, stationIndex) {
-                //dispIndexArray[stationIndex] = dispIndexArray[stationIndex] - 1;
-                updateFollowers(stationIndex, isDecreasing);
-                renderArrows(stationIndex, isDecreasing);
-            });
-            console.log(dispIndexArray);
+        if (dispIndexArray_follower !== dispIndexArray_follower_reset) {
+            var isDecreasing = true;
+            console.log('Rendering: ' + dispIndexArray_follower);
+            var stationsToRender = compareDates(dispIndexArray_follower, isDecreasing);
+            if (stationsToRender.length !== 0) {
+                //console.log(dispIndexArray);
+                var temp_followers = dispIndexArray_follower.slice();
+                $.each(stationsToRender, function (id, stationIndex) {
+                    renderArrows(stationIndex, dispIndexArray_follower);
+                    updateFollowers(stationIndex, isDecreasing);
+                });
+                dispIndexArray = temp_followers.slice();
+            }
         }
-
 	}
 
     $('#beginStep').on('click', function() {
@@ -108,14 +112,17 @@ steal(function () {
 		if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
             console.log('All dates match');
 			stationsToUpdate = allStationIDs;
+            updateSodarLog('Timestamp: ' + formatTimestamp(Math.max.apply(Math, datesToCompare)), true);
             //Otherwise, we need to get the precise stations that need updating and render them.
 		} else {
             var checkDate;
             if (isDecreasing) {   //stepBack branch
                 checkDate = Math.max.apply(Math, datesToCompare);
+                updateSodarLog('Timestamp: ' + formatTimestamp(checkDate), true);
             } else {    // stepForward branch
-                //console.log('Date mismatch');
+                console.log('Date mismatch');
                 checkDate = Math.min.apply(Math, datesToCompare);
+                updateSodarLog('Timestamp: ' + formatTimestamp(checkDate), true);
                 //console.log(minimum);
             }
             $.each(datesToCompare, function (id, date) {
@@ -132,12 +139,12 @@ steal(function () {
         return stationsToUpdate;
 	}
 
-    function renderArrows(stationIndex) {
+    function renderArrows(stationIndex, indexArray) {
         var stationName = stationNames[stationIndex];
-        var renderIndex = dispIndexArray[stationIndex];
+        var renderIndex = indexArray[stationIndex];
 
         if (renderIndex >= dispIndexMax) {
-            dispIndexArray[stationIndex] = dispIndexMax - 1;
+            indexArray[stationIndex] = dispIndexMax - 1;
         } else {
             //console.log('Rendering arrows for ' + stationName);
             var data = stationData[stationName];
