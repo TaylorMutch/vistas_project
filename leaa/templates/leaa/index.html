@@ -25,17 +25,42 @@
     <!-- Load LEAA Scripts via steal.js -->
     <script src="{% static "leaa/js/leaa.js" %}"></script>
 
+
+    <div class="modal fade" id="howtomodal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="closehowtomodal" type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">How-To VALCEX</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <video id="howtovideo" width="1156" height="720" controls class="embed-responsive-item">
+                            <source src="{% static "leaa/resources/VALCEX how-to 1080p.mp4" %}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#signInFormContainer">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#SignInOrUploadFileForm">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand">LEAA</a>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#howtomodal">How-To</a>
+                    </li>
+                </ul>
             </div>
-            <div id="signInFormContainer" class="navbar-collapse collapse">
+            <div id="SignInOrUploadFileForm" class="navbar-collapse collapse">
+                {% if not user.is_authenticated %}
                 <form class="navbar-form navbar-right" id="signInForm">
                     <div class="form-group">
                         <input name="username" type="text" placeholder="Username or Email" class="form-control">
@@ -47,6 +72,11 @@
                     <span id="signInOrRegisterText">or</span>
                     <button type="button" class="btn btn-info" id="registerBtn">Register</button>
                 </form>
+                {% else %}
+                    <div class="navbar-right navbar-btn">
+                        <a>Upload File placeholder</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </nav>

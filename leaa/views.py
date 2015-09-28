@@ -70,15 +70,23 @@ class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
 
 
 def index(request):
-    return render(request, 'leaa/index.html')
+    # TODO: Replace with arbitrary user lookup
+    user = User.objects.filter(id=1)[0]
+
+    return render(request, 'leaa/index.html', {'user': user})
 
 
 def base_terrain(request):

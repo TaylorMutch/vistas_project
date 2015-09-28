@@ -86,5 +86,7 @@ $(document).ready(function() {
         $('.collapse').collapse();
     })
     */
-
+    $("#closehowtomodal").click(function() {
+        $("#howtovideo")[0].pause();
+    })
 });
