@@ -34,10 +34,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.dashboard',
-    'admin_tools.menu',
+    #'admin_tools',
+    #'admin_tools.theming',
+    #'admin_tools.dashboard',
+    #'admin_tools.menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -105,7 +105,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -124,3 +123,8 @@ STATICFILES_FINDERS = (
 
 )
 
+# Custom Admin site tools, menu and dashboard
+
+#ADMIN_TOOLS_MENU = 'menu.CustomMenu'
+#ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+#ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'
