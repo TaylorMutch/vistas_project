@@ -20,10 +20,14 @@ def getTerrainNames(request):
         names.append(terrain.name)
     return HttpResponse(json.dumps(names), status=status.HTTP_200_OK)
 
+
+
 '''
     Returns a list of stations with their demX and demY coordinates,
     which is then converted by frontend code to 3D objects
 '''
+
+
 @api_view(['GET'])
 def getStations(request):
     results = {}
@@ -42,6 +46,8 @@ def getStations(request):
     Arrays get returned as 2D arrays
     speeds[i][j] is the ith speed (in the ith record) at the jth height
 '''
+
+
 @api_view(['GET'])
 def getVectors(request):
     results = {}
@@ -56,33 +62,6 @@ def getVectors(request):
                 heights, dates, speeds, directions = readSDR(file.fileName, station.name)
                 result = {'heights': heights, 'dates': dates, 'speeds': speeds, 'directions': directions}
                 results[stationName] = result
-
-    #heights, dates, speeds, directions = readSDR(fileName, stationName)
-    #results['heights'] = heights
-    #results['dates'] = dates
-    #results['speeds'] = speeds
-    #results['directions'] = directions
-    return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
-
-
-#TODO: Rework or remove
-@api_view(['GET'])
-def getDataFiles(request):
-    results = {}
-    terrainID = request.GET.get('terrainID')
-    stations = Station.objects.filter(terrain=terrainID)
-    names = []
-    IDList = []
-    for station in stations:
-        datafile = DataFile.objects.filter(station=station)
-        for file in datafile:
-            #results[file.fileName] = file.id
-            results[str(file.id)] = [file.fileName, readRecordDateToString(file.fileName, station.name)]
-            #names.append(file.fileName)
-            #IDList.append(file.id)
-
-    #results['names'] = names
-    #results['IDList'] = IDList
     return HttpResponse(json.dumps(results), status=status.HTTP_200_OK)
 
 
@@ -99,3 +78,30 @@ def getDates(request):
             if not (date in dates):
                 dates.append(date)
     return HttpResponse(json.dumps(dates), status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def getStationObjects(request):
+    stationNames = request.GET.getlist('stations[]')
+    recordDate = str(request.GET.get('recordDate'))
+    result = {}
+    datafiles = DataFile.objects.filter(creationDate=recordDate)
+    for stationName in stationNames:
+        stationResult = {}
+        station = Station.objects.filter(name=stationName)[0] # There should only return one
+        for file in datafiles:
+            # Get data from file on disk
+            heights, dates, speeds, directions = readSDR(file.fileName, station.name)
+            stationResult = {'heights': heights, 'dates': dates, 'speeds': speeds, 'directions': directions}
+            # Get data from sqlite db
+            stationResult['name']       = station.name
+            stationResult['demX']       = station.demX
+            stationResult['demY']       = station.demY
+            stationResult['utmY']       = station.utmY
+            stationResult['utmX']       = station.utmX
+            stationResult['lat']        = station.lat
+            stationResult['long']       = station.long
+            stationResult['terrain']    = station.terrain_id
+            stationResult['id'] = station.id
+        result[stationName] = stationResult
+
+    return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)

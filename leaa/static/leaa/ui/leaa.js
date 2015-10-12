@@ -8,7 +8,11 @@
     the user tries to do anything initially.
  */
 
+var LEAA = { VERSION: '0.0.1'};
+
 var terrainMap;
+
+myStationManager = new StationManager();
 
 /**
  * Global functions that are pretty harmless
@@ -49,9 +53,9 @@ $(document).ready(function() {
     });
 
 
-    steal("leaa/js/loadTerrain.js", function() {}); // Load rendering tools
-    steal("leaa/js/loadWind.js", function() {});    // Load data extraction tools
-    steal("leaa/js/animateWind.js", function() {}); // Wind controls
+    steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
+    steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
+    steal("leaa/ui/animateWind.js", function() {}); // Wind controls
 
 
     $("#registerBtn").on("click", function (event) {

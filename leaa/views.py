@@ -86,10 +86,9 @@ def index(request):
     # TODO: Replace with arbitrary user lookup
     user = User.objects.filter(id=1)[0]
 
-    return render(request, 'leaa/index.html', {'user': user})
-
+    #return render(request, 'leaa/index.html', {'user': user})
+    return render(request, 'leaa/test.html', {'user': user})
 
 def base_terrain(request):
     return render(request, 'leaa/test_index.html')
-
 
