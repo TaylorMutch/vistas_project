@@ -11,11 +11,15 @@ steal(function () {
         // Get the record handles
         var recordDate = $(this).html();
         $.getJSON('/getStationObjects/', {'stations[]':stationNames, 'recordDate':recordDate}, function(result) {
-            stationData = result;
+            rawStationData = result;
         }).done(function() {
-                $.each(stationData, function(station, data) {
+                $.each(rawStationData, function(station, data) {
                     manager.ActiveStations.push(new Station(data));
-                })
+                });
+                $.each(manager.ActiveStations, function(id, station) {
+                    station.pos = manager.TerrainMap[(station.demY*manager.ActiveDEM.DEMx)+station.demX];
+                    renderArrows(station);
+                });
             }
         );
         console.log(recordDate);

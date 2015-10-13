@@ -17,34 +17,68 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.Loader = new THREE.TerrainLoader();
 }
 
-
 /**
  * Reset all stations to their initial index.
  * @constructor
  */
 VisManager.prototype.ResetStations = function() {
-    for (var i = 0; i < this.ActiveStations.length -1; i++) {
+    clearArrows();
+    for (var i = 0; i < this.ActiveStations.length; i++) {
         this.ActiveStations[i].ResetIndex();
-    }
-};
-
-VisManager.prototype.StepBackward = function() {
-    var stationsToRender = this.CompareDates(false);
-    for (var i = 0; i < this.ActiveStations.length-1; i++) {
-        if (stationsToRender[i] == true) {
-            var station = this.ActiveStations[i];
-            station.Backward();
-            renderArrows(station);
-        }
+        this.ActiveStations[i].isCurrent = true;
+        renderArrows(this.ActiveStations[i]);
     }
 };
 
 VisManager.prototype.StepForward = function() {
-    var stationsToRender = this.CompareDates(true);
-    for (var i = 0; i < this.ActiveStations.length-1; i++) {
-        if (stationsToRender[i] == true) {
-            var station = this.ActiveStations[i];
+    this.Step(true);
+    /*
+    clearArrows();
+    this.CompareDates(true);
+    for (var i = 0; i < this.ActiveStations.length; i++) {
+        var station = this.ActiveStations[i];
+        if (station.isCurrent) {
+            console.log('Rendering ' + station.name);
             station.Forward();
+            renderArrows(station);
+        }
+    }
+    */
+};
+
+VisManager.prototype.StepBackward = function() {
+    this.Step(false);
+    /*
+    clearArrows();
+    this.CompareDates(false);
+    for (var i = 0; i < this.ActiveStations.length; i++) {
+        var station = this.ActiveStations[i];
+        if (station.isCurrent) {
+            console.log('Rendering ' + station.name);
+            station.Backward();
+            renderArrows(station);
+        }
+    }
+    */
+};
+/**
+ * Steps our animation forward or backward
+ * @param forward - boolean, true means we are moving forward, false means backwards
+ * @constructor
+ */
+VisManager.prototype.Step = function(forward) {
+    clearArrows();
+    this.CompareDates(forward);
+    for (var i = 0; i < this.ActiveStations.length; i++) {
+        var station = this.ActiveStations[i];
+        if (station.isCurrent) {
+            console.log('Rendering ' + station.name);
+            if (forward) {
+                station.Forward();
+            }
+            else {
+                station.Backward();
+            }
             renderArrows(station);
         }
     }
@@ -58,7 +92,6 @@ VisManager.prototype.StepForward = function() {
  */
 VisManager.prototype.CompareDates = function(increasing) {
     var datesToCompare = [];
-    var stationsToRender = []; //boolean array
 
     // The dates we check will be different whether we are increasing
     // or decreasing, so check which way we are going
@@ -71,12 +104,13 @@ VisManager.prototype.CompareDates = function(increasing) {
             datesToCompare.push(station.dates[station.CheckBackward()]);
         });
     }
-    console.log(datesToCompare);
-    // Now we check if we can just use all the stations or if we go get them all.
+    console.log('Comparing these dates: ' + datesToCompare);
+    // Now we check if we can just use all the stations or if we need to drop one or more.
     if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
-        console.log('All dates match');
-        for (var i = 0; i < datesToCompare.length-1; i++) {
-            stationsToRender.push(true);
+        console.log('Dates match');
+        updateSodarLog('Timestamp: ' + formatTimestamp(Math.max.apply(Math, datesToCompare)), true);
+        for (var i = 0; i < this.ActiveStations.length; i++) {
+            this.ActiveStations[i].isCurrent = true;
         }
     } else {
         console.log('Date mismatch, picking dates now');
@@ -87,14 +121,8 @@ VisManager.prototype.CompareDates = function(increasing) {
             checkDate = Math.max.apply(Math, datesToCompare);
         }
         $.each(datesToCompare, function(id, date) {
-            if (date == checkDate) {
-                stationsToRender.push(true);
-            }
-            else {
-                stationsToRender.push(false);
-            }
-        })
+            manager.ActiveStations[id].isCurrent = date == checkDate;
+        });
+        updateSodarLog('Timestamp: ' + formatTimestamp(checkDate), true);
     }
-    console.log(stationToRender);
-    return stationsToRender;
 };

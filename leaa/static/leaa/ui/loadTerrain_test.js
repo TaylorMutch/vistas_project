@@ -48,9 +48,10 @@ steal(function () {
                     stationNames = result['stationNames'];
                 }).done(function() {
                     if (dates.length == 0) {
-                        console.log(" No data found for this terrain ");
+                        console.log("No data found for this terrain. Pick another terrain for data viewing.");
                         $("#dataPicker").append('<li>No data for this terrain</li>');
                     } else {
+                        console.log("Data found, adding to \"Select Data\" dropdown.");
                         $.each(dates, function(id, name) {
                             $("#dataPicker").append('<li><a href="#" class="recordDate">' + name + '</a></li>');
                         });
@@ -105,7 +106,7 @@ steal(function () {
      */
     function cleanup() {
         $.each(manager.SceneObjects, function(handle, threeObject) {
-            Scene.remove(threeObject);
+            scene.remove(threeObject);
             delete manager.SceneObjects.pop();
         });
         console.log("Scene cleared");

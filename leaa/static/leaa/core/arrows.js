@@ -2,19 +2,17 @@
  * Created by Taylor on 10/12/2015.
  */
 
-/*
-Rendering code for vectors generated from station data
+
+/**
+ * Kick off calls to our GPU to render.
+ * @param station - a station object containing all relevent code to be shown.
  */
-
 function renderArrows(station) {
-
-
-
     // Get the specific arrays we want
     var speedArray = station.speeds[station.index];
     var dirArray = station.directions[station.index];
     var heightArray = station.heights;
-    var stationPos = [station.demX,station.demY];
+    var stationPos = station.pos;
 
     // Render the arrows in the scene
     var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
@@ -27,8 +25,8 @@ function renderArrows(station) {
 
 }
 
-/*
-Generates a moment of arrows for a single render.
+/**
+Generates a moment of arrows for a single station.
  */
 function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 	var arrowSet = [];
@@ -40,7 +38,7 @@ function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 }
 
 
-/*
+/**
 Generates a single arrow within an arrowSet.
  */
 function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
@@ -57,7 +55,7 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
     }
 }
 
-/*
+/**
 Calculates the direction of the wind vector based on polor coordinates
  */
 function calcDirection(dir) {
@@ -85,7 +83,7 @@ else if (dirRadians > Math.PI * 1.5 || dirRadians == 0) {
 return new THREE.Vector3(u, v, 0);
 }
 
-/*
+/**
 Remove all arrows from a scene
  */
 function clearArrows() {

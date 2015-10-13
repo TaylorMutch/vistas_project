@@ -25,12 +25,13 @@ function Station(data){
     this.id = data['id'];
 
     // Initial values for the visualization
-    this.index = -1;
+    this.index = 0;
+    this.isCurrent = true; // TODO: will this work?
+    this.pos = new THREE.Vector3(0,0,0);
 }
 
-
 Station.prototype.Backward = function() {
-    this.index = this.index > -1 ? this.index - 1 : this.index;
+    this.index = this.index >= 0 ? this.index - 1 : this.index;
 };
 
 
@@ -42,7 +43,7 @@ Station.prototype.CheckBackward = function() {
 };
 
 Station.prototype.Forward = function() {
-    this.index = this.index < this.dates.length-1 ? this.index + 1 : this.index;
+    this.index = this.index <= this.dates.length-1 ? this.index + 1 : this.index;
 };
 
 Station.prototype.CheckForward = function() {
@@ -69,7 +70,7 @@ Station.prototype.SetCurrentTimestamp = function(_timestamp) {
 };
 
 Station.prototype.ResetIndex = function() {
-    this.index = -1;
+    this.index = 0;
 };
 
 Station.prototype.SetIndex = function(_index) {
