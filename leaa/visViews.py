@@ -26,8 +26,6 @@ def getTerrainNames(request):
     Returns a list of stations with their demX and demY coordinates,
     which is then converted by frontend code to 3D objects
 '''
-
-
 @api_view(['GET'])
 def getStations(request):
     results = {}
@@ -46,8 +44,6 @@ def getStations(request):
     Arrays get returned as 2D arrays
     speeds[i][j] is the ith speed (in the ith record) at the jth height
 '''
-
-
 @api_view(['GET'])
 def getVectors(request):
     results = {}
@@ -71,13 +67,17 @@ def getDates(request):
     terrainID = request.GET.get('terrainID')
     stations = Station.objects.filter(terrain=terrainID)
     dates = []
+    stationNames = []
     for station in stations:
+        stationNames.append(station.name)
         datafile = DataFile.objects.filter(station=station)
         for file in datafile:
             date = str(file.creationDate)[:10]
             if not (date in dates):
                 dates.append(date)
-    return HttpResponse(json.dumps(dates), status=status.HTTP_200_OK)
+    result = {'dates':dates, 'stationNames':stationNames}
+    return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def getStationObjects(request):
@@ -103,5 +103,4 @@ def getStationObjects(request):
             stationResult['terrain']    = station.terrain_id
             stationResult['id'] = station.id
         result[stationName] = stationResult
-
     return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)

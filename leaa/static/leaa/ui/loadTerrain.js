@@ -116,11 +116,11 @@ steal(function () {
     }
 
     function onWindowResize() {
-        WIDTH = container.offsetWidth;
-        HEIGHT = container.offsetHeight;
-        camera.aspect = WIDTH/HEIGHT;
+        //WIDTH = container.offsetWidth;
+        //HEIGHT = container.offsetHeight;
+        camera.aspect = container.offsetWidth/container.offsetHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(WIDTH, HEIGHT);
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
     }
 
     function cleanup() {

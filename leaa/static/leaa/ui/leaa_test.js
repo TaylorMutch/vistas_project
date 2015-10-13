@@ -10,12 +10,8 @@
 
 var LEAA = { VERSION: '0.0.1'};
 
-var terrainMap;
-
-myStationManager = new StationManager();
-
 /**
- * Global functions that are pretty harmless
+ * Global functions that are pretty harmless overall
  */
 function updateSodarLog(string, updateCurrentLabel) {
     $('#sodarLog').append('<li><a> ' + string + '</a></li>');
@@ -38,8 +34,6 @@ function formatTimestamp(date) {
 
 $(document).ready(function() {
 
-    // Retrieve terrains from API
-
     terrains = [];
     $.getJSON('/terrains/', function(json) {
         $.each(json, function(id, item) {
@@ -47,34 +41,26 @@ $(document).ready(function() {
         });
     }).done(function(terrains) {
         $.each(terrains, function (id, terrain) {
-            // terrainNames.push(terrain.name);
             $("#demPicker").append('<li><a href="#" id="dem'+terrain.name +'" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
         });
     });
 
-
-    steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
-    steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
-    steal("leaa/ui/animateWind.js", function() {}); // Wind controls
-
-
+    steal("leaa/ui/loadTerrain_test.js", function() {}); // Load rendering tools
+    steal("leaa/ui/loadWind_test.js", function() {});    // Load data extraction tools
+    steal("leaa/ui/animateWind_test.js", function() {}); // Wind controls
+    //steal("leaa/ui/registration.js", function() {}); //TODO: Add registration functionality
     $("#registerBtn").on("click", function (event) {
         /**
          * Handle user clicking register button
          */
         //TODO: Implement
     });
-
     $("#signInBtn").on("click", function(event) {
-        /**
-         * Handles user logon
-         */
         event.preventDefault();
         var loginForm = $("signInForm").serialize();
         console.log(loginForm);
         //TODO: Implement
     });
-
     // Toggles for tooltips, etc.
     $(function () {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})
@@ -94,3 +80,4 @@ $(document).ready(function() {
         $("#howtovideo")[0].pause();
     })
 });
+

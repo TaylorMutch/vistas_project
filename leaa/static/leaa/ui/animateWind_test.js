@@ -4,8 +4,8 @@
 steal(function () {
 
 	$('#stepForward').on('click', function() {
-        stepForward();
-	});
+	    manager.StepForward();
+    });
 
 
     function stepForward() {
@@ -26,7 +26,7 @@ steal(function () {
     }
 
 	$('#stepBack').on('click', function() {
-		stepBack();
+        manager.StepBackward();
 	});
 
 	function stepBack() { //TODO: Bug fixing - doesn't step back properly yet
@@ -48,9 +48,8 @@ steal(function () {
 	}
 
     $('#beginStep').on('click', function() {
-        dispIndexArray = dispIndexArray_reset.slice();
-		dispIndexArray_follower = dispIndexArray_follower_reset.slice();
-        stepForward();
+        manager.ResetStations();
+        manager.StepForward();
     });
 
 
@@ -66,7 +65,6 @@ steal(function () {
     Main Animation code
      */
     animating = false;
-    isMaxed = false;
 
     // Enable animation
 	$('#animateButton').on('click', function() {
@@ -75,7 +73,7 @@ steal(function () {
             $(this).html('Animate')
         }
         else {
-            stepForward();
+            manager.StepForward();
             animating = true;
             intervalID = setInterval(animateStepForward, 1000/4);
             $(this).html('Stop Animating')
@@ -84,7 +82,7 @@ steal(function () {
 
     // Animation loop
     function animateStepForward() {
-        stepForward();
+        manager.StepForward();
     }
 
     // Disable animation
@@ -97,6 +95,7 @@ steal(function () {
 	/*
 	Returns a list of station indices to determine whether we render that station on this date
 	 */
+    /*
 	function compareDates(indexArray, isDecreasing) {
 		var datesToCompare = [];
 		var stationsToUpdate = [];
@@ -137,7 +136,7 @@ steal(function () {
 		}
         return stationsToUpdate;
 	}
-
+    */
 	// RESET
 	$('#resetButton').on('click', function() {
         if (animating) {
@@ -155,9 +154,6 @@ steal(function () {
 		// Reset camera
 		camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
 		orbit.reset();
-
-        dispIndexArray = dispIndexArray_reset.slice();
-        dispIndexArray_follower = dispIndexArray_follower_reset.slice();
 		//flycontrols.reset();
 		/*
 		if (!flyThroughEnabled)

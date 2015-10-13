@@ -10,10 +10,6 @@
 
 var LEAA = { VERSION: '0.0.1'};
 
-var terrainMap;
-
-myStationManager = new StationManager();
-
 /**
  * Global functions that are pretty harmless
  */
@@ -36,6 +32,10 @@ function formatTimestamp(date) {
 	return  month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + sec;
 }
 
+
+/**
+ * Enable all our UI callbacks
+ */
 $(document).ready(function() {
 
     // Retrieve terrains from API

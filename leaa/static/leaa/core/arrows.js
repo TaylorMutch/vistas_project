@@ -6,35 +6,25 @@
 Rendering code for vectors generated from station data
  */
 
-function renderArrows(stationIndex, indexArray) {
-    var stationName = stationNames[stationIndex];
-    var renderIndex = indexArray[stationIndex];
+function renderArrows(station) {
 
-    if (renderIndex >= dispIndexMax) {
-        indexArray[stationIndex] = dispIndexMax - 1;
-    } else {
-        //console.log('Rendering arrows for ' + stationName);
-        var data = stationData[stationName];
 
-        //TODO: Update SODAR Log with date of the record
-        //var recordDate = data.dates[renderIndex];
-        //console.log(recordDate);
 
-        // Get the specific arrays we want
-        var speedArray = data.speeds[renderIndex];
-        var dirArray = data.directions[renderIndex];
-        var heightArray = data.heights;
-        var stationPos = stationPositions[stationIndex];
+    // Get the specific arrays we want
+    var speedArray = station.speeds[station.index];
+    var dirArray = station.directions[station.index];
+    var heightArray = station.heights;
+    var stationPos = [station.demX,station.demY];
 
-        // Render the arrows in the scene
-        var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
-        $.each(arrowSet, function (handle, arrow) {
-            if (arrow !== null) {
-                arrow.name = "windvector";
-                scene.add(arrow);
-            }
-        });
-    }
+    // Render the arrows in the scene
+    var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
+    $.each(arrowSet, function (handle, arrow) {
+        if (arrow !== null) {
+            arrow.name = "windvector";
+            scene.add(arrow);
+        }
+    });
+
 }
 
 /*

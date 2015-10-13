@@ -18,9 +18,15 @@ def api_root(request):
         'terrains': reverse('terrain-list', request=request),
         'stations': reverse('station-list', request=request),
         'datafiles': reverse('datafile-list', request=request),
-        'records': reverse('record-list', request=request),
-        'windvectors': reverse('windvector-list', request=request),
     })
+
+
+def index(request):
+    # TODO: Replace with arbitrary user lookup
+    user = User.objects.filter(id=1)[0]
+
+    #return render(request, 'leaa/index.html', {'user': user})
+    return render(request, 'leaa/test.html', {'user': user})
 
 
 class TerrainList(generics.ListAPIView):
@@ -30,6 +36,7 @@ class TerrainList(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
 
 class TerrainDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Terrain.objects.all()
@@ -81,13 +88,6 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
 
-
-def index(request):
-    # TODO: Replace with arbitrary user lookup
-    user = User.objects.filter(id=1)[0]
-
-    #return render(request, 'leaa/index.html', {'user': user})
-    return render(request, 'leaa/test.html', {'user': user})
 
 def base_terrain(request):
     return render(request, 'leaa/test_index.html')

@@ -8,28 +8,45 @@
  * rendering the correct ones in the scene.
  * @constructor
  */
-function StationManager(){
+function VisManager(){ //TODO: Could we use this to associate a given scene with our user? hmm...
+    // Setable attributes
     this.ActiveStations = [];
+    this.SceneObjects = [];
+    this.TerrainMap = [];
+    this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
+    this.Loader = new THREE.TerrainLoader();
 }
 
-StationManager.prototype.AppendStation = function(station){
-    this.ActiveStations.push(station);
-};
 
-StationManager.prototype.ClearStations = function(){
-    this.ActiveStations = [];
-};
-
-//TODO: Does this belong here?
-StationManager.prototype.StepBackward = function() {
-};
-//TODO: Does this belong here?
-StationManager.prototype.StepForward = function() {
-};
-
-StationManager.prototype.ResetStations = function() {
+/**
+ * Reset all stations to their initial index.
+ * @constructor
+ */
+VisManager.prototype.ResetStations = function() {
     for (var i = 0; i < this.ActiveStations.length -1; i++) {
-        ActiveStations[i].ResetIndex();
+        this.ActiveStations[i].ResetIndex();
+    }
+};
+
+VisManager.prototype.StepBackward = function() {
+    var stationsToRender = this.CompareDates(false);
+    for (var i = 0; i < this.ActiveStations.length-1; i++) {
+        if (stationsToRender[i] == true) {
+            var station = this.ActiveStations[i];
+            station.Backward();
+            renderArrows(station);
+        }
+    }
+};
+
+VisManager.prototype.StepForward = function() {
+    var stationsToRender = this.CompareDates(true);
+    for (var i = 0; i < this.ActiveStations.length-1; i++) {
+        if (stationsToRender[i] == true) {
+            var station = this.ActiveStations[i];
+            station.Forward();
+            renderArrows(station);
+        }
     }
 };
 
@@ -39,7 +56,7 @@ StationManager.prototype.ResetStations = function() {
  * @constructor
  * @return array of booleans, true means to render, false otherwise
  */
-StationManager.prototype.CompareDates = function(increasing) {
+VisManager.prototype.CompareDates = function(increasing) {
     var datesToCompare = [];
     var stationsToRender = []; //boolean array
 
@@ -54,7 +71,7 @@ StationManager.prototype.CompareDates = function(increasing) {
             datesToCompare.push(station.dates[station.CheckBackward()]);
         });
     }
-
+    console.log(datesToCompare);
     // Now we check if we can just use all the stations or if we go get them all.
     if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
         console.log('All dates match');
@@ -64,7 +81,7 @@ StationManager.prototype.CompareDates = function(increasing) {
     } else {
         console.log('Date mismatch, picking dates now');
         var checkDate;
-        if (isIncreasing) {
+        if (increasing) {
             checkDate = Math.min.apply(Math, datesToCompare);
         } else {
             checkDate = Math.max.apply(Math, datesToCompare);
@@ -78,5 +95,6 @@ StationManager.prototype.CompareDates = function(increasing) {
             }
         })
     }
+    console.log(stationToRender);
     return stationsToRender;
 };

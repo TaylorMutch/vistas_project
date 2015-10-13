@@ -28,14 +28,6 @@ function Station(data){
     this.index = -1;
 }
 
-/*
-Station.prototype.PrintMe = function() {
-    console.log(this.name);
-    console.log('Initial Date');
-    console.log(this.dates[0]);
-    console.log('Ending Date');
-    console.log(this.dates[this.dates.length-1]);
-};*/
 
 Station.prototype.Backward = function() {
     this.index = this.index > -1 ? this.index - 1 : this.index;
@@ -77,7 +69,7 @@ Station.prototype.SetCurrentTimestamp = function(_timestamp) {
 };
 
 Station.prototype.ResetIndex = function() {
-    this.index = 0;
+    this.index = -1;
 };
 
 Station.prototype.SetIndex = function(_index) {
