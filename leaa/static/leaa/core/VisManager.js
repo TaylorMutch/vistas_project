@@ -15,9 +15,9 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.SceneObjects = [];
     this.TerrainMap = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
-    this.Loader = new THREE.TerrainLoader();
+    this.TerrainLoader = new THREE.TerrainLoader();
     this.Animating = false;
-
+    this.ShowWireframe = false;
 }
 
 /**
@@ -32,37 +32,19 @@ VisManager.prototype.ResetStations = function() {
         renderArrows(this.ActiveStations[i]);
     }
 };
-
+/**
+ * Step forward.
+ * @constructor
+ */
 VisManager.prototype.StepForward = function() {
     this.Step(true);
-    /*
-    clearArrows();
-    this.CompareDates(true);
-    for (var i = 0; i < this.ActiveStations.length; i++) {
-        var station = this.ActiveStations[i];
-        if (station.isCurrent) {
-            console.log('Rendering ' + station.name);
-            station.Forward();
-            renderArrows(station);
-        }
-    }
-    */
 };
-
+/**
+ * Step backward.
+ * @constructor
+ */
 VisManager.prototype.StepBackward = function() {
     this.Step(false);
-    /*
-    clearArrows();
-    this.CompareDates(false);
-    for (var i = 0; i < this.ActiveStations.length; i++) {
-        var station = this.ActiveStations[i];
-        if (station.isCurrent) {
-            console.log('Rendering ' + station.name);
-            station.Backward();
-            renderArrows(station);
-        }
-    }
-    */
 };
 /**
  * Steps our animation forward or backward

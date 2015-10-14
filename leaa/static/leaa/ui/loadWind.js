@@ -7,6 +7,7 @@
  */
 steal(function () {
     $("ul").on("click", "a.recordDate", function () {
+        clearArrows();
         //var stationNames = ['McRae', 'Primet'];
         // Get the record handles
         var recordDate = $(this).html();

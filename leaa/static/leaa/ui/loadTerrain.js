@@ -28,20 +28,26 @@ steal(function () {
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
 	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
-
-            texture.flipY = true;
+            wire = new THREE.MeshPhongMaterial({
+                color: 0x000000,
+                wireframe: true
+            });
+            //texture.flipY = true;
 
             // Load the terrain and all stations
-            manager.Loader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+            manager.TerrainLoader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
                 terrainGeo = new THREE.Mesh(plane, texture);
+                terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice();
                 scene.add(terrainGeo);
                 updateSodarLog('Added terrain: ' + temp_terrain.name, false);
                 manager.SceneObjects.push(terrainGeo);
-
+                terrainWire = new THREE.Mesh(plane, wire);
+                terrainWire.name = 'terrain wireframe';
+                manager.SceneObjects.push(terrainWire);
                 // Get the related recordDates
                 $("#dataPicker").empty();
                 $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
@@ -69,7 +75,6 @@ steal(function () {
      * Initialize our workspace
      */
     function init() {
-
         manager = new VisManager();
         CAM_START = new THREE.Vector3(0,-80,80);
         container = document.getElementById("scene");
@@ -90,7 +95,8 @@ steal(function () {
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer();
         renderer.setSize(container.offsetWidth, container.offsetHeight);
-        renderer.setClearColor(0xfefefe, 1);
+        //renderer.setClearColor(0xfefefe, 1);
+        renderer.setClearColor(0xffffff, 1);
         renderer.autoClear = true;
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
@@ -143,4 +149,29 @@ steal(function () {
         return coords;
     }
 
+    $('#wireframeToggle').on('click', function() {
+        var obj, i;
+        if (manager.ShowWireFrame) {
+            for (i = scene.children.length - 1; i >= 0; i--) {
+                obj = scene.children[i];
+                if (obj.name == 'terrain wireframe') {
+                    scene.remove(obj);
+                    break;
+                }
+            }
+            manager.ShowWireFrame = false;
+            scene.add(terrainGeo);
+        }
+        else {
+            for (i = scene.children.length - 1; i >= 0 ; i--) {
+                obj = scene.children[i];
+                if (obj.name == 'terrain poly') {
+                    scene.remove(obj);
+                    break;
+                }
+            }
+            manager.ShowWireFrame = true;
+            scene.add(terrainWire);
+        }
+    });
 });

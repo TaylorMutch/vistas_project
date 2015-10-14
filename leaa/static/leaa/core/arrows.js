@@ -43,7 +43,7 @@ Generates a single arrow within an arrowSet.
  */
 function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
     var origin = new THREE.Vector3(stationPos.x, stationPos.y, stationPos.z + cHeight*.1);
-    var vectorColor = 0x0000ff; //TODO: Add color to the vector
+    var vectorColor = 0xffff00; //TODO: Add color to the vector
     if (isNaN(cSpeed) || cSpeed == 0) {
         return null;
     }
@@ -56,7 +56,13 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
 }
 
 /**
-Calculates the direction of the wind vector based on polor coordinates
+Calculates the direction of the wind vector based on polor coordinates (credit from Christoph Thomas)
+
+ '''Function converting wind speeds and wind direction (polar coordinates) into u and v (cartesian coordinates)
+
+ Developed and written by Christoph Thomas,
+ Dept. of Forest Science, Oregon State University, 2006
+ last update 24-Mar-2009 @ COAS'''
  */
 function calcDirection(dir) {
 var dirRadians = (dir/360.0)*2*Math.PI;

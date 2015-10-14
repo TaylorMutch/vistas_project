@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <title>LEA Analytics</title>
+    <title>VALCEX - demo</title>
     <!-- Load stylesheets -->
     <link href="{% static "leaa/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/bootstrap/css/bootstrap-theme.min.css" %}" rel="stylesheet">
-    <link href="{% static "leaa/bootstrap/css/leaa.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/bootstrap/css/valcex.css" %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
 </head>
 <body>
@@ -41,9 +41,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="embed-responsive embed-responsive-16by9">
-                        <!--video id="howtovideo" width="1156" height="720" controls class="embed-responsive-item">
+                        <video id="howtovideo" width="1156" height="720" controls class="embed-responsive-item">
                             <source src="{% static "leaa/resources/VALCEX how-to 1080p.mp4" %}" type="video/mp4">
-                        </video-->
+                        </video>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">LEAA</a>
+                <a class="navbar-brand">VALCEX</a>
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="#" data-toggle="modal" data-target="#howtomodal">How-To</a>
@@ -147,6 +147,7 @@
 				</div>
                 <!-- Remove contours? TODO: See if we need this anymore -->
 				<button id="contourToggle" type="button" class="btn btn-default">Toggle Contours</button>
+                <button id="wireframeToggle" type="button" class="btn btn-default">Toggle Wireframe</button>
 			</div>
 
 			<div id="controls-3">

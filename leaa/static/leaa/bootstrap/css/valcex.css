@@ -1,23 +1,42 @@
 body
 {
     font-family: ‘Tahoma’, ‘Geneva’, sans-serif;
+    background: slategrey;
 }
 
 h1
 {
     font-size:175%;
     line-height:0.9em;
+    color: black;
 }
 
 h2
 {
     font-size:125%;
     line-height:1.2em;
+    color:black;
+}
+
+h4
+{
+    color:black;
+}
+
+form
+{
+    color: black;
+}
+
+a
+{
+    color: white;
 }
 
 a:link, a:hover, a:active, a:visited
 {
-    text-decoration:none;   
+    text-decoration:none;
+    color: deepskyblue;
 }
 
 button
@@ -39,7 +58,7 @@ button
 
 #top-wrapper
 {
-    height:40em;
+    height:35em;
     padding:0.5em;
     border:1px solid black;
 }
