@@ -9,12 +9,15 @@
  * @constructor
  */
 function VisManager(){ //TODO: Could we use this to associate a given scene with our user? hmm...
+
     // Setable attributes
     this.ActiveStations = [];
     this.SceneObjects = [];
     this.TerrainMap = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
     this.Loader = new THREE.TerrainLoader();
+    this.Animating = false;
+
 }
 
 /**

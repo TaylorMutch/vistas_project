@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <title>LEA Analytics</title>
-        <!-- Load stylesheets -->
+    <!-- Load stylesheets -->
     <link href="{% static "leaa/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/bootstrap/css/bootstrap-theme.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/bootstrap/css/leaa.css" %}" rel="stylesheet">
@@ -22,13 +22,13 @@
     <script src="{% static "leaa/bootstrap/bootstrap.min.js" %}"></script>
 
     <!-- VALCEX CORE LIBRARY -->
-    <script src="{% static "leaa/core/stations.js" %}"></script>
     <script src="{% static "leaa/core/VisManager.js" %}"></script>
+    <script src="{% static "leaa/core/stations.js" %}"></script>
     <script src="{% static "leaa/core/arrows.js" %}"></script>
+    <script src="{% static "leaa/core/timeline.js" %}"></script>
 
-
+    <!-- VALCEX UI SCRIPTS (via steal.js) -->
     <script src="{% static "steal/steal.js" %}"></script>
-    <!-- Load LEAA Scripts via steal.js -->
     <script src="{% static "leaa/ui/leaa.js" %}"></script>
 
 
@@ -41,16 +41,16 @@
                 </div>
                 <div class="modal-body">
                     <div class="embed-responsive embed-responsive-16by9">
-                        <video id="howtovideo" width="1156" height="720" controls class="embed-responsive-item">
+                        <!--video id="howtovideo" width="1156" height="720" controls class="embed-responsive-item">
                             <source src="{% static "leaa/resources/VALCEX how-to 1080p.mp4" %}" type="video/mp4">
-                        </video>
+                        </video-->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#SignInOrUploadFileForm">
@@ -64,12 +64,12 @@
                         <a href="#" data-toggle="modal" data-target="#howtomodal">How-To</a>
                     </li>
                     <li>
-                        <a href="blogs.evergreen.edu/vistas/">VISTAS Blog</a>
+                        <a href="http://blogs.evergreen.edu/vistas/" target="_blank">VISTAS Blog</a>
                     </li>
                 </ul>
             </div>
             <div id="SignInOrUploadFileForm" class="navbar-collapse collapse">
-                {% if not user.is_authenticated %}
+                {% if user.password == 'password' %}
                 <form class="navbar-form navbar-right" id="signInForm">
                     <div class="form-group">
                         <input name="username" type="text" placeholder="Username or Email" class="form-control">

@@ -23,10 +23,8 @@ def api_root(request):
 
 def index(request):
     # TODO: Replace with arbitrary user lookup
-    user = User.objects.filter(id=1)[0]
-
-    #return render(request, 'leaa/index.html', {'user': user})
-    return render(request, 'leaa/test.html', {'user': user})
+    user = User.objects.filter(id=2)[0]
+    return render(request, 'leaa/index.html', {'user': user})
 
 
 class TerrainList(generics.ListAPIView):
