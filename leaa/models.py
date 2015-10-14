@@ -47,6 +47,7 @@ class Station(models.Model):
 class DataFile(models.Model):
     creationDate = models.DateField(auto_now_add=False)  #TODO: Revise this to be the date at which the data was created
     station = models.ForeignKey('Station')
+    terrain = models.ForeignKey('Terrain')
     fileName = models.CharField(max_length=50)
 
     #def __str__(self):
