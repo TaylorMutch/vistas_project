@@ -29,7 +29,7 @@ steal(function () {
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
 	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
             wire = new THREE.MeshPhongMaterial({
-                color: 0x000000,
+                color: 0xbbbbbb,
                 wireframe: true
             });
             //texture.flipY = true;
@@ -96,7 +96,8 @@ steal(function () {
         renderer = new THREE.WebGLRenderer();
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         //renderer.setClearColor(0xfefefe, 1);
-        renderer.setClearColor(0xffffff, 1);
+        //renderer.setClearColor(0xffffff, 1);
+        renderer.setClearColor(0x000000, 1);
         renderer.autoClear = true;
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
