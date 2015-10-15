@@ -9,12 +9,16 @@
     <!-- Load stylesheets -->
     <link href="{% static "leaa/css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/bootstrap-theme.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/css/jquery-ui.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/css/jquery-ui.structure.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/css/jquery-ui.theme.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/valcex.css" %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
 </head>
 <body>
     <!-- External Libraries -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
+    <script src="{% static "leaa/js/jquery-ui.min.js" %}"></script>
     <script src="{% static "leaa/three/three_r72.min.js" %}"></script>
     <script src="{% static "leaa/three/CombinedCamera.js" %}"></script>
     <script src="{% static "leaa/three/OrbitControls.js" %}"></script>
@@ -120,6 +124,25 @@
 		</div>
         <div id="top-wrapper" class="row">
             <div id="scene"></div>
+            <script>
+            $(function() {
+                $("#timelineSlider").slider({
+                    disable: true,
+                    value:0,
+                    min: 0,
+                    max: 1,
+                    step: 1,
+                    slide: function( event, ui ) {
+                        $( "#amount" ).val( "$" + ui.value );
+                    },
+                    stop: function( event, ui ) {
+                        manager.CurrentTimestamp = ui.value;
+                    }
+                });
+                $( "#amount" ).val( "$" + $("#timelineSlider").slider( "value" ) );
+            });
+            </script>
+            <div id="timelineSlider"></div>
         </div>
         <div id="bottom-wrapper" class="row">
 			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">

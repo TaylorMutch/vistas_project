@@ -24,6 +24,23 @@ steal(function () {
                 });
             }
         );
+
+        /**
+         * Here we should update our timeline with the number of values
+         */
+        // Get the beginning and ending days from each station, and then set minimum and maximum times
+        var minDates = [];
+        var maxDates = [];
+        $.each(manager.ActiveStations, function(id, station) {
+            minDates.push(Math.max.apply(Math, station.dates));
+            maxDates.push(Math.min.apply(Math, station.dates));
+        });
+
+        var max = Math.max.apply(Math, maxDates);
+        var min = Math.min.apply(Math, minDates);
+        timeline = new Timeline(min, max, min, 500);
+
+
         console.log(recordDate);
         $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
         updateSodarLog('Loaded records from: ' + recordDate, false);
