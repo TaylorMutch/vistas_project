@@ -20,6 +20,11 @@ function updateSodarLog(string, updateCurrentLabel) {
     }
 }
 
+/**
+ * Format timestamps the way we want them
+ * @param date
+ * @returns {string}
+ */
 function formatTimestamp(date) {
     var datestring = String(date);
     var year = datestring.substring(0,2);

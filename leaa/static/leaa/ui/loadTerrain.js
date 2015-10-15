@@ -93,14 +93,14 @@ steal(function () {
         orbit = new THREE.OrbitControls(camera, container);
 
         // Declare renderer settings
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         //renderer.setClearColor(0xfefefe, 1);
-        //renderer.setClearColor(0xffffff, 1);
         renderer.setClearColor(0x000000, 1);
         renderer.autoClear = true;
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
+        THREEx.Screenshot.bindKey(renderer);
     }
 
     function onWindowResize() {
@@ -134,7 +134,6 @@ steal(function () {
     $("#setOrthographic").click(function () {
         camera.toOrthographic();
     });
-
     $("#setPerspective").click(function () {
         camera.toPerspective();
     });
@@ -150,6 +149,9 @@ steal(function () {
         return coords;
     }
 
+    /**
+     * Toggle wireframe
+     */
     $('#wireframeToggle').on('click', function() {
         var obj, i;
         if (manager.ShowWireFrame) {
