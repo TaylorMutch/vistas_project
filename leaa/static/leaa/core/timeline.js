@@ -3,40 +3,26 @@
  */
 /**
  * Abstract timeline for moving timeline events forward and back.
- * @param beginTime
- * @param endTime
- * @param currentTime
- * @param timeStep
  * @constructor
  */
-function Timeline(beginTime, endTime, currentTime, timeStep) {
-    this.startTime = beginTime;
-    this.endTime = endTime;
-    this.currentTime = currentTime;
-    this.timeStep = timeStep;
+function Timeline() {
+    this.beginTime = new Date();
+    this.endTime = new Date();
+    this.currentTime = new Date();
+    this.timeStep = new Date();
+    this.numSteps = 0;
 }
 
 Timeline.prototype.Forward = function()
 {
-    if (this.currentTime + this.timeStep < this.endTime) {
+    if (this.currentTime.getTime() + this.timeStep.getTime() < this.endTime.getTime()) {
         this.currentTime += this.timeStep;
     }
 };
 
 Timeline.prototype.Backward = function()
 {
-    if (this.currentTIme - this.timeStep >= this.startTime) {
+    if (this.currentTime - this.timeStep >= this.startTime) {
         this.currentTime -= this.timeStep;
     }
 };
-
-/*
-function v_time(timestamp) {
-    this.year = null;
-    this.month = null;
-    this.day = null;
-    this.hour = null;
-    this.minute = null;
-    this.second = null;
-}
-*/

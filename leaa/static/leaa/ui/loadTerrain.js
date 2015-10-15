@@ -11,10 +11,15 @@ steal(function () {
      * Retrieves a selected DEM from our list of terrains.
      */
     $("a.dem").click(function() {
+        /** Go get the new terrain or just pass over everything */
         var index = $(this).attr('value');   // index of the terrain we want
         temp_terrain = terrains[index];
         var name = temp_terrain.name;
         if (temp_terrain !== manager.ActiveDEM) {
+            $('#timelineSlider').slider('option','disabled',true);
+            $('#sceneHeight').slider({disabled: false, value: 1});
+            $('#vectorHeight').slider({disabled: true, value: 1});
+            $('#vectorLength').slider({disabled: true, value: 1});
             if (manager.ActiveDEM !== undefined) {
                 clearArrows();
                 cleanup();
@@ -40,8 +45,9 @@ steal(function () {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
                 terrainGeo = new THREE.Mesh(plane, texture);
+                terrainGeo.geometry._dirtyVertices = true;
                 terrainGeo.name = 'terrain poly';
-                manager.TerrainMap = plane.vertices.slice();
+                manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
                 scene.add(terrainGeo);
                 updateSodarLog('Added terrain: ' + temp_terrain.name, false);
                 manager.SceneObjects.push(terrainGeo);
@@ -177,4 +183,32 @@ steal(function () {
             scene.add(terrainWire);
         }
     });
+
+
+    $(function() {
+        $("#sceneHeight").slider({
+            disabled: true,
+            value:1,
+            min:.1,
+            max: 2.0,
+            step: .1,
+            slide: function(event, ui) {
+                $( "#amount").val("$"+ui.value);
+            },
+            stop: function(event,ui) {
+                manager.SceneHeight = ui.value;
+                var newMap = manager.TerrainMap.slice();
+                for (var i = 0; i < newMap.length; i++) {
+                    terrainGeo.geometry.vertices[i].z = newMap[i].z * manager.SceneHeight;
+                    terrainWire.geometry.vertices[i].z = newMap[i].z * manager.SceneHeight;
+                }
+                terrainWire.geometry.verticesNeedUpdate = true;
+                terrainGeo.geometry.verticesNeedUpdate = true;
+                render();
+            }
+        });
+        $("#amount").val("$" + $("#sceneHeight").slider("value"));
+    });
+
+
 });

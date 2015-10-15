@@ -42,7 +42,7 @@ function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 Generates a single arrow within an arrowSet.
  */
 function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
-    var origin = new THREE.Vector3(stationPos.x, stationPos.y, stationPos.z + cHeight*.1);
+    var origin = new THREE.Vector3(stationPos.x, stationPos.y, stationPos.z + cHeight*.1*manager.VectorHeight);
     var vectorColor = 0xffff00; //TODO: Add color to the vector
     if (isNaN(cSpeed) || cSpeed == 0) {
         return null;
@@ -51,7 +51,7 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
         var dir = calcDirection(cDirection);
         var target = origin.clone().add(dir);
         var qDir = new THREE.Vector3().subVectors(target, origin);
-        return new THREE.ArrowHelper(qDir.normalize(), origin, cSpeed, vectorColor );
+        return new THREE.ArrowHelper(qDir.normalize(), origin, cSpeed * manager.VectorLength, vectorColor );
     }
 }
 

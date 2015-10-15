@@ -1,7 +1,7 @@
 /**
  * Created by Taylor on 9/8/2015.
  */
-/*
+/**
     Steal document for LEAA.
     Loads any scripts via jQuery and hands them over to the client, making them available
     right as the DOM finishes loading. This ensures that all assets are loaded before
@@ -21,7 +21,7 @@ function updateSodarLog(string, updateCurrentLabel) {
 }
 
 /**
- * Format timestamps the way we want them
+ * Stringify timestamps the way we want them
  * @param date
  * @returns {string}
  */
@@ -65,21 +65,35 @@ $(document).ready(function() {
         console.log(loginForm);
         //TODO: Implement
     });
-    // Toggles for tooltips, etc.
-    $(function () {
+
+
+    // Tooltips
+    $(function() {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})
     });
-    $(function () {
+    $(function() {
         $('[data-toggle="tooltip"]').tooltip({container: 'body'})
     });
-    $(function () {
+    $(function() {
         $('.dropdown-toggle').dropdown();
     });
-    /*
-    $(function () {
-        $('.collapse').collapse();
-    })
-    */
+    // Sliders
+    $(function() {
+        $("#timelineSlider").slider({
+            disabled: true,
+            value:0,
+            min: 0,
+            max: 1,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#amount" ).val( "$" + ui.value );
+            },
+            stop: function( event, ui ) {
+                manager.CurrentTimestamp = ui.value;
+            }
+        });
+        $( "#amount" ).val( "$" + $("#timelineSlider").slider("value"));
+    });
     $("#closehowtomodal").click(function() {
         $("#howtovideo")[0].pause();
     })

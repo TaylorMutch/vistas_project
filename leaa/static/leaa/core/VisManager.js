@@ -17,7 +17,12 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
     this.TerrainLoader = new THREE.TerrainLoader();
     this.Animating = false;
-    this.ShowWireframe = false;
+    this.ShowWireFrame = false;
+    this.Timeline = new Timeline();
+    this.SceneHeight = 1;
+    this.VectorHeight = 1;
+    this.VectorLength = 1;
+    this.ArrowColor = null; //TODO: Add colorpicking back into the mix...
 }
 
 /**
@@ -38,6 +43,8 @@ VisManager.prototype.ResetStations = function() {
  */
 VisManager.prototype.StepForward = function() {
     this.Step(true);
+    $('#timelineSlider').slider('option', 'value', manager.CurrentTimestamp + manager.Timeline.timeStep);
+    manager.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
 };
 /**
  * Step backward.
@@ -45,6 +52,8 @@ VisManager.prototype.StepForward = function() {
  */
 VisManager.prototype.StepBackward = function() {
     this.Step(false);
+    $('#timelineSlider').slider('option', 'value', manager.CurrentTimestamp - manager.Timeline.timeStep);
+    manager.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
 };
 /**
  * Steps our animation forward or backward

@@ -64,4 +64,45 @@ steal(function () {
 		//terrainGeo.material = texture.map;
 
 	});
+    /** Slider functions for manipulating the vectors */
+    $(function() {
+        $("#vectorLength").slider({
+            disabled: true,
+            value:1,
+            min:.1,
+            max: 2.0,
+            step: .1,
+            slide: function(event, ui) {
+                $( "#amount").val("$"+ui.value);
+            },
+            stop: function(event,ui) {
+                manager.VectorLength = ui.value;
+                clearArrows();
+                $.each(manager.ActiveStations, function(id, station) {
+                    renderArrows(station);
+                });
+            }
+        });
+        $("#amount").val("$" + $("#vectorLength").slider("value"));
+    });
+    $(function() {
+        $("#vectorHeight").slider({
+            disabled: true,
+            value:1,
+            min:.1,
+            max: 2.0,
+            step: .1,
+            slide: function(event, ui) {
+                $( "#amount").val("$"+ui.value);
+            },
+            stop: function(event,ui) {
+                manager.VectorHeight = ui.value;
+                clearArrows();
+                $.each(manager.ActiveStations, function(id, station) {
+                    renderArrows(station);
+                });
+            }
+        });
+        $("#amount").val("$" + $("#vectorHeight").slider("value"));
+    });
 });
