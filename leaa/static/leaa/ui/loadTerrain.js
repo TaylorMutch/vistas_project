@@ -41,6 +41,7 @@ steal(function () {
 
             // Load the terrain and all stations
             manager.TerrainLoader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+                manager.rawDEM = data;
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
@@ -108,7 +109,21 @@ steal(function () {
         window.addEventListener('resize', onWindowResize, false);
         THREEx.Screenshot.bindKey(renderer);
     }
+    /** Draws the DEM with new specified values.
+     * Doesn't touch the arrows, as those are desired to be independent.
+     **/
+    function redrawDEM() {
+        for (var i = 0; i < manager.rawDEM.length; i++) {
+            terrainGeo.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
+            terrainWire.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
+        }
+        terrainWire.geometry.verticesNeedUpdate = true;
+        terrainGeo.geometry.verticesNeedUpdate = true;
+    }
 
+    /**
+     * Our resizeing function TODO: Improve this as some of the page feels glitchy
+     */
     function onWindowResize() {
         camera.aspect = container.offsetWidth/container.offsetHeight;
         camera.updateProjectionMatrix();
@@ -197,18 +212,9 @@ steal(function () {
             },
             stop: function(event,ui) {
                 manager.SceneHeight = ui.value;
-                var newMap = manager.TerrainMap.slice();
-                for (var i = 0; i < newMap.length; i++) {
-                    terrainGeo.geometry.vertices[i].z = newMap[i].z * manager.SceneHeight;
-                    terrainWire.geometry.vertices[i].z = newMap[i].z * manager.SceneHeight;
-                }
-                terrainWire.geometry.verticesNeedUpdate = true;
-                terrainGeo.geometry.verticesNeedUpdate = true;
-                render();
+                redrawDEM();
             }
         });
         $("#amount").val("$" + $("#sceneHeight").slider("value"));
     });
-
-
 });
