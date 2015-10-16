@@ -5,7 +5,7 @@
 
 /**
  * Kick off calls to our GPU to render.
- * @param station - a station object containing all relevent code to be shown.
+ * @param station - a station object containing all relevant code to be shown.
  */
 function renderArrows(station) {
     // Get the specific arrays we want

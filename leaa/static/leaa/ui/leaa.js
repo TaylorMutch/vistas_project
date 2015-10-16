@@ -38,6 +38,32 @@ function formatTimestamp(date) {
 
 $(document).ready(function() {
 
+    /**
+     * Our timeline slider.
+     * Initialized to be dummy values because we don't know what the begin/end values are yet.
+     * When enabled, the stop event triggers a render event based on the timestamp that it receives
+     */
+    $(function() {
+        $("#timelineSlider").slider({
+            disabled: true,
+            value:0,
+            min: 0,
+            max: 1,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#amount" ).val( "$" + ui.value );
+            },
+            // This is triggered when a user picks up and drops the slider.
+            stop: function( event, ui ) {
+                if (manager.CurrentTimestamp !== ui.value) {
+                    manager.CurrentTimestamp = ui.value;    // values for the timeline
+                    manager.CurrentDate = calcTimestep(ui.value);   // values relevant to our stations
+                }
+            }
+        });
+        $( "#amount" ).val( "$" + $("#timelineSlider").slider("value"));
+    });
+
     terrains = [];
     $.getJSON('/terrains/', function(json) {
         $.each(json, function(id, item) {
@@ -77,25 +103,7 @@ $(document).ready(function() {
     $(function() {
         $('.dropdown-toggle').dropdown();
     });
-    // Sliders
-    $(function() {
-        $("#timelineSlider").slider({
-            disabled: true,
-            value:0,
-            min: 0,
-            max: 1,
-            step: 1,
-            slide: function( event, ui ) {
-                $( "#amount" ).val( "$" + ui.value );
-            },
-            stop: function( event, ui ) {
-                manager.CurrentTimestamp = ui.value;
-            }
-        });
-        $( "#amount" ).val( "$" + $("#timelineSlider").slider("value"));
-    });
     $("#closehowtomodal").click(function() {
         $("#howtovideo")[0].pause();
     })
 });
-

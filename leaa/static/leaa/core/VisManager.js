@@ -1,6 +1,38 @@
 /**
  * Created by Taylor on 10/11/2015.
  */
+
+//TODO: Get back from Christoph if they are index 0 or index 1 timestamps
+months = {'Jan':'01',
+          'Feb':'02',
+          'Mar':'03',
+          'Apr':'04',
+          'May':'05',
+          'Jun':'06',
+          'Jul':'07',
+          'Aug':'08',
+          'Sep':'09',
+          'Oct':'10',
+          'Nov':'11',
+          'Dec':'12'
+};
+
+//TODO: Make this function... prettier? It's pretty garbled
+function calcTimestep(value) {
+    var currentDate = new Date();
+    currentDate.setTime(value);
+    var currentDateStr = currentDate.toString();
+    // parse month
+    var _month = currentDateStr.substr(4,3);
+    var monthValue;
+    $.each(months, function(month, value) {
+        if (month == _month) {monthValue = value;}});
+    var currentParsed = currentDateStr.substr(13,2) + monthValue + currentDateStr.substr(8,2)
+        + currentDateStr.substr(16,2) + currentDateStr.substr(19,2) + currentDateStr.substr(22,2);
+    return parseInt(currentParsed);
+    //console.log(currentInt);
+}
+
 /**
  * Abstract manager for handling visualization interactions.
  * Since some data may be 'dirty', in that not all data values are valid for every timestep
@@ -31,8 +63,8 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
  */
 VisManager.prototype.ResetStations = function() {
     clearArrows();
-    $('#timelineSlider').slider({value:manager.Timeline.beginTime.getTime()});
-    this.CurrentTimestamp = manager.Timeline.beginTime.getTime();
+    $('#timelineSlider').slider({value: this.Timeline.beginTime.getTime()});
+    this.CurrentTimestamp = this.Timeline.beginTime.getTime();
     for (var i = 0; i < this.ActiveStations.length; i++) {
         this.ActiveStations[i].ResetIndex();
         this.ActiveStations[i].isCurrent = true;
@@ -44,18 +76,17 @@ VisManager.prototype.ResetStations = function() {
  * @constructor
  */
 VisManager.prototype.StepForward = function() {
+    $('#timelineSlider').slider({value: this.CurrentTimestamp + this.Timeline.timeStep});
     this.Step(true);
-    $('#timelineSlider').slider('option', 'value', manager.CurrentTimestamp + manager.Timeline.timeStep);
-    manager.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
 };
 /**
  * Step backward.
  * @constructor
  */
 VisManager.prototype.StepBackward = function() {
+    $('#timelineSlider').slider({value: this.CurrentTimestamp - this.Timeline.timeStep});
     this.Step(false);
-    $('#timelineSlider').slider('option', 'value', manager.CurrentTimestamp - manager.Timeline.timeStep);
-    manager.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
+
 };
 /**
  * Steps our animation forward or backward
@@ -78,6 +109,8 @@ VisManager.prototype.Step = function(forward) {
             renderArrows(station);
         }
     }
+    this.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
+    this.CurrentDate = calcTimestep(this.CurrentTimestamp);
 };
 
 /**

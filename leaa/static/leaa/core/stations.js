@@ -59,11 +59,19 @@ Station.prototype.GetCurrentTimestamp = function() {
 
 Station.prototype.SetCurrentTimestamp = function(_timestamp) {
     //Make this better? Intelligent way to just find the right timestamp?
-    var i;
-    var _index;
-    for (i = 0; i < this.dates.length-1; i++) {
-        if (dates[i] = _timestamp) {
-            _index = i; break;
+    var i, j;
+
+    var _index = this.dates.indexOf(_timestamp); // get the index of the timestamp
+
+    if (_index == -1) { // we didn't find one, so go find the biggest one that is smaller than the timestamp.
+        var max = 0;
+        for (i = 0; i < this.dates.length; i++) {
+            if (this.dates[i] > max && this.dates[i] < _timestamp) max = this.dates[i];
+        }
+        _index = this.dates.indexOf(max);
+
+        if (_index == -1) { // we still didn't find one, so we give up and reset the station. //TODO: Is this sufficient?
+            _index = 0;
         }
     }
     this.index = _index;

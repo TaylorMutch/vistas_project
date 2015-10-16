@@ -199,7 +199,10 @@ steal(function () {
         }
     });
 
-
+    /**
+     * Elevation slider
+     * Calls WebGL to render the scene with the adjusted DEM
+     */
     $(function() {
         $("#sceneHeight").slider({
             disabled: true,
@@ -211,8 +214,10 @@ steal(function () {
                 $( "#amount").val("$"+ui.value);
             },
             stop: function(event,ui) {
-                manager.SceneHeight = ui.value;
-                redrawDEM();
+                if (ui.value !== manager.SceneHeight) { //redraw only if the value is changed
+                    manager.SceneHeight = ui.value;
+                    redrawDEM();
+                }
             }
         });
         $("#amount").val("$" + $("#sceneHeight").slider("value"));

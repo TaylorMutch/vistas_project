@@ -39,23 +39,22 @@ steal(function () {
                 /**
                  * Initialize our timeline with the desired dates in Date() objects.
                  */
-                manager.Timeline.beginTime = new Date(+min.substr(0,4), +min.substr(4,2), +min.substr(6,2),
+                manager.Timeline.beginTime = new Date(+min.substr(0,4), +min.substr(4,2)-1, +min.substr(6,2),
                                             +min.substr(8,2), +min.substr(10,2), +min.substr(12,2));
-                manager.Timeline.endTime = new Date(+max.substr(0,4), +max.substr(4,2), +max.substr(6,2),
+                manager.Timeline.endTime = new Date(+max.substr(0,4), +max.substr(4,2)-1, +max.substr(6,2),
                                             +max.substr(8,2), +max.substr(10,2), +max.substr(12,2));
                 manager.Timeline.currentTime = manager.Timeline.beginTime;
 
                 //calculate timeStep
-                var date1 = new Date(+step1.substr(0,4), +step1.substr(4,2), +step1.substr(6,2),
+                var date1 = new Date(+step1.substr(0,4), +step1.substr(4,2)-1, +step1.substr(6,2),
                                      +step1.substr(8,2), +step1.substr(10,2), +step1.substr(12,2));
-                var date2 = new Date(+step2.substr(0,4), +step2.substr(4,2), +step2.substr(6,2),
+                var date2 = new Date(+step2.substr(0,4), +step2.substr(4,2)-1, +step2.substr(6,2),
                                      +step2.substr(8,2), +step2.substr(10,2), +step2.substr(12,2));
                 manager.Timeline.timeStep = date2.getTime() - date1.getTime();
                 manager.Timeline.numSteps = (manager.Timeline.endTime.getTime() - manager.Timeline.beginTime.getTime())/
                                             manager.Timeline.timeStep;
 
-                // Enable the UI timeline
-
+                // Enable the UI timeline and vector controls
                 $('#timelineSlider').slider({
                     disabled: false,
                     value: manager.Timeline.beginTime.getTime(),
@@ -66,8 +65,9 @@ steal(function () {
                 $('#vectorHeight').slider({disabled: false});
                 $('#vectorLength').slider({disabled: false});
 
-
+                // Initialize our initial values for this set of data.
                 manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
+                manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
             }
         );
 
