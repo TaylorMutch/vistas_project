@@ -31,6 +31,7 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
  */
 VisManager.prototype.ResetStations = function() {
     clearArrows();
+    $('#timelineSlider').slider({value:manager.Timeline.beginTime});
     for (var i = 0; i < this.ActiveStations.length; i++) {
         this.ActiveStations[i].ResetIndex();
         this.ActiveStations[i].isCurrent = true;
