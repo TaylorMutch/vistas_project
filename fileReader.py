@@ -45,7 +45,6 @@ def readSDR(fileName, stationName):
             elif tag == 'DCL':
                 directions.append([float(j) for j in line.strip().split()[1:]])
             elif tag == 'SDR':
-                #dates.append(sdrDateToString(line[4:16]))
                 dates.append(int(line[4:16]))
 
     return heights, dates, speeds, directions

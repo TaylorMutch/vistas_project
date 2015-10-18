@@ -16,9 +16,6 @@ import django
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# TODO: determine the best way to make this more general
-SODAR_DIR = os.path.abspath(os.path.join(BASE_DIR, 'leaa/static/leaa/resources/'))
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
@@ -112,15 +109,24 @@ STATIC_URL = '/static/'
 
 #STATIC_ROOT = ''
 
+# TODO: REPLACE THIS as this is not going to be used in production.
+#SODAR_DIR = os.path.abspath(os.path.join(BASE_DIR, 'leaa/static/leaa/resources/'))
+
+MEDIA_URL = ''
+
+# TODO: Edit this when we go to production
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/vistas_project/leaa/media/'
+
+SODAR_DIR = os.path.join(MEDIA_ROOT, MEDIA_URL)
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
 
 
 STATICFILES_FINDERS = (
-    #'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-
 )
 
 # Custom Admin site tools, menu and dashboard
