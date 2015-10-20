@@ -46,7 +46,6 @@ steal(function () {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
                 terrainGeo = new THREE.Mesh(plane, texture);
-                terrainGeo.geometry._dirtyVertices = true;
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
                 scene.add(terrainGeo);
@@ -115,9 +114,7 @@ steal(function () {
     function redrawDEM() {
         for (var i = 0; i < manager.rawDEM.length; i++) {
             terrainGeo.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
-            terrainWire.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
         }
-        terrainWire.geometry.verticesNeedUpdate = true;
         terrainGeo.geometry.verticesNeedUpdate = true;
     }
 
