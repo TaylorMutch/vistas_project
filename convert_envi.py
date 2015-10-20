@@ -1,11 +1,10 @@
 """
-This script converts from a simple binary elevation format to ArcASCII. The format of the binary file is:
+This script converts from a simple binary elevation format to ENVI. The format of the file is mixed ASCII and binary:
 
-Offset    Type    Description
------------------------------
-0         uint    Grid width
-4         uint    Grid height
-8         float*  Elevation values as floats in row-major order from lower-left to upper-right.
+Line 0 - longitudes (west long, east long, numberOfSegments)
+Line 1 - latitudes  (north lat, south lat, numberOfSegments)
+Form_Feed charater (1 byte)
+Every 4 bytes after the Form_Feed are floats containing elevation values.
 """
 
 import os
@@ -31,52 +30,46 @@ def main():
             sys.exit(-1)
 
 
-    with open(output_path, 'wb') as f_out:
+    with open(output_path + '.bin', 'wb') as f_out:
         with open(input_path, 'rb') as f_in:
 
-            # skip first two lines with \n's and form_feed character
-            f_in.readline()  # longitudes
-            f_in.readline()  # latitudes
-            f_in.read(1)     # form feed character
-
-            '''By the time this script is called,
-            the user will have already inputted the coordinates, and we can do an
-            interpolation to dictate how many slices between edge coordinates.
-            So basically, we just skip this stuff...
-            '''
+            longs = f_in.readline().decode('ascii').split()
+            #lng2 = float(longs[0])
+            #lng1 = float(longs[1])
+            numlngs = int(longs[2])
+            print(numlngs)
+            lats = f_in.readline().decode('ascii').split()
+            #lat2 = float(lats[0])
+            #lat1 = float(lats[1])
+            numlats = int(lats[2])
+            print(numlats)
+            f_in.read(1)     # skip the form feed character
 
             begin_binary = f_in.tell()
-            width = 458
-            height = 458
 
             # Check to make sure we have a file of correct size. Additionally we get
             # the cursor in the right position to start reading data.
             f_in.seek(0, os.SEEK_END)
-            assert f_in.tell() == width * height * 4 + begin_binary
+            assert f_in.tell() == numlngs * numlats * 4 + begin_binary
 
-            # The binary format orders rows from bottom to top, while the ArcASCII format orders top to bottom.
-            # So we'll read from the end of the binary file backwards
-
-            f_in.seek(27,os.SEEK_SET)
-            heightMap = struct.unpack('f' * width * height, f_in.read(4*width*height))
+            f_in.seek(begin_binary, os.SEEK_SET)
+            heightMap = struct.unpack('f' * numlats * numlngs, f_in.read(4*numlngs*numlats))
 
             max = 0
             for val in heightMap:
                 if val > max:
                     max = val
-            max = math.ceil(max)  # TODO: We need to record this in our now Model object
+            max = math.ceil(max)  # TODO: We need to record this in our new Model object
             print(max)
 
-            f_check = open(f_out.name + '_check', 'w')
-            for i in range(1, height + 1):
-                f_in.seek(-i * width * 4, os.SEEK_END)
-                row = (struct.unpack('f' * width, f_in.read(width * 4)))
-                newFileBytes = (int(x/max*65535) for x in row) # scale the value to full value of a unsigned int
-                line = (str(x) for x in row)
-                f_check.write(' '.join(line) + '\n')
+            # The binary format orders rows from bottom to top, while the ENVI format orders top to bottom.
+            # So we'll read from the end of the binary file backwards
+            for i in range(1, numlats + 1):
+                f_in.seek(-i * numlngs * 4, os.SEEK_END)
+                row = (struct.unpack('f' * numlngs, f_in.read(numlngs * 4)))
+                newFileBytes = (math.floor(x) for x in row) # scale the value to an integer. floor or ceiling is fine
                 for i in newFileBytes:
                     f_out.write(struct.pack('H', i))
-            f_check.close()
 
 if __name__ == '__main__':
     main()
