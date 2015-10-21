@@ -10,7 +10,8 @@ steal(function () {
     /**
      * Retrieves a selected DEM from our list of terrains.
      */
-    $("a.dem").click(function() {
+    //$("a.dem").click(function() {
+    $("ul").on('click', 'a.dem', function() {
         /** Go get the new terrain or just pass over everything */
         var index = $(this).attr('value');   // index of the terrain we want
         temp_terrain = terrains[index];
@@ -32,7 +33,8 @@ steal(function () {
             plane.computeVertexNormals();
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/relief' + name +'.png')});
+	        //texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
+            texture = new THREE.MeshBasicMaterial({color: 0xa9a9a9});
             wire = new THREE.MeshPhongMaterial({
                 color: 0xbbbbbb,
                 wireframe: true
@@ -40,7 +42,7 @@ steal(function () {
             //texture.flipY = true;
 
             // Load the terrain and all stations
-            manager.TerrainLoader.load('static/leaa/resources/dem'+ name + '.bin', function(data) {
+            manager.TerrainLoader.load('static/leaa/resources/'+ name + '.bin', function(data) {
                 manager.rawDEM = data;
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;

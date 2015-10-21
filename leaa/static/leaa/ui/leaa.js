@@ -71,7 +71,7 @@ $(document).ready(function() {
         });
     }).done(function(terrains) {
         $.each(terrains, function (id, terrain) {
-            $("#demPicker").append('<li><a href="#" id="dem'+terrain.name +'" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
+            $("#demPicker").append('<li><a href="#" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
         });
     });
 
