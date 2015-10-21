@@ -5,7 +5,7 @@
     "fields": {
       "name" : "HJAndrews",
       "MAPx" : 100,
-      "MAPy" : 76,
+      "MAPy" : 100,
       "DEMx" : 458,
       "DEMy" : 344,
       "maxHeight" : 1215,
@@ -36,6 +36,19 @@
       "DEMy" : 199,
       "maxHeight" : 5,
       "fileName" : "Jotunheimen.bin"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "leaa.Terrain",
+    "fields": {
+      "name" : "test",
+      "MAPx" : 100,
+      "MAPy" : 100,
+      "DEMx" : 458,
+      "DEMy" : 458,
+      "maxHeight" : 1617,
+      "fileName" : "test.bin"
     }
   }
 ]
