@@ -33,8 +33,7 @@ steal(function () {
             plane.computeVertexNormals();
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        //texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
-            texture = new THREE.MeshBasicMaterial({color: 0xa9a9a9});
+	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
             wire = new THREE.MeshPhongMaterial({
                 color: 0xbbbbbb,
                 wireframe: true
