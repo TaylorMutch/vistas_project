@@ -26,6 +26,9 @@ def index(request):
     user = User.objects.filter(id=2)[0]
     return render(request, 'leaa/index.html', {'user': user})
 
+def test(request):
+    return render(request, 'leaa/test_index.html')
+
 
 class TerrainList(generics.ListAPIView):
     queryset = Terrain.objects.all()
@@ -85,8 +88,3 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
-
-
-def base_terrain(request):
-    return render(request, 'leaa/test_index.html')
-

@@ -1,103 +1,109 @@
-{% load staticfiles %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Three Test</title>
-    <!--style>
-        body {margin: 0;}
-        canvas {width: 100%; height: 100%;}
-    </style-->
-</head>
-<body>
-    <script src="{% static "leaa/js/../../static/leaa/three/three.min.js" %}"></script>
-    <!--script src="{% static "leaa/js/../../static/leaa/three/CombinedCamera.js" %}"></script-->
-    <script src="{% static "leaa/js/../../static/leaa/three/OrbitControls.js" %}"></script>
-    <script src="{% static "leaa/js/../../static/leaa/three/TerrainLoader.js" %}"></script>
+{%  load staticfiles %}
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Testing</title>
+        <style>
+            #scene {
+                background: #000;
+                width: 400px;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <script type="x-shader/x-vertex" id="vertexShader">
 
-    <script>
-
-        // Constants
-        MAPx = 100;
-        MAPy = 76;
-        DEMx = 458;
-        DEMy = 344;
-
-        // Globals
-        var container, camera, scene, renderer;
-
-        init();
-        animate();
-
-        function init() {
-            container = document.createElement( 'div' );
-            document.body.appendChild( container );
-
-            camera = new THREE.PerspectiveCamera(45 , window.innerWidth / window.innerHeight, 1, 2000);
-
-            // Scene
-
-            scene = new THREE.Scene();
-             var ambient = new THREE.AmbientLight(0xffffff);
-            scene.add(ambient);
-
-            // General purpose manager for obtaining items.
-            var manager = new THREE.LoadingManager();
-            manager.onProgress = function( item, loaded, total) {
-                console.log( item, loaded, total);
-            };
-
-            // Get initial terrain geo, to be computed with DEM data
-            var terrainGeo = new THREE.PlaneBufferGeometry(MAPx, MAPy, DEMx-1, DEMy-1);
-            terrainGeo.computeFaceNormals();
-            terrainGeo.computeVertexNormals();
-
-            // Get terrain texture **TODO: make this malleable for taking arbitrary relief textures.
-            var texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/reliefHJAndrews.png')});
-            //ar loader = new THREE.ImageLoader( manager );
-            //loader.load( 'static/leaa/resources/reliefHJAndrews.png', function (image) {
-            //    texture.image = image;
-            //    texture.needsUpdate = true;
-            //});
-
-
-
-            var heightMap = [];
-            var loader = new THREE.TerrainLoader();
-            loader.load('/static/leaa/resources/demHJAndrews.bin', function(data) {
-                for (var i = 0, l = terrainGeo.vertices.length; i < l; i++ ) {
-                    terrainGeo.vertices[i].z = data[i]/65636*1215;
-                    heightMap[i] = data[i];
-                }
-                terrain = new THREE.Mesh(terrainGeo, texture);
-                scene.add(terrain);
-            });
-            renderer = new THREE.WebGLRenderer();
-            //renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-            window.addEventListener('resize',onWindowResize,false);
-        }
-
-        function onWindowResize() {
-            windowHalfx = window.innerWidth / 2;
-            windowHalfy = window.innerHeight / 2;
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-
-            render.setSize( window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            render();
-        }
-
-        function render () {
-
-            camera.lookAt(scene.position);
-            renderer.render(scene,camera);
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
         }
     </script>
-</body>
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        void main()
+        {
+            gl_FragColor = vec4(0.5,0.0,1.0,1.0);
+        }
+    </script>
+    <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
+    <script src="{% static "leaa/three/three_r72.min.js" %}"></script>
+
+    <body>
+    <script>
+
+
+        // Setup Camera
+        var camera = new THREE.PerspectiveCamera(45, 400/300, 0.1, 10000);
+        camera.position.z = 5;
+        // Setup Scene
+        var scene = new THREE.Scene();
+
+        // Initialze controls
+        //orbit = new THREE.OrbitControls(camera, container);
+
+        // Declare renderer settings
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(400,300);
+        //renderer.setClearColor(0xfefefe, 1);
+        renderer.setClearColor(0x000000, 1);
+        document.body.appendChild(renderer.domElement);
+        var attributes = {
+            displacement: {
+                type: 'f',
+                value: []
+            }
+        };
+
+        var uniforms = {
+            amplitude: {
+                type: 'f',
+                value: 0
+            }
+        };
+
+        var shaderMaterial = new THREE.ShaderMaterial({
+        //    uniforms: uniforms,
+        //    attributes: attributes,
+            vertexShader: $('#vertexShader').text(),
+            fragmentShader: $('#fragmentShader').text()
+        });
+
+        //var geometry = new THREE.BufferGeometry();
+        var geometry = new THREE.BoxGeometry(1,1,1);
+        var vertexPositions = [
+                [-1.0,-1.0,1.0],
+                [1.0,-1.0,1.0],
+                [1.0,1.0,1.0],
+                [1.0,1.0,1.0],
+                [1.0,-1.0,1.0],
+                [-1.0,-1.0,1.0]
+        ];
+
+        var vertices = new Float32Array(vertexPositions.length * 3);
+
+        for (var i = 0; i < vertexPositions.length; i++) {
+            vertices[i*3]     = vertexPositions[i][0];
+            vertices[i*3 + 1] = vertexPositions[i][0];
+            vertices[i*3 + 2] = vertexPositions[i][0];
+        }
+
+        //geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        var material = new THREE.MeshBasicMaterial({ color: 0xfff000});
+        var mesh = new THREE.Mesh(geometry, material);
+        //var mesh = new THREE.Mesh(geometry, shaderMaterial);
+        scene.add(mesh);
+
+        //var frame = 0;
+
+        function update() {
+            //uniforms.amplitude.value = Math.sin(frame);
+            //frame += 0.1;
+            requestAnimationFrame(update);
+
+            renderer.render(scene, camera);
+        }
+        update();
+    </script>
+
+    </body>
 </html>
