@@ -75,7 +75,7 @@ $(document).ready(function() {
         });
     });
 
-    steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
+    steal("leaa/ui/loadTerrain_shader.js", function() {}); // Load rendering tools
     steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
     steal("leaa/ui/animateWind.js", function() {}); // Wind controls
     //steal("leaa/ui/registration.js", function() {}); //TODO: Add registration functionality

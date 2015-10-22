@@ -34,13 +34,7 @@ steal(function () {
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
 	        // texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
-            var shaderMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                        displacement:{type:'f',value: 2.0}
-                },
-                vertexShader: $('#vertexShader').text(),
-                fragmentShader: $('#fragmentShader').text()
-            });
+
 
             wire = new THREE.MeshPhongMaterial({
                 color: 0xbbbbbb,
@@ -54,6 +48,21 @@ steal(function () {
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
+                var max = 0;
+                for (var i = 0; i < plane.vertices.length; i++) {
+                    if (plane.vertices[i].z > max) {
+                        max = plane.vertices[i].z;
+                    }
+                }
+                var shaderMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    displacement:{type:'f',value: manager.SceneHeight},
+                    max_height:{type:'f', value: max }
+                },
+                vertexShader: $('#vertexShader').text(),
+                fragmentShader: $('#fragmentShader').text()
+                });
+
                 terrainGeo = new THREE.Mesh(plane, shaderMaterial);
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
@@ -222,7 +231,9 @@ steal(function () {
             stop: function(event,ui) {
                 if (ui.value !== manager.SceneHeight) { //redraw only if the value is changed
                     manager.SceneHeight = ui.value;
-                    redrawDEM();
+                    //redrawDEM();
+                    terrainGeo.material.uniforms.displacement.value=ui.value;
+                    //terrainGeo.geometry.verticesNeedUpdate = true;
                 }
             }
         });
