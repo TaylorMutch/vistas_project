@@ -33,7 +33,7 @@ steal(function () {
             plane.computeVertexNormals();
 
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        // texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
+	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
 
             // Load the terrain and all stations
             manager.TerrainLoader.load('static/leaa/resources/'+ name + '.bin', function(data) {
@@ -56,7 +56,8 @@ steal(function () {
                 fragmentShader: $('#fragmentShader').text()
                 });
 
-                terrainGeo = new THREE.Mesh(plane, shaderMaterial);
+                //terrainGeo = new THREE.Mesh(plane, shaderMaterial);
+                terrainGeo = new THREE.Mesh(plane, texture);
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
                 scene.add(terrainGeo);
