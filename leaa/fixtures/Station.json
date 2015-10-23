@@ -26,19 +26,5 @@
       "long": -122.25954,
       "terrain" : 1
     }
-  },
-  {
-    "pk" : 3,
-    "model" : "leaa.Station",
-    "fields" : {
-      "name": "DummyStation1",
-      "utmX": 0,
-      "utmY": 0,
-      "demX": 0,
-      "demY": 0,
-      "lat": 0,
-      "long": 0,
-      "terrain":2
-    }
   }
 ]

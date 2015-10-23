@@ -10,21 +10,12 @@ class Terrain(models.Model):
     DEMx = models.IntegerField()
     DEMy = models.IntegerField()
     maxHeight = models.IntegerField()
-    user = models.ManyToManyField(User)
+    #user = models.ManyToManyField(User)
     fileName = models.CharField(max_length=100)
-
-    #utm_MINy = models.FloatField() #TODO: Determine whether these are actually necessary for any of this.
-    #utm_MAXy = models.FloatField()
-    #utm_MINx = models.FloatField()
-    #utm_MAXx = models.FloatField()
-    #NE_LAT   = models.FloatField()
-    #NE_LONG  = models.FloatField()
-    #NW_LAT   = models.FloatField()
-    #NW_LONG  = models.FloatField()
-    #SE_LAT   = models.FloatField()
-    #SE_LONG  = models.FloatField()
-    #SW_LAT   = models.FloatField()
-    #SW_LONG  = models.FloatField()
+    north_lat = models.FloatField()
+    south_lat = models.FloatField()
+    east_lng = models.FloatField()
+    west_lng = models.FloatField()
 
     def __str__(self):
         return self.name
@@ -47,10 +38,11 @@ class Station(models.Model):
 class DataFile(models.Model):
     creationDate = models.DateField(auto_now_add=False)  #TODO: Revise this to be the date at which the data was created
     station = models.ForeignKey('Station')
+    terrain = models.ForeignKey('Terrain')
     fileName = models.CharField(max_length=50)
 
-    #def __str__(self):
-    #    return self.fileName + ' - ' + str(self.creationDate)
+    def __str__(self):
+        return str(self.creationDate)
 
 
 class Setting(models.Model):

@@ -1,5 +1,5 @@
 # vistas_project
-A test repository for Django-based VISTAS applications. Currently contains the LEAA (formerly [VALCEX](https://github.com/TaylorMutch/valcex)) application for visualizing wind data.
+A test repository for Django-based VISTAS applications. Currently contains the [VALCEX](https://github.com/TaylorMutch/valcex) application for visualizing wind data.
 
 # Development Requirements
 

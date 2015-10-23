@@ -12,11 +12,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import django
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# TODO: determine the best way to make this more general
-SODAR_DIR = os.path.abspath(os.path.join(BASE_DIR, 'leaa/static/leaa/resources/'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -33,14 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    #'admin_tools',
+    #'admin_tools.theming',
+    #'admin_tools.dashboard',
+    #'admin_tools.menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'leaa',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.request',
             ],
         },
     },
@@ -99,12 +102,32 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 
+#STATIC_ROOT = ''
+
+MEDIA_URL = '/media/'
+
+# TODO: Edit this when we go to production
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/vistas_project/leaa/media'
+
+#SODAR_DIR = os.path.join(MEDIA_ROOT, MEDIA_URL)
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+# Custom Admin site tools, menu and dashboard
+
+#ADMIN_TOOLS_MENU = 'menu.CustomMenu'
+#ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+#ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'
