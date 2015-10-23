@@ -112,9 +112,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # TODO: Edit this when we go to production
-MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/vistas_project/leaa/media'
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media'
 
-#SODAR_DIR = os.path.join(MEDIA_ROOT, MEDIA_URL)
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
