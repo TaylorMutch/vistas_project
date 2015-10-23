@@ -35,13 +35,6 @@ steal(function () {
     	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
 	        // texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
 
-
-            wire = new THREE.MeshPhongMaterial({
-                color: 0xbbbbbb,
-                wireframe: true
-            });
-            //texture.flipY = true;
-
             // Load the terrain and all stations
             manager.TerrainLoader.load('static/leaa/resources/'+ name + '.bin', function(data) {
                 manager.rawDEM = data;
@@ -69,9 +62,6 @@ steal(function () {
                 scene.add(terrainGeo);
                 updateSodarLog('Added terrain: ' + temp_terrain.name, false);
                 manager.SceneObjects.push(terrainGeo);
-                terrainWire = new THREE.Mesh(plane, wire);
-                terrainWire.name = 'terrain wireframe';
-                manager.SceneObjects.push(terrainWire);
                 // Get the related recordDates
                 $("#dataPicker").empty();
                 $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
@@ -189,29 +179,7 @@ steal(function () {
      * Toggle wireframe
      */
     $('#wireframeToggle').on('click', function() {
-        var obj, i;
-        if (manager.ShowWireFrame) {
-            for (i = scene.children.length - 1; i >= 0; i--) {
-                obj = scene.children[i];
-                if (obj.name == 'terrain wireframe') {
-                    scene.remove(obj);
-                    break;
-                }
-            }
-            manager.ShowWireFrame = false;
-            scene.add(terrainGeo);
-        }
-        else {
-            for (i = scene.children.length - 1; i >= 0 ; i--) {
-                obj = scene.children[i];
-                if (obj.name == 'terrain poly') {
-                    scene.remove(obj);
-                    break;
-                }
-            }
-            manager.ShowWireFrame = true;
-            scene.add(terrainWire);
-        }
+        terrainGeo.material.wireframe = !terrainGeo.material.wireframe;
     });
 
     /**

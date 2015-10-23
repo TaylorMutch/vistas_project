@@ -49,7 +49,6 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
     this.TerrainLoader = new THREE.TerrainLoader();
     this.Animating = false;
-    this.ShowWireFrame = false;
     this.Timeline = new Timeline();
     this.SceneHeight = 1;
     this.VectorHeight = 1;
