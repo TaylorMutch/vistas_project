@@ -16,56 +16,6 @@
     <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
 </head>
 <body>
-    <!-- Shaders -->
-    <script type="x-shader/x-vertex" id="vertexShader">
-
-        uniform float displacement;
-
-        varying float height;
-
-        void main()
-        {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x,position.y,position.z*displacement,1.0);
-            height = position.z;
-        }
-    </script>
-    <script type="x-shader/x-fragment" id="fragmentShader">
-
-        uniform float max_height;
-        varying float height;
-
-        vec3 color_from_height( const float height )
-        {
-            vec3 terrain_colours[4];
-            terrain_colours[0] = vec3(0.0,0.0,0.6);
-            terrain_colours[1] = vec3(0.1, 0.3, 0.1);
-            terrain_colours[2] =  vec3(0.4, 0.8, 0.4);
-            terrain_colours[3] = vec3(1.0,1.0,1.0);
-            if (height < 0.0)
-                return terrain_colours[0];
-            else
-            {
-                float hscaled = height*2.0 - 1e-05; // hscaled should range in [0,2)
-                int hi = int(hscaled); // hi should range in [0,1]
-                float hfrac = hscaled-float(hi); // hfrac should range in [0,1]
-                if( hi == 0)
-                    return mix( terrain_colours[1],terrain_colours[2],hfrac); // blends between the two colours
-                else
-                    return mix( terrain_colours[2],terrain_colours[3],hfrac); // blends between the two colours
-            }
-            return vec3(0.0,0.0,0.0);
-        }
-
-        void main()
-        {
-            float norm_height = height/max_height;
-            vec3 myColor = color_from_height(norm_height);
-            gl_FragColor = vec4(myColor, 1.0);
-
-        }
-    </script>
-
-
     <!-- External Libraries -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
     <script src="{% static "leaa/js/jquery-ui.min.js" %}"></script>
@@ -85,7 +35,19 @@
 
     <!-- VALCEX UI SCRIPTS (via steal.js) -->
     <script src="{% static "steal/steal.js" %}"></script>
-    <script src="{% static "leaa/ui/leaa_shader.js" %}"></script>
+    <script src="{% static "leaa/ui/leaa.js" %}"></script>
+    <script type="x-shader/x-vertex" id="vertexShader">
+        void main()
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        }
+    </script>
+    <script type="x-shader/x-fragment" id ="fragmentShader">
+        void main()
+        {
+            gl_FragColor = vec4(1.0,0.0,1.0,1.0);
+        }
+    </script>
 
 
     <div class="modal fade" id="howtomodal" tabindex="-1" role="dialog">

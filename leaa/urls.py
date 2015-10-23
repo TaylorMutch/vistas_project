@@ -6,6 +6,7 @@ from leaa import views
 
 urlpatterns = [
     url(r'^$', views.index, name="index"),
+    url(r'^test/', views.test, name="test"),
     url(r'^api-root/', views.api_root),
     url(r'^users/', views.UserList.as_view(),
         name='user-list'),

@@ -24,7 +24,11 @@ def api_root(request):
 def index(request):
     # TODO: Replace with arbitrary user lookup
     user = User.objects.filter(id=2)[0]
-    return render(request, 'leaa/index.html', {'user': user})
+    #return render(request, 'leaa/index.html', {'user': user})
+    return render(request, 'leaa/test_index.html', {'user':user})
+
+def test(request):
+    return render(request, 'leaa/test_index.html')
 
 
 class TerrainList(generics.ListAPIView):
@@ -85,8 +89,3 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
-
-
-def base_terrain(request):
-    return render(request, 'leaa/test_index.html')
-
