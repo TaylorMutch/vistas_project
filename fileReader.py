@@ -2,7 +2,7 @@ __author__ = 'Taylor'
 
 from leaa.models import DataFile, Station
 import os
-from vistas_project_alpha.settings import SODAR_DIR
+from vistas_project_alpha.settings import MEDIA_ROOT
 from django.utils import timezone
 from datetime import datetime, date
 '''
@@ -23,9 +23,9 @@ months = [None, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 tags   = {'DCL', 'VCL', 'SDR', 'H  '}
 
 
-def readSDR(fileName, stationName):
+def readSDR(fileName, stationName, terrainName):
 
-    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as datafile:
+    with open(os.path.join(MEDIA_ROOT, terrainName + '/' + stationName + '/' + fileName + '.sdr')) as datafile:
         data = datafile.readlines()
     datafile.close()
     numLines = len(data)
@@ -51,7 +51,7 @@ def readSDR(fileName, stationName):
 
 
 def readRecordDateToDatetime(fileName, stationName):
-    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as f:
+    with open(os.path.join(MEDIA_ROOT, stationName + '/' + fileName + '.sdr')) as f:
         data = f.readline(16)
     f.close()
     date = sdrDateToDatetime(data[4:])
@@ -59,7 +59,7 @@ def readRecordDateToDatetime(fileName, stationName):
 
 
 def readRecordDateToString(fileName, stationName):
-    with open(os.path.join(SODAR_DIR, stationName + '/' + fileName + '.sdr')) as f:
+    with open(os.path.join(MEDIA_ROOT, stationName + '/' + fileName + '.sdr')) as f:
         data = f.readline(16)
     f.close()
     date = sdrDateToString(data[4:])

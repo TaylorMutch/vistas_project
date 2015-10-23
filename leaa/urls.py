@@ -1,7 +1,9 @@
 # __author__ = 'tmutch'
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from rest_framework.urlpatterns import format_suffix_patterns
 from leaa import views
+from vistas_project_alpha import settings
 
 
 urlpatterns = [
@@ -31,5 +33,8 @@ urlpatterns = [
 urlpatterns += [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = format_suffix_patterns(urlpatterns)

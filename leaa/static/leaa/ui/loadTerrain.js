@@ -32,29 +32,66 @@ steal(function () {
             plane.computeFaceNormals();
             plane.computeVertexNormals();
 
-    	    // Import texture //TODO: rewrite this texture code to import a THREE.Texture, fixes flipped texture problem.
-	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('static/leaa/resources/' + name +'.png')});
-            wire = new THREE.MeshPhongMaterial({
-                color: 0xbbbbbb,
-                wireframe: true
-            });
-            //texture.flipY = true;
+    	    // Import texture
+	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
 
             // Load the terrain and all stations
-            manager.TerrainLoader.load('static/leaa/resources/'+ name + '.bin', function(data) {
+            manager.TerrainLoader.load('media/'+name+'/'+ name + '.bin', function(data) {
                 manager.rawDEM = data;
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
                 }
+                var max = 0;
+                for (var i = 0; i < plane.vertices.length; i++) {
+                    if (plane.vertices[i].z > max) {
+                        max = plane.vertices[i].z;
+                    }
+                }
+                // TODO: Sort out this shader before we use it...
+                var shaderMaterial = new THREE.ShaderMaterial({uniforms: {
+                    displacement:{type:'f',value: manager.SceneHeight},
+                       max_height:{type:'f', value: max }
+                    },
+                    fragmentShader:
+                        ["uniform float max_height;",
+                            "varying float height;",
+                            "vec3 color_from_height( const float height ) {",
+                            "vec3 terrain_colours[4];",
+                            "terrain_colours[0] = vec3(0.0,0.0,0.6);",
+                            "terrain_colours[1] = vec3(0.1, 0.3, 0.1);",
+                            "terrain_colours[2] =  vec3(0.4, 0.8, 0.4);",
+                            "terrain_colours[3] = vec3(1.0,1.0,1.0);",
+                            "if (height < 0.0)",
+                            "return terrain_colours[0];",
+                            "else {",
+                            "float hscaled = height*2.0 - 1e-05; // hscaled should range in [0,2)",
+                            "int hi = int(hscaled); // hi should range in [0,1]",
+                            "float hfrac = hscaled-float(hi); // hfrac should range in [0,1]",
+                            "if( hi == 0)",
+                            "return mix( terrain_colours[1],terrain_colours[2],hfrac);",
+                            "else return mix( terrain_colours[2],terrain_colours[3],hfrac);",
+                            "} return vec3(0.0,0.0,0.0); }",
+                            "void main() {",
+                            "float norm_height = height/max_height;",
+                            "vec3 myColor = color_from_height(norm_height);",
+                            "gl_FragColor = vec4(myColor, 1.0);",
+                        "}"].join("\n"),
+                    vertexShader:
+                        ["uniform float displacement;",
+                            "varying float height;",
+                            "void main() {",
+                            "gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x,position.y,position.z*displacement, 1.0);",
+                            "height = position.z;",
+                        "}"].join("\n")
+                });
+
+                //terrainGeo = new THREE.Mesh(plane, shaderMaterial);
                 terrainGeo = new THREE.Mesh(plane, texture);
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
                 scene.add(terrainGeo);
                 updateSodarLog('Added terrain: ' + temp_terrain.name, false);
                 manager.SceneObjects.push(terrainGeo);
-                terrainWire = new THREE.Mesh(plane, wire);
-                terrainWire.name = 'terrain wireframe';
-                manager.SceneObjects.push(terrainWire);
                 // Get the related recordDates
                 $("#dataPicker").empty();
                 $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
@@ -172,29 +209,7 @@ steal(function () {
      * Toggle wireframe
      */
     $('#wireframeToggle').on('click', function() {
-        var obj, i;
-        if (manager.ShowWireFrame) {
-            for (i = scene.children.length - 1; i >= 0; i--) {
-                obj = scene.children[i];
-                if (obj.name == 'terrain wireframe') {
-                    scene.remove(obj);
-                    break;
-                }
-            }
-            manager.ShowWireFrame = false;
-            scene.add(terrainGeo);
-        }
-        else {
-            for (i = scene.children.length - 1; i >= 0 ; i--) {
-                obj = scene.children[i];
-                if (obj.name == 'terrain poly') {
-                    scene.remove(obj);
-                    break;
-                }
-            }
-            manager.ShowWireFrame = true;
-            scene.add(terrainWire);
-        }
+        terrainGeo.material.wireframe = !terrainGeo.material.wireframe;
     });
 
     /**
@@ -215,6 +230,8 @@ steal(function () {
                 if (ui.value !== manager.SceneHeight) { //redraw only if the value is changed
                     manager.SceneHeight = ui.value;
                     redrawDEM();
+                    //terrainGeo.material.uniforms.displacement.value=ui.value;
+                    terrainGeo.geometry.verticesNeedUpdate = true;
                 }
             }
         });

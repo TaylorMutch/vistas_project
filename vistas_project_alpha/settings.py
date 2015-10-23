@@ -109,15 +109,12 @@ STATIC_URL = '/static/'
 
 #STATIC_ROOT = ''
 
-# TODO: REPLACE THIS as this is not going to be used in production.
-#SODAR_DIR = os.path.abspath(os.path.join(BASE_DIR, 'leaa/static/leaa/resources/'))
-
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # TODO: Edit this when we go to production
-MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/vistas_project/leaa/media/'
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/vistas_project/leaa/media'
 
-SODAR_DIR = os.path.join(MEDIA_ROOT, MEDIA_URL)
+#SODAR_DIR = os.path.join(MEDIA_ROOT, MEDIA_URL)
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),

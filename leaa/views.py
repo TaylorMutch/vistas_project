@@ -6,7 +6,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 
 # Create your views here.
 
@@ -24,8 +23,8 @@ def api_root(request):
 def index(request):
     # TODO: Replace with arbitrary user lookup
     user = User.objects.filter(id=2)[0]
-    #return render(request, 'leaa/index.html', {'user': user})
-    return render(request, 'leaa/test_index.html', {'user':user})
+    return render(request, 'leaa/index.html', {'user': user})
+
 
 def test(request):
     return render(request, 'leaa/test_index.html')

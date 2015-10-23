@@ -33,12 +33,13 @@ def getStationObjects(request):
     recordDate = str(request.GET.get('recordDate'))
     result = {}
     datafiles = DataFile.objects.filter(creationDate=recordDate)
+    terrain = Station.objects.all()[0].terrain
     for stationName in stationNames:
         stationResult = {}
         station = Station.objects.filter(name=stationName)[0] # There should only return one
         for file in datafiles:
             # Get data from file on disk
-            heights, dates, speeds, directions = readSDR(file.fileName, station.name)
+            heights, dates, speeds, directions = readSDR(file.fileName, station.name, terrain.name)
             stationResult = {'heights': heights, 'dates': dates, 'speeds': speeds, 'directions': directions}
             # Get data from sqlite db
             stationResult['name']       = station.name
