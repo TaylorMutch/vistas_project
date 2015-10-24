@@ -12,6 +12,7 @@
     <link href="{% static "leaa/css/jquery-ui.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/jquery-ui.structure.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/jquery-ui.theme.min.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/css/colorpicker.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/valcex.css" %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
 </head>
@@ -19,6 +20,7 @@
     <!-- External Libraries -->
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
     <script src="{% static "leaa/js/jquery-ui.min.js" %}"></script>
+    <script src="{% static "leaa/js/colorpicker.js" %}"></script>
     <script src="{% static "leaa/three/three_r72.min.js" %}"></script>
     <script src="{% static "leaa/three/CombinedCamera.js" %}"></script>
     <script src="{% static "leaa/three/OrbitControls.js" %}"></script>
@@ -74,14 +76,17 @@
                     </li>
                 </ul>
             </div>
+            <!-- UNDER CONSTRUCTION -->
             <div id="SignInOrUploadFileForm" class="navbar-collapse collapse">
                 {% if user.password == 'password' %}
                 <form class="navbar-form navbar-right" id="signInForm">
                     <div class="form-group">
-                        <input name="username" type="text" placeholder="Username or Email" class="form-control">
+                        <!--input name="username" type="text" placeholder="Username or Email" class="form-control"-->
+                        <input name="username" type="text" placeholder="Under" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input name="password" type="password" placeholder="Password" class="form-control">
+                        <!--input name="password" type="password" placeholder="Password" class="form-control"-->
+                        <input name="password" type="password" placeholder="Construction" class="form-control">
                     </div>
                     <button type="submit" class="btn btn-success" id="signInBtn">Sign In</button>
                     <span id="signInOrRegisterText">or</span>
@@ -93,6 +98,7 @@
                     </div>
                 {% endif %}
             </div>
+            <!-- End Construction Zone -->
         </div>
     </nav>
     <div id="wrapper" class="container">
@@ -168,10 +174,27 @@
                 <div>Vector Height</div>
                 <div id="vectorHeight"></div>
                 <br/>
-					Vector Color:
-					<br/>
-					<input id="colorPicker" type="color" value="#000000" onchange="updateColor(this.value)">
-				</form>
+                Vector Color:
+                <br/>
+                <!-- Funky color picker -->
+                <div id="colorSelector"><div style="background-color: #0000ff"></div></div>
+                <script>
+                    //$('#colorPicker').ColorPicker({flat:true});
+                    $('#colorSelector').ColorPicker({
+                        color: '#0000ff',
+                        onShow: function (colpkr) {
+                            $(colpkr).fadeIn(500);
+                            return false;
+                        },
+                        onHide: function (colpkr) {
+                            $(colpkr).fadeOut(500);
+                            return false;
+                        },
+                        onChange: function (hsb, hex, rgb) {
+                            $('#colorSelector div').css('backgroundColor', '#' + hex);
+                        }
+                    })
+                </script>
 			</div>
 	        <div id="sidebar">
 				<h4 class="text-center" data-toggle="tooltip" data-placement="top"

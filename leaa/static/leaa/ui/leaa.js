@@ -40,7 +40,7 @@ $(document).ready(function() {
 
     /**
      * Our timeline slider.
-     * Initialized to be dummy values because we don't know what the begin/end values are yet.
+     * Initialized to be disabled with dummy values because we don't know what the begin/end values are yet.
      * When enabled, the stop event triggers a render event based on the timestamp that it receives
      */
     $(function() {
@@ -56,8 +56,17 @@ $(document).ready(function() {
             // This is triggered when a user picks up and drops the slider.
             stop: function( event, ui ) {
                 if (manager.CurrentTimestamp !== ui.value) {
-                    manager.CurrentTimestamp = ui.value;    // values for the timeline
+                    console.log('Scrubber changed, updating values');
+                    manager.CurrentTimestamp = ui.value;            // values for the timeline
                     manager.CurrentDate = calcTimestep(ui.value);   // values relevant to our stations
+                    clearArrows();
+                    for (var i = 0; i < manager.ActiveStations.length; i++) {
+                        manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
+                        if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
+                            renderArrows(manager.ActiveStations[i]);
+                        }
+                    }
+                    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
                 }
             }
         });
