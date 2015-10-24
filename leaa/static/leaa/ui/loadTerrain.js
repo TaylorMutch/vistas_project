@@ -146,13 +146,17 @@ steal(function () {
         THREEx.Screenshot.bindKey(renderer);
     }
     /** Draws the DEM with new specified values.
-     * Doesn't touch the arrows, as those are desired to be independent.
+     * Redraws the arrows based on new station base postition
      **/
     function redrawDEM() {
         for (var i = 0; i < manager.rawDEM.length; i++) {
             terrainGeo.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
         }
         terrainGeo.geometry.verticesNeedUpdate = true;
+        clearArrows();
+        $.each(manager.ActiveStations, function(id, station) {
+            renderArrows(station);
+        })
     }
 
     /**
@@ -216,7 +220,8 @@ steal(function () {
      * Calls WebGL to render the scene with the adjusted DEM
      */
     $(function() {
-        $("#sceneHeight").slider({
+        var s = $("#sceneHeight");
+        s.slider({
             disabled: true,
             value:1,
             min:.1,
@@ -234,6 +239,6 @@ steal(function () {
                 }
             }
         });
-        $("#amount").val("$" + $("#sceneHeight").slider("value"));
+        $("#amount").val("$" + s.slider("value"));
     });
 });

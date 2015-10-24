@@ -46,7 +46,8 @@ $(document).ready(function() {
      * When enabled, the stop event triggers a render event based on the timestamp that it receives
      */
     $(function() {
-        $("#timelineSlider").slider({
+        var s = $("#timelineSlider");
+        s.slider({
             disabled: true,
             value:0,
             min: 0,
@@ -72,7 +73,7 @@ $(document).ready(function() {
                 }
             }
         });
-        $( "#amount" ).val( "$" + $("#timelineSlider").slider("value"));
+        $( "#amount" ).val( "$" + s.slider("value"));
     });
 
     terrains = [];
@@ -104,9 +105,9 @@ $(document).ready(function() {
     });
 
     // Colorpicker
-    colorpicker = $('#colorSelector');
+    var colorpicker = $('#colorSelector');
     colorpicker.ColorPicker({
-        color: '#0000ff',
+        color: '#ffff00',
         onShow: function (colpkr) {
             $(colpkr).fadeIn(500);
             return false;

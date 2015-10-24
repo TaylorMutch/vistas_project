@@ -66,7 +66,8 @@ steal(function () {
 	});
     /** Slider functions for manipulating the vectors */
     $(function() {
-        $("#vectorLength").slider({
+        var s = $("#vectorLength");
+        s.slider({
             disabled: true,
             value:1,
             min:.1,
@@ -83,10 +84,11 @@ steal(function () {
                 });
             }
         });
-        $("#amount").val("$" + $("#vectorLength").slider("value"));
+        $("#amount").val("$" + s.slider("value"));
     });
     $(function() {
-        $("#vectorHeight").slider({
+        var s = $("#vectorHeight");
+        s.slider({
             disabled: true,
             value:1,
             min:.1,
@@ -103,6 +105,6 @@ steal(function () {
                 });
             }
         });
-        $("#amount").val("$" + $("#vectorHeight").slider("value"));
+        $("#amount").val("$" + s.slider("value"));
     });
 });

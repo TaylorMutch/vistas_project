@@ -70,7 +70,7 @@ VisManager.prototype.ResetStations = function() {
         renderArrows(this.ActiveStations[i]);
     }
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
+    updateSodarLog('Scene Reset', true);
 };
 /**
  * Step forward.
