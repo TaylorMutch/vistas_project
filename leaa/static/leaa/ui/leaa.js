@@ -7,8 +7,10 @@
     right as the DOM finishes loading. This ensures that all assets are loaded before
     the user tries to do anything initially.
  */
+var LEAA = { VERSION: '0.1.0'};
 
-var LEAA = { VERSION: '0.0.1'};
+/** Our manager that holds everything together **/
+manager = new VisManager();
 
 /**
  * Global functions that are pretty harmless overall
@@ -101,6 +103,28 @@ $(document).ready(function() {
         //TODO: Implement
     });
 
+    // Colorpicker
+    colorpicker = $('#colorSelector');
+    colorpicker.ColorPicker({
+        color: '#0000ff',
+        onShow: function (colpkr) {
+            $(colpkr).fadeIn(500);
+            return false;
+        },
+        onHide: function (colpkr) {
+            $(colpkr).fadeOut(500);
+            return false;
+        },
+        onChange: function (hsb, hex, rgb) {
+            manager.ArrowColor = parseInt(hex, 16);
+            clearArrows();
+            for (var i = 0; i < manager.ActiveStations.length; i++) {
+                renderArrows(manager.ActiveStations[i]);
+            }
+            $('#colorSelector div').css('backgroundColor', '#' + hex);
+        }
+    });
+    colorpicker.ColorPickerSetColor(manager.ArrowColor.toString(16));
 
     // Tooltips
     $(function() {

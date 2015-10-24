@@ -119,7 +119,6 @@ steal(function () {
      * Initialize our workspace
      */
     function init() {
-        manager = new VisManager();
         CAM_START = new THREE.Vector3(0,-80,80);
         container = document.getElementById("scene");
 

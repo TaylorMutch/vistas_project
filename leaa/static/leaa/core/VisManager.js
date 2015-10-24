@@ -53,7 +53,7 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.SceneHeight = 1;
     this.VectorHeight = 1;
     this.VectorLength = 1;
-    this.ArrowColor = null; //TODO: Add colorpicking back into the mix...
+    this.ArrowColor = parseInt("ffff00", 16); //TODO: Add colorpicking back into the mix...
 }
 
 /**

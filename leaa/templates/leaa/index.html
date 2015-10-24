@@ -177,24 +177,7 @@
                 Vector Color:
                 <br/>
                 <!-- Funky color picker -->
-                <div id="colorSelector"><div style="background-color: #0000ff"></div></div>
-                <script>
-                    //$('#colorPicker').ColorPicker({flat:true});
-                    $('#colorSelector').ColorPicker({
-                        color: '#0000ff',
-                        onShow: function (colpkr) {
-                            $(colpkr).fadeIn(500);
-                            return false;
-                        },
-                        onHide: function (colpkr) {
-                            $(colpkr).fadeOut(500);
-                            return false;
-                        },
-                        onChange: function (hsb, hex, rgb) {
-                            $('#colorSelector div').css('backgroundColor', '#' + hex);
-                        }
-                    })
-                </script>
+                <div id="colorSelector"><div style="background-color: #ffff00"></div></div>
 			</div>
 	        <div id="sidebar">
 				<h4 class="text-center" data-toggle="tooltip" data-placement="top"
