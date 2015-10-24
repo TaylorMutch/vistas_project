@@ -111,7 +111,11 @@ steal(function () {
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
             animate();
-            $("#current-timestamp-label").html(name + "")
+
+            // Do any DOM element changes we need to do.
+            $("#current-timestamp-label").html(name + "");
+            document.getElementById('resetButton').classList.remove('disabled');
+            document.getElementById('wireframeToggle').classList.remove('disabled');
         }
     });
 

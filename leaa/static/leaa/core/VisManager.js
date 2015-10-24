@@ -44,6 +44,7 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
 
     // Setable attributes
     this.ActiveStations = [];
+    this.RecordDate = null;
     this.SceneObjects = [];
     this.TerrainMap = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
@@ -70,7 +71,7 @@ VisManager.prototype.ResetStations = function() {
         renderArrows(this.ActiveStations[i]);
     }
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Scene Reset', true);
+    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
 };
 /**
  * Step forward.
