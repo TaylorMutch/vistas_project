@@ -3,12 +3,14 @@ __author__ = 'Taylor'
     Makes a request to our terrain generation server and then outputs a .bin in web-friendly format.
     Uses a version of convert_envi.py
 '''
-
-
-import struct,  math, requests
+import struct
+import math
+import requests
+import os
 from leaa.models import Terrain
 from vistas_project_alpha.settings import MEDIA_ROOT
 
+# Our height generation server. Location could change...
 server = 'http://dodeca.coas.oregonstate.edu:8080/terrainextraction.ashx?'
 
 
@@ -48,8 +50,11 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
             index +=1
         numlats = int(r.content[:index].decode('ascii').split()[5]) # this is the right position for numlats
 
+    # TODO: Add validation if the directory already exists, and possibly have some way of telling the user...
 
-    with open(_fileName, 'wb') as f_out:
+    filePath = os.path.join(MEDIA_ROOT, _name)
+    os.mkdir(filePath)
+    with open( os.path.join(filePath, _fileName), 'wb') as f_out:
         index = 0
         for i in range(1, numlats + 1):
             index = len(r.content) - i*4*numlngs  # floats are 4 bytes long
@@ -66,7 +71,6 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
     _DEMy = numlngs
     _MAPx = 100
     _MAPy = int(100*numlats/numlngs)
-
     t = Terrain(name=_name,
                 fileName=_fileName,
                 DEMx=_DEMx,
@@ -79,4 +83,5 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
                 east_lng=lng1,
                 west_lng=lng2
                 )
+    # Save the object
     t.save()
