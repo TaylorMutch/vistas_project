@@ -112,7 +112,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # TODO: Edit this when we go to production
-MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media'
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media/'
 
 
 TEMPLATE_DIRS = (

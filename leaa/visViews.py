@@ -11,7 +11,6 @@ from fileReader import readSDR, readRecordDateToString, dateStringToDate
 
 @api_view(['GET'])
 def getDates(request):
-    #results = {}
     terrainID = request.GET.get('terrainID')
     stations = Station.objects.filter(terrain=terrainID)
     dates = []
@@ -39,7 +38,7 @@ def getStationObjects(request):
         station = Station.objects.filter(name=stationName)[0] # There should only return one
         for file in datafiles:
             # Get data from file on disk
-            heights, dates, speeds, directions = readSDR(file.fileName, station.name, terrain.name)
+            heights, dates, speeds, directions = readSDR(file, station)
             stationResult = {'heights': heights, 'dates': dates, 'speeds': speeds, 'directions': directions}
             # Get data from sqlite db
             stationResult['name']       = station.name
