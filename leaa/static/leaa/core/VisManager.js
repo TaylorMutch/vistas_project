@@ -54,6 +54,7 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.SceneHeight = 1;
     this.VectorHeight = 1;
     this.VectorLength = 1;
+    this.LiveUpdate = false;
     this.ArrowColor = parseInt("ffff00", 16); //TODO: Add colorpicking back into the mix...
 }
 
@@ -168,4 +169,18 @@ VisManager.prototype.CompareDates = function(increasing) {
             manager.ActiveStations[id].isCurrent = date == checkDate;
         });
     }
+};
+
+VisManager.prototype.UpdateTimeline = function(val) {
+    console.log('Scrubber changed, updating values');
+    manager.CurrentTimestamp = val;            // values for the timeline
+    manager.CurrentDate = calcTimestep(val);   // values relevant to our stations
+    clearArrows();
+    for (var i = 0; i < manager.ActiveStations.length; i++) {
+        manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
+        if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
+            renderArrows(manager.ActiveStations[i]);
+        }
+    }
+    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
 };

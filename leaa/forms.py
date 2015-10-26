@@ -18,6 +18,7 @@ class StationForm(forms.ModelForm):
         model = Station
         fields = ('name','lat','long','terrain')
 
+
 class DataFileForm(forms.ModelForm):
 
     class Meta:

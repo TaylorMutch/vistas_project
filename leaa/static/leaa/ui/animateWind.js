@@ -8,11 +8,11 @@ steal(function () {
     $('#back').on('click', function() {
         manager.StepBackward();
 	});
-    /*
-    $('#beginStep').on('click', function() {
+
+    $('#begin').on('click', function() {
         manager.ResetStations();
     });
-    */
+
     /**
     Main Animation code
      */

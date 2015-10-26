@@ -54,7 +54,7 @@ steal(function () {
                     manager.Timeline.numSteps = (manager.Timeline.endTime.getTime() - manager.Timeline.beginTime.getTime()) /
                         manager.Timeline.timeStep;
 
-                    // Enable the UI timeline and vector controls
+                    // Enable the UI timeline, vector and playback controls
                     $('#timelineSlider').slider({
                         disabled: false,
                         value: manager.Timeline.beginTime.getTime(),
@@ -64,17 +64,24 @@ steal(function () {
                     });
                     $('#vectorHeight').slider({disabled: false});
                     $('#vectorLength').slider({disabled: false});
-
+                    $('#begin').removeClass('disabled');
+                    $('#forward').removeClass('disabled');
+                    $('#back').removeClass('disabled');
+                    $('#play').removeClass('disabled');
+                    $('#reset').removeClass('disabled');
+                    $('#live-update').removeClass('disabled');
                     // Initialize our initial values for this set of data.
                     manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
                     manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
                 }
             );
-            $('#forward').removeClass('disabled');
-            $('#back').removeClass('disabled');
-            $('#play').removeClass('disabled');
-            $('#reset').removeClass('disabled');
+
         }
+
+        $('#live-update').on('click', function() {
+            manager.LiveUpdate = !manager.LiveUpdate;
+            $(this).html(($(this).html().contains('Enable') ? 'Disable Live Update' : 'Enable Live Update'));
+        });
 
 
         console.log(recordDate);
