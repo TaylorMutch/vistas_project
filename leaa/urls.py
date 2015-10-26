@@ -8,14 +8,10 @@ from vistas_project_alpha import settings
 
 urlpatterns = [
     url(r'^$', views.index, name="index"),
-    #url(r'^test/', views.test, name="test"),
     url(r'^add_terrain/$', views.add_terrain, name="add_terrain"),
     url(r'^add_station/$', views.add_station, name="add_station"),
+    url(r'^add_datafile/$', views.add_datafile, name="add_datafile"),
     url(r'^api-root/', views.api_root),
-    url(r'^users/', views.UserList.as_view(),
-        name='user-list'),
-    url(r'^users/(?P<pk>[0-9]+)/', views.UserDetail.as_view(),
-        name='user-detail'),
     url(r'^terrains/$', views.TerrainList.as_view(),
         name='terrain-list'),
     url(r'^terrains/(?P<pk>[0-9]+)/$', views.TerrainDetail.as_view(),
@@ -37,6 +33,11 @@ urlpatterns += [
 ]
 
 if settings.DEBUG:
+    urlpatterns += [
+        url(r'^users/', views.UserList.as_view(), name='user-list'),
+        url(r'^users/(?P<pk>[0-9]+)/', views.UserDetail.as_view(),name='user-detail'),
+        ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 urlpatterns = format_suffix_patterns(urlpatterns)

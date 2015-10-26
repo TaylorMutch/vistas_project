@@ -1,0 +1,11 @@
+{% extends "leaa/base.html" %}
+
+{% block content %}
+    <h1>New SODAR Files</h1>
+    <form method="post" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <!-- Add a file upload button here so that we actually have something to do-->
+    <button type="submit" class="save btn btn-default">Submit</button>
+    </form>
+{% endblock %}

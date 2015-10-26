@@ -70,6 +70,7 @@
                     <li><a href="http://blogs.evergreen.edu/vistas/" target="_blank">VISTAS Blog</a></li>
                     <li><a href="{% url "add_terrain" %}">Add Terrain</a></li>
                     <li><a href="{% url "add_station" %}">Add Station</a></li>
+                    <li><a href="{% url "add_datafile" %}">Add Data</a></li>
                 </ul>
             </div>
             <!-- UNDER CONSTRUCTION -->
@@ -99,81 +100,5 @@
     </nav>
     {% block content %}
     {% endblock %}
-    <!--
-    <div id="wrapper" class="container">
-		<div id="top-controls" class="row">
-            <div class="col-xs-2 col-mid-1 dropdown">
-                <button  class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					Select Terrain
-					<span class="caret"></span>
-				</button>
-                <ul id="demPicker" class="dropdown-menu"></ul>
-            </div>
-            <div class="col-xs-2 col-mid-1 dropdown">
-                <button  class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Select Data
-                    <span class="caret"></span>
-                </button>
-                <ul id="dataPicker" class="dropdown-menu scrollable-menu">
-                    <li>No Data, Load a Terrain</li>
-                </ul>
-            </div>
-			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
-				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
-				<div id="current-timestamp-container">
-					<h3 id="current-timestamp-label" class="text-center">Scene Empty - Select Terrain</h3>
-				</div>
-			</div>
-		</div>
-        <div id="top-wrapper" class="row">
-            <div id="scene"></div>
-        </div>
-        <div id="player" class="row">
-        <div id="timelineSlider"></div>
-            <div class="btn-group">
-                <button id="back" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></button>
-                <button id="play" class="btn btn-default disabled" type="button"><span id="play-glyph" class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
-                <button id="forward" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></button>
-                <button id="reset" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
-            </div>
-        </div>
-        <div id="bottom-wrapper" class="row center-block">
-
-			<div id="controls-2" class="btn-group-vertical col-md-4" role="group" aria-label="Vertical button group2">
-				<h4 class="text-center">Scene Controls</h4>
-				<div class="dropdown">
-					<button class="btn btn-default btn-block dropdown-toggle" type="button" id="camera-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-						Camera Type
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="camera-toggle">
-						<li><a id="setOrthographic" href="#">Orthographic</a></li>
-						<li><a id="setPerspective" href="#">Perspective</a></li>
-					</ul>
-				</div>
-				<button id="contourToggle" type="button" class="btn btn-default disabled">Toggle Contours</button>
-                <button id="wireframeToggle" type="button" class="btn btn-default disabled">Toggle Wireframe</button>
-			</div>
-
-			<div id="controls-3" class="col-md-4 text-center">
-					<h4>Wind Vector Controls</h4>
-                <div>Elevation Scale</div>
-                <div id="sceneHeight"></div>
-                <div>Vector Length</div>
-                <div id="vectorLength"></div>
-                <div>Vector Height</div>
-                <div id="vectorHeight"></div>
-                <div>Vector Color</div>
-                <div id="colorSelector"><div style="background-color: #ffff00"></div></div>
-			</div>
-	        <div id="sidebar" class="col-md-4">
-				<h4 class="text-center" data-toggle="tooltip" data-placement="top"
-				data-original-title="List of all SODAR readings shown in the scene">SODAR Log</h4>
-				<div id="console">
-                    <ul id="sodarLog" class="scrollable-menu"></ul>
-                </div>
-			</div>
-		</div>
-    </div>-->
 </body>
 </html>

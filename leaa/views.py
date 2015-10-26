@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
-from .forms import TerrainForm, StationForm
+from .forms import TerrainForm, StationForm, DataFileForm
 from add_terrain import create_terrain
 
 # Create your views here.
@@ -15,7 +15,7 @@ from add_terrain import create_terrain
 @api_view(('GET',))
 def api_root(request):
     return Response({
-        'users'     : reverse('user-list', request=request),
+        #'users'     : reverse('user-list', request=request),
         'terrains'  : reverse('terrain-list', request=request),
         'stations'  : reverse('station-list', request=request),
         'datafiles' : reverse('datafile-list', request=request),
@@ -44,16 +44,30 @@ def add_terrain(request):
         form = TerrainForm()
     return render(request, 'leaa/forms/add_terrain.html', {'form': form})
 
+
 def add_station(request):
     if request.method == "POST":
         form = StationForm(request.POST)
         if form.is_valid():
             create_station() # TODO: Finish implementing this. Should be pretty easy...
 
-            return redirect('leaa.views.index.')
+            return redirect('leaa.views.index')
     else:
         form = StationForm()
     return render(request, 'leaa/forms/add_station.html', {'form': form})
+
+
+def add_datafile(request):
+    if request.method == "POST":
+        form = DataFileForm(request.POST)
+        if form.is_valid():
+            create_datafiles() # TODO: Implement
+
+            return redirect('leaa.views.index')
+    else:
+        form = DataFileForm()
+    return render(request, 'leaa/forms/add_datafile.html', {'form': form})
+
 
 def test(request):
     return render(request, 'leaa/test_index_w_shaders.html')
@@ -103,6 +117,7 @@ class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DataFileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+# TODO: Permission changes to actually see users? Do we even need this?
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
