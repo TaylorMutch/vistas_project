@@ -2,31 +2,34 @@
  * Created by Taylor on 9/10/2015.
  */
 steal(function () {
-	$('#stepForward').on('click', function() {
+	$('#forward').on('click', function() {
 	    manager.StepForward();
     });
-    $('#stepBack').on('click', function() {
+    $('#back').on('click', function() {
         manager.StepBackward();
 	});
+    /*
     $('#beginStep').on('click', function() {
         manager.ResetStations();
     });
-
+    */
     /**
     Main Animation code
      */
     //animating = false;
     // Enable animation
-	$('#animateButton').on('click', function() {
-        if (manager.Animating) {
-            stopAnimation();
-            $(this).html('Animate')
-        }
-        else {
+	$('#play').on('click', function() {
+        var glyph = $('#play-glyph');
+        if (glyph.hasClass('glyphicon-play')) {
             manager.StepForward();
             manager.Animating = true;
             intervalID = setInterval(animateStepForward, 1000/4);
-            $(this).html('Stop Animating')
+            glyph.removeClass('glyphicon-play');
+            glyph.addClass('glyphicon-pause');
+        } else {
+            stopAnimation();
+            glyph.removeClass('glyphicon-pause');
+            glyph.addClass('glyphicon-play');
         }
 	});
     // Animation loop
@@ -39,10 +42,9 @@ steal(function () {
         clearInterval(intervalID);
     }
 	// RESET
-	$('#resetButton').on('click', function() {
+	$('#reset').on('click', function() {
         if (manager.Animating) {
             stopAnimation();
-            $('#animateButton').html('Animate');
         }
         manager.ResetStations();
 		// Reset toggles

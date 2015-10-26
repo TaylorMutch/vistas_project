@@ -78,14 +78,26 @@ VisManager.prototype.ResetStations = function() {
  * @constructor
  */
 VisManager.prototype.StepForward = function() {
-    $('#timelineSlider').slider({value: this.CurrentTimestamp + this.Timeline.timeStep});
-    this.Step(true);
+    if (this.CurrentTimestamp < this.Timeline.endTime.getTime()) {
+        $('#timelineSlider').slider({value: this.CurrentTimestamp + this.Timeline.timeStep});
+        this.Step(true);
+    } else if (this.CurrentTimestamp == this.Timeline.endTime.getTime()) {
+        var glyph = $('#play-glyph');
+        if (glyph.hasClass('glyphicon-pause')) {
+            manager.Animating = false;
+            clearInterval(intervalID);
+            glyph.removeClass('glyphicon-pause');
+            glyph.addClass('glyphicon-play');
+        }
+    }
+
 };
 /**
  * Step backward.
  * @constructor
  */
 VisManager.prototype.StepBackward = function() {
+    if (this.CurrentTimestamp > this.Timeline.beginTime.getTime())
     $('#timelineSlider').slider({value: this.CurrentTimestamp - this.Timeline.timeStep});
     this.Step(false);
 

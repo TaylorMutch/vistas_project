@@ -47,7 +47,7 @@ button
 
 #header, #sidebar, #bottom-wrapper, #controls-1, #controls-2, #controls-3, #footer
 {
-    margin:0.5em;
+    /*margin:0.5em;*/
     /*border:1px solid;*/
 }
 
@@ -92,7 +92,7 @@ button
 #bottom-wrapper
 {
     /*height:20em;*/
-    padding:0.5em;
+    /*padding:0.5em;*/
 }
 
 #controls-1, #controls-2, #controls-3, #controls-4, #sidebar

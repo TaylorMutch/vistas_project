@@ -131,10 +131,18 @@
 		</div>
         <div id="top-wrapper" class="row">
             <div id="scene"></div>
-            <div id="timelineSlider"></div>
         </div>
-        <div id="bottom-wrapper" class="row">
-			<div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
+        <div id="player" class="row">
+        <div id="timelineSlider"></div>
+            <div class="btn-group">
+                <button id="back" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span></button>
+                <button id="play" class="btn btn-default disabled" type="button"><span id="play-glyph" class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+                <button id="forward" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></button>
+                <button id="reset" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
+            </div>
+        </div>
+        <div id="bottom-wrapper" class="row center-block">
+			<!--div id="controls-1" class="btn-group-vertical" role="group" aria-label="Vertical button group1">
                 <h4 class="text-center">Playback Controls</h4>
                 <button id="beginStep" type="button" class="btn btn-default disabled" data-toggle="tooltip-std"
 				        data-original-title="Set the visualization to the first SODAR reading in the file">Start From Beginning</button>
@@ -145,8 +153,8 @@
 				<button id="animateButton" type="button" class="btn btn-default disabled" data-toggle="tooltip-std"
 				        data-original-title="Turn On/Off animation" >Animate</button>
 				<button id="resetButton" type="button" class="btn btn-default disabled">Reset Scene</button>
-			</div>
-			<div id="controls-2" class="btn-group-vertical" role="group" aria-label="Vertical button group2">
+			</div-->
+			<div id="controls-2" class="btn-group-vertical col-md-4" role="group" aria-label="Vertical button group2">
 				<h4 class="text-center">Scene Controls</h4>
 				<div class="dropdown">
 					<button class="btn btn-default btn-block dropdown-toggle" type="button" id="camera-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -163,23 +171,18 @@
                 <button id="wireframeToggle" type="button" class="btn btn-default disabled">Toggle Wireframe</button>
 			</div>
 
-			<div id="controls-3">
-					<h4 class="text-center">Wind Vector Controls</h4>
+			<div id="controls-3" class="col-md-4 text-center">
+					<h4>Wind Vector Controls</h4>
                 <div>Elevation Scale</div>
                 <div id="sceneHeight"></div>
-                <br/>
                 <div>Vector Length</div>
                 <div id="vectorLength"></div>
-                <br/>
                 <div>Vector Height</div>
                 <div id="vectorHeight"></div>
-                <br/>
-                Vector Color:
-                <br/>
-                <!-- Funky color picker -->
+                <div>Vector Color</div>
                 <div id="colorSelector"><div style="background-color: #ffff00"></div></div>
 			</div>
-	        <div id="sidebar">
+	        <div id="sidebar" class="col-md-4">
 				<h4 class="text-center" data-toggle="tooltip" data-placement="top"
 				data-original-title="List of all SODAR readings shown in the scene">SODAR Log</h4>
 				<div id="console">

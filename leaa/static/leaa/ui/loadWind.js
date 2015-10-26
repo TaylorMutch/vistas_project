@@ -70,11 +70,10 @@ steal(function () {
                     manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
                 }
             );
-            document.getElementById('beginStep').classList.remove('disabled');
-            document.getElementById('stepForward').classList.remove('disabled');
-            document.getElementById('stepBack').classList.remove('disabled');
-            document.getElementById('animateButton').classList.remove('disabled');
-
+            $('#forward').removeClass('disabled');
+            $('#back').removeClass('disabled');
+            $('#play').removeClass('disabled');
+            $('#reset').removeClass('disabled');
         }
 
 

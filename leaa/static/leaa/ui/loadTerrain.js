@@ -114,7 +114,6 @@ steal(function () {
 
             // Do any DOM element changes we need to do.
             $("#current-timestamp-label").html(name + "");
-            document.getElementById('resetButton').classList.remove('disabled');
             document.getElementById('wireframeToggle').classList.remove('disabled');
         }
     });
