@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', views.index, name="index"),
     #url(r'^test/', views.test, name="test"),
     url(r'^add_terrain/$', views.add_terrain, name="add_terrain"),
+    url(r'^add_station/$', views.add_station, name="add_station"),
     url(r'^api-root/', views.api_root),
     url(r'^users/', views.UserList.as_view(),
         name='user-list'),

@@ -38,6 +38,13 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
     except requests.HTTPError:
         return
 
+    lat1 = float(lat1)
+    lat2 = float(lat2)
+    lng1 = float(lng1)
+    lng2 = float(lng2)
+    numlngs = int(numlngs)
+    numlats = int(numlats)
+
     _maxHeight = 0
     if (numlats == -1): # Get the correct number of latitudes from the server
         form_feed = b'\x0c'

@@ -55,9 +55,21 @@ $(document).ready(function() {
             step: 1,
             slide: function( event, ui ) {
                 $( "#amount" ).val( "$" + ui.value );
+                console.log('Scrubber changed, updating values');
+                manager.CurrentTimestamp = ui.value;            // values for the timeline
+                manager.CurrentDate = calcTimestep(ui.value);   // values relevant to our stations
+                clearArrows();
+                for (var i = 0; i < manager.ActiveStations.length; i++) {
+                    manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
+                    if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
+                        renderArrows(manager.ActiveStations[i]);
+                    }
+                }
+                updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
             },
             // This is triggered when a user picks up and drops the slider.
             stop: function( event, ui ) {
+                /*
                 if (manager.CurrentTimestamp !== ui.value) {
                     console.log('Scrubber changed, updating values');
                     manager.CurrentTimestamp = ui.value;            // values for the timeline
@@ -71,6 +83,7 @@ $(document).ready(function() {
                     }
                     updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
                 }
+                */
             }
         });
         $( "#amount" ).val( "$" + s.slider("value"));

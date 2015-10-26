@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from leaa.models import Terrain,Station,DataFile,TerrainView,Setting
 from leaa.serializers import *
 from rest_framework import generics, permissions, renderers, status
@@ -6,7 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
-from .forms import TerrainForm
+from .forms import TerrainForm, StationForm
+from add_terrain import create_terrain
 
 # Create your views here.
 
@@ -14,10 +15,10 @@ from .forms import TerrainForm
 @api_view(('GET',))
 def api_root(request):
     return Response({
-        'users': reverse('user-list', request=request),
-        'terrains': reverse('terrain-list', request=request),
-        'stations': reverse('station-list', request=request),
-        'datafiles': reverse('datafile-list', request=request),
+        'users'     : reverse('user-list', request=request),
+        'terrains'  : reverse('terrain-list', request=request),
+        'stations'  : reverse('station-list', request=request),
+        'datafiles' : reverse('datafile-list', request=request),
     })
 
 
@@ -28,12 +29,34 @@ def index(request):
 
 
 def add_terrain(request):
-    form = TerrainForm()
+    if request.method == "POST":
+        form = TerrainForm(request.POST)
+        if form.is_valid():
+            create_terrain(request.POST['name'],
+                           request.POST['north_lat'],
+                           request.POST['south_lat'],
+                           request.POST['east_lng'],
+                           request.POST['west_lng'],
+                           request.POST['DEMx'],
+                           request.POST['DEMy'],)
+            return redirect('leaa.views.index')
+    else:
+        form = TerrainForm()
     return render(request, 'leaa/forms/add_terrain.html', {'form': form})
 
+def add_station(request):
+    if request.method == "POST":
+        form = StationForm(request.POST)
+        if form.is_valid():
+            create_station() # TODO: Finish implementing this. Should be pretty easy...
+
+            return redirect('leaa.views.index.')
+    else:
+        form = StationForm()
+    return render(request, 'leaa/forms/add_station.html', {'form': form})
 
 def test(request):
-    return render(request, 'leaa/test_index.html')
+    return render(request, 'leaa/test_index_w_shaders.html')
 
 
 class TerrainList(generics.ListAPIView):
