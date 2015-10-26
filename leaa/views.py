@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
+from .forms import TerrainForm
 
 # Create your views here.
 
@@ -24,6 +25,11 @@ def index(request):
     # TODO: Replace with arbitrary user lookup
     user = User.objects.filter(id=2)[0]
     return render(request, 'leaa/index.html', {'user': user})
+
+
+def add_terrain(request):
+    form = TerrainForm()
+    return render(request, 'leaa/forms/add_terrain.html', {'form': form})
 
 
 def test(request):
