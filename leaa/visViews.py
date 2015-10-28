@@ -44,8 +44,6 @@ def getStationObjects(request):
             stationResult['name']       = station.name
             stationResult['demX']       = station.demX
             stationResult['demY']       = station.demY
-            stationResult['utmY']       = station.utmY
-            stationResult['utmX']       = station.utmX
             stationResult['lat']        = station.lat
             stationResult['long']       = station.long
             stationResult['terrain']    = station.terrain_id

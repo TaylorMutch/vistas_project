@@ -80,7 +80,7 @@ steal(function () {
 
         $('#live-update').on('click', function() {
             manager.LiveUpdate = !manager.LiveUpdate;
-            $(this).html(($(this).html().contains('Enable') ? 'Disable Live Update' : 'Enable Live Update'));
+            //$(this).html(($(this).html().contains('Enable') ? 'Disable Live Update' : 'Enable Live Update'));
         });
 
 

@@ -95,4 +95,8 @@ def sdrDateToString(sdrDate):
     time =  day +' '+month+', ' + year +' - ' + hour+':' + minute +':'+ sec
     return time
 
-
+def sdrDateToString_YYYYMMDD(sdrDate):
+    year = str(2000 + int(sdrDate[0:2]))
+    month = str((sdrDate[2:4]))
+    day = str(int(sdrDate[4:6]))
+    return year + '-' + month + '-' + day
