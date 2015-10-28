@@ -21,6 +21,10 @@ class StationForm(forms.ModelForm):
 
 class DataFileForm(forms.ModelForm):
 
+    file = forms.FileField(
+        label='Select a file (.zip or .sdr only):'
+    )
+
     class Meta:
         model = DataFile
-        fields = ('station','terrain','filePath')
+        fields = ('station','terrain')

@@ -7,16 +7,14 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from .forms import TerrainForm, StationForm, DataFileForm
-from add_terrain import create_terrain
+from create_models import *
 import os
 from fileReader import sdrDateToString
 # Create your views here.
 
-
 @api_view(('GET',))
 def api_root(request):
     return Response({
-        #'users'     : reverse('user-list', request=request),
         'terrains'  : reverse('terrain-list', request=request),
         'stations'  : reverse('station-list', request=request),
         'datafiles' : reverse('datafile-list', request=request),
@@ -50,14 +48,17 @@ def add_station(request):
     if request.method == "POST":
         form = StationForm(request.POST)
         if form.is_valid():
-            #create_station() # TODO: Finish implementing this. Should be pretty easy...
             t = Terrain.objects.filter(pk=int(request.POST['terrain']))[0]
             lat = float(request.POST['lat'])
             long = float(request.POST['long'])
+            # check if the station actually lies inside of the specified terrain
             if lat <= t.north_lat and lat >= t.south_lat and long <= t.east_lng and long >= t.west_lng:
-                s = Station(terrain=t, lat=lat, long=long)
-
-            return redirect('leaa.views.index')
+                name = request.POST['name']
+                create_station(name, t, lat, long)
+                return redirect('leaa.views.index')
+            else:
+                form = StationForm()
+                render(request, 'leaa/forms/add_station.html', {'form': form})
     else:
         form = StationForm()
     return render(request, 'leaa/forms/add_station.html', {'form': form})
@@ -69,26 +70,26 @@ def add_datafile(request):
         if form.is_valid():
             #create_datafiles() # TODO: Implement
             uf = request.FILES['filePath']
-            filename, file_ext = os.path.splitext(uf)
+            #filename, file_ext = os.path.splitext(uf)
             # We got a single file
-            if file_ext == '.sdr':
-                with open(request.FILES['filePath']) as file:
-                    data = file.readline(16)
-                file.close()
-                date = sdrDateToString(data[4:])
-                date = date[:11]
-                s = DataFile(creationDate=date,
-                             station=int(request.POST['id_station']),
-                             terrrain=int(request.POST['id_terrain']),
-                             filePath=uf,
-                             filename=filename)
-                s.save()
+            #if file_ext == '.sdr':
+            #    with open(request.FILES['filePath']) as file:
+            #        data = file.readline(16)
+            #    file.close()
+            #    date = sdrDateToString(data[4:])
+            #    date = date[:11]
+            #    s = DataFile(creationDate=date,
+            #                 station=int(request.POST['id_station']),
+            #                 terrrain=int(request.POST['id_terrain']),
+            #                 filePath=uf,
+            #                 filename=filename)
+            #    s.save()
             # We got a .zip
-            elif file_ext == '.zip':
-                pass
-            else:
-                form = DataFileForm()
-                return render(request, 'leaa/forms/add_datafile.html', {'form': form, 'error': 'Not a valid file.'})
+            #elif file_ext == '.zip':
+            #    pass
+            #else:
+            #    form = DataFileForm()
+            #    return render(request, 'leaa/forms/add_datafile.html', {'form': form, 'error': 'Not a valid file.'})
             return redirect('leaa.views.index')
     else:
         form = DataFileForm()

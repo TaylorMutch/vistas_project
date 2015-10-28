@@ -5,8 +5,6 @@
     <form enctype="multipart/form-data" method="post" class="post-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <!-- Add a file upload button here so that we actually have something to do-->
-        Format date as 'yyyy-mm-dd'
     <button type="submit" class="save btn btn-default">Submit</button>
     </form>
 {% endblock %}

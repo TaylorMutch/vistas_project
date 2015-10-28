@@ -1,19 +1,19 @@
 __author__ = 'Taylor'
-'''
-    Makes a request to our terrain generation server and then outputs a .bin in web-friendly format.
-    Uses a version of convert_envi.py
-'''
+
 import struct
 import math
 import requests
 import os
-from leaa.models import Terrain
+from leaa.models import Terrain, Station, DataFile
 from vistas_project_alpha.settings import MEDIA_ROOT
 
 # Our height generation server. Location could change...
 server = 'http://dodeca.coas.oregonstate.edu:8080/terrainextraction.ashx?'
 
-
+'''
+    Makes a request to our terrain generation server and then outputs a .bin in web-friendly format.
+    Uses a version of convert_envi.py
+'''
 def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 
     _fileName = _name + '.bin'
@@ -92,3 +92,32 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
                 )
     # Save the object
     t.save()
+
+
+'''
+    Creates a DB row in our stations table based off of values from the terrain row passed to it.
+'''
+def create_station(name, t, lat, long):
+
+    t_dist_lng = t.east_lng - t.west_lng
+    t_dist_lat = t.north_lat - t.south_lat
+    if t_dist_lat < 0:
+        t_dist_lat *= -1
+    if t_dist_lng < 0:
+        t_dist_lng *= -1
+    d_lat = (t.north_lat - lat)/t_dist_lat
+    d_lng = (long - t.west_lng)/t_dist_lng
+
+    # pick the closest dem coordinates
+    demY = int(round(t.DEMy * d_lat, 0))
+    demX = int(round(t.DEMx * d_lng, 0))
+
+    file_path = os.path.join(MEDIA_ROOT, t.name + '/' + name)
+    os.mkdir(file_path)
+
+    s = Station(name=name, terrain=t, lat=lat, long=long, demX=demX, demY=demY)
+    s.save()
+
+
+def create_datafile():
+    pass

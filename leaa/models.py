@@ -27,12 +27,14 @@ class Station(models.Model):
     long    = models.FloatField()
     demX    = models.IntegerField()
     demY    = models.IntegerField()
-    utmX    = models.IntegerField()
-    utmY    = models.IntegerField()
     terrain = models.ForeignKey('Terrain')
 
     def __str__(self):
         return self.name
+
+
+def datafile_directory_path(instance, filename):
+    return '{0}/{1}/{2}/{3}'.format(instance.terrain.name,instance.station.name,instance.creationDate.year, filename)
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
@@ -40,8 +42,7 @@ class DataFile(models.Model):
     station = models.ForeignKey('Station')
     terrain = models.ForeignKey('Terrain')
     fileName = models.CharField(max_length=50)
-    filePath = models.FileField(upload_to=terrain.name + '/' + station.name +
-                                '/' + str(creationDate.year) + '/')
+    #filePath = models.FileField(upload_to=datafile_directory_path)
 
     def __str__(self):
         return str(self.creationDate)

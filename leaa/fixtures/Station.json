@@ -4,8 +4,6 @@
     "model" : "leaa.Station",
     "fields" : {
       "name": "McRae",
-      "utmX": 563962,
-      "utmY": 4898882,
       "demX": 186,
       "demY": 169,
       "lat": 44.24037,
@@ -18,8 +16,6 @@
     "model" : "leaa.Station",
     "fields" : {
       "name": "Primet",
-      "utmX": 559440,
-      "utmY": 4895664,
       "demX": 35,
       "demY": 276,
       "lat": 44.211777,
