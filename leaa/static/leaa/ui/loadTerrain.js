@@ -32,9 +32,6 @@ steal(function () {
             plane.computeFaceNormals();
             plane.computeVertexNormals();
 
-    	    // Import texture
-	        material = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
-
             // Load the terrain and all stations
             manager.TerrainLoader.load('media/'+name+'/'+ name + '.bin', function(data) {
                 manager.rawDEM = data;
@@ -85,7 +82,10 @@ steal(function () {
                         "}"].join("\n")
                 });
 
-                //terrainGeo = new THREE.Mesh(plane, shaderMaterial);
+                terrainShader = new THREE.Mesh(plane, shaderMaterial);
+                scene.add(terrainShader);
+                terrainShader.visible = false;
+                material = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
                 terrainGeo = new THREE.Mesh(plane, material);
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal

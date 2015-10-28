@@ -36,10 +36,12 @@ class Station(models.Model):
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
-    creationDate = models.DateField(auto_now_add=False)  #TODO: Revise this to be the date at which the data was created
+    creationDate = models.DateField(auto_now_add=False)
     station = models.ForeignKey('Station')
     terrain = models.ForeignKey('Terrain')
     fileName = models.CharField(max_length=50)
+    filePath = models.FileField(upload_to=terrain.name + '/' + station.name +
+                                '/' + str(creationDate.year) + '/')
 
     def __str__(self):
         return str(self.creationDate)
@@ -48,7 +50,7 @@ class DataFile(models.Model):
 class Setting(models.Model):
     vectorLength = models.IntegerField()
     vectorHeight = models.IntegerField()
-    #TODO: Add in color picker for vectorColor
+    vectorColor = models.CharField(max_length=8) # hex colors are only 8 characters long
     terrainScale = models.IntegerField()
     animationSpeed = models.IntegerField()
     user = models.OneToOneField(User, primary_key=True)
@@ -61,5 +63,3 @@ class TerrainView(models.Model):
     controlPos = (models.FloatField(), models.FloatField(), models.FloatField())
     cameraPos = (models.FloatField(), models.FloatField(), models.FloatField())
     worldPos = (models.FloatField(), models.FloatField(), models.FloatField())
-
-import datetime

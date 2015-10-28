@@ -1,6 +1,6 @@
 {% extends "leaa/base.html" %}
 {% block content %}
-    <div id="wrapper" class="container">
+    <div class="container">
 		<div id="top-controls" class="row">
             <div class="col-xs-2 col-mid-1 dropdown">
                 <button  class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -39,7 +39,9 @@
                     <button id="play" class="btn btn-default disabled" type="button"><span id="play-glyph" class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
                     <button id="forward" class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-forward" aria-hidden="true"></span></button>
                     <button id="reset" class="btn btn-default disabled" type="button">Reset Scene</button>
-                    <button id="live-update" class="btn btn-default disabled" type="button">Enable Live Update</button>
+                    <button id="live-update" class="btn btn-default disabled" type="button" data-toggle="tooltip" data-original-title="Disable if you have a low-end machine">
+                        Enable Live Update
+                    </button>
                 </div>
             </div>
         </div>

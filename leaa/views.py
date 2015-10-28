@@ -8,7 +8,8 @@ from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from .forms import TerrainForm, StationForm, DataFileForm
 from add_terrain import create_terrain
-
+import os
+from fileReader import sdrDateToString
 # Create your views here.
 
 
@@ -49,7 +50,12 @@ def add_station(request):
     if request.method == "POST":
         form = StationForm(request.POST)
         if form.is_valid():
-            create_station() # TODO: Finish implementing this. Should be pretty easy...
+            #create_station() # TODO: Finish implementing this. Should be pretty easy...
+            t = Terrain.objects.filter(pk=int(request.POST['terrain']))[0]
+            lat = float(request.POST['lat'])
+            long = float(request.POST['long'])
+            if lat <= t.north_lat and lat >= t.south_lat and long <= t.east_lng and long >= t.west_lng:
+                s = Station(terrain=t, lat=lat, long=long)
 
             return redirect('leaa.views.index')
     else:
@@ -59,10 +65,30 @@ def add_station(request):
 
 def add_datafile(request):
     if request.method == "POST":
-        form = DataFileForm(request.POST)
+        form = DataFileForm(request.POST, request.FILES)
         if form.is_valid():
-            create_datafiles() # TODO: Implement
-
+            #create_datafiles() # TODO: Implement
+            uf = request.FILES['filePath']
+            filename, file_ext = os.path.splitext(uf)
+            # We got a single file
+            if file_ext == '.sdr':
+                with open(request.FILES['filePath']) as file:
+                    data = file.readline(16)
+                file.close()
+                date = sdrDateToString(data[4:])
+                date = date[:11]
+                s = DataFile(creationDate=date,
+                             station=int(request.POST['id_station']),
+                             terrrain=int(request.POST['id_terrain']),
+                             filePath=uf,
+                             filename=filename)
+                s.save()
+            # We got a .zip
+            elif file_ext == '.zip':
+                pass
+            else:
+                form = DataFileForm()
+                return render(request, 'leaa/forms/add_datafile.html', {'form': form, 'error': 'Not a valid file.'})
             return redirect('leaa.views.index')
     else:
         form = DataFileForm()

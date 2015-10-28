@@ -16,11 +16,11 @@ class StationForm(forms.ModelForm):
 
     class Meta:
         model = Station
-        fields = ('name','lat','long','terrain')
+        fields = ('name','terrain','lat','long')
 
 
 class DataFileForm(forms.ModelForm):
 
     class Meta:
         model = DataFile
-        fields = ('station','terrain')
+        fields = ('station','terrain','filePath')
