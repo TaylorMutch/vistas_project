@@ -8,8 +8,9 @@ from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from .forms import TerrainForm, StationForm, DataFileForm
 from create_models import *
-import os
+import os, shutil
 from fileReader import sdrDateToString_YYYYMMDD
+import zipfile as z
 # Create your views here.
 
 @api_view(('GET',))
@@ -63,27 +64,43 @@ def add_datafile(request):
     if request.method == "POST":
         form = DataFileForm(request.POST, request.FILES)
         if form.is_valid():
-            # TODO: Validate that the chosen station lies within the chosen terrain. Fail if not.
-            uf = request.FILES['file']
-            s = Station.objects.filter(pk=int(request.POST['station']))[0]
-            t = Terrain.objects.filter(pk=int(request.POST['terrain']))[0]
-            filename, file_ext = os.path.splitext(uf.name)
+            s = Station.objects.get(pk=int(request.POST['station']))
+            t = Terrain.objects.get(pk=int(request.POST['terrain']))
 
-            # We got a single file
-            if file_ext == '.sdr':
-                date = uf.readline(16).decode('ascii')
-                date = sdrDateToString_YYYYMMDD(date[4:])
-                d = DataFile(creationDate=date,station=s,terrain=t,filePath=uf,fileName=filename)
-                d.save()
+            # Validate that the station is in the terrain
+            if s.terrain == t:
+                # Determine which filetype we got # TODO: Add more security than this, this is easily thwarted...
+                uf = request.FILES['file']
+                filename, file_ext = os.path.splitext(uf.name)
+                # We got a single file
+                if file_ext == '.sdr':
+                    date = uf.readline(16).decode('ascii')
+                    date = sdrDateToString_YYYYMMDD(date[4:])
+                    d = DataFile(creationDate=date,station=s,terrain=t,filePath=uf,fileName=filename)
+                    d.save()
 
-            # We got a .zip
-            #elif file_ext == '.zip':
-            #    pass
-            #else:
-            #    form = DataFileForm()
-            #    return render(request, 'leaa/forms/add_datafile.html', {'form': form, 'error': 'Not a valid file.'})
-            return redirect('leaa.views.index')
-            #return render(request, 'leaa/forms/add_datafile.html', {'form': DataFileForm()})
+                # We got a .zip
+                elif file_ext == '.zip':
+                    zf = z.ZipFile(uf, 'r')
+                    for file in zf.namelist():
+                        filename = os.path.basename(file)
+                        data = zf.read(file)
+                        date = data[4:16].decode('ascii')
+                        date = sdrDateToString_YYYYMMDD(date)
+                        d_path = os.path.join(MEDIA_ROOT, t.name + '/' + s.name + '/' + date[:4] + '/')
+                        if not os.path.exists(d_path):
+                            os.mkdir(d_path)
+
+                        d_file = open(os.path.join(d_path, filename), 'wb')
+                        d_file.write(data)
+                        d_file.close()
+                        d = DataFile(creationDate=date,station=s,terrain=t,fileName=filename)
+                        d.save()
+                else:
+                    form = DataFileForm()
+                    return render(request, 'leaa/forms/add_datafile.html', {'form': form})
+                return redirect('leaa.views.index')
+            return render(request, 'leaa/forms/add_datafile.html', {'form': DataFileForm()})
     else:
         form = DataFileForm()
     return render(request, 'leaa/forms/add_datafile.html', {'form': form})

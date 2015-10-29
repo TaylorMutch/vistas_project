@@ -20,7 +20,7 @@ def readSDR(file, station):
     filePath = station.terrain.name + '/'\
                 + station.name + '/'\
                 + str(file.creationDate.year) + '/' \
-                + file.fileName + '.sdr'
+                + file.fileName
     with open(os.path.join(MEDIA_ROOT, filePath)) as datafile:
         data = datafile.readlines()
     datafile.close()
