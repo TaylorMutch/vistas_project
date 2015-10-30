@@ -7,8 +7,10 @@
     right as the DOM finishes loading. This ensures that all assets are loaded before
     the user tries to do anything initially.
  */
+var LEAA = { VERSION: '0.1.0'};
 
-var LEAA = { VERSION: '0.0.1'};
+/** Our manager that holds everything together **/
+manager = new VisManager();
 
 /**
  * Global functions that are pretty harmless overall
@@ -40,11 +42,12 @@ $(document).ready(function() {
 
     /**
      * Our timeline slider.
-     * Initialized to be dummy values because we don't know what the begin/end values are yet.
+     * Initialized to be disabled with dummy values because we don't know what the begin/end values are yet.
      * When enabled, the stop event triggers a render event based on the timestamp that it receives
      */
     $(function() {
-        $("#timelineSlider").slider({
+        var s = $("#timelineSlider");
+        s.slider({
             disabled: true,
             value:0,
             min: 0,
@@ -52,16 +55,29 @@ $(document).ready(function() {
             step: 1,
             slide: function( event, ui ) {
                 $( "#amount" ).val( "$" + ui.value );
+                if (manager.LiveUpdate) manager.UpdateTimeline(ui.value);
             },
             // This is triggered when a user picks up and drops the slider.
             stop: function( event, ui ) {
+                if (!manager.LiveUpdate) manager.UpdateTimeline(ui.value);
+                /*
                 if (manager.CurrentTimestamp !== ui.value) {
-                    manager.CurrentTimestamp = ui.value;    // values for the timeline
+                    console.log('Scrubber changed, updating values');
+                    manager.CurrentTimestamp = ui.value;            // values for the timeline
                     manager.CurrentDate = calcTimestep(ui.value);   // values relevant to our stations
+                    clearArrows();
+                    for (var i = 0; i < manager.ActiveStations.length; i++) {
+                        manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
+                        if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
+                            renderArrows(manager.ActiveStations[i]);
+                        }
+                    }
+                    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
                 }
+                */
             }
         });
-        $( "#amount" ).val( "$" + $("#timelineSlider").slider("value"));
+        $( "#amount" ).val( "$" + s.slider("value"));
     });
 
     terrains = [];
@@ -92,6 +108,28 @@ $(document).ready(function() {
         //TODO: Implement
     });
 
+    // Colorpicker
+    var colorpicker = $('#colorSelector');
+    colorpicker.ColorPicker({
+        color: '#ffff00',
+        onShow: function (colpkr) {
+            $(colpkr).fadeIn(500);
+            return false;
+        },
+        onHide: function (colpkr) {
+            $(colpkr).fadeOut(500);
+            return false;
+        },
+        onChange: function (hsb, hex, rgb) {
+            manager.ArrowColor = parseInt(hex, 16);
+            clearArrows();
+            for (var i = 0; i < manager.ActiveStations.length; i++) {
+                renderArrows(manager.ActiveStations[i]);
+            }
+            $('#colorSelector div').css('backgroundColor', '#' + hex);
+        }
+    });
+    colorpicker.ColorPickerSetColor(manager.ArrowColor.toString(16));
 
     // Tooltips
     $(function() {

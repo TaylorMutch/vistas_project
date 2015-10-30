@@ -43,7 +43,8 @@ Generates a single arrow within an arrowSet.
  */
 function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
     var origin = new THREE.Vector3(stationPos.x, stationPos.y, stationPos.z + cHeight*.1*manager.VectorHeight);
-    var vectorColor = 0xffff00; //TODO: Add color to the vector
+    //var vectorColor = 0xffff00;
+    var vectorColor = manager.ArrowColor;
     if (isNaN(cSpeed) || cSpeed == 0) {
         return null;
     }

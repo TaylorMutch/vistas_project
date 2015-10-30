@@ -6,26 +6,22 @@ from vistas_project_alpha.settings import MEDIA_ROOT
 from django.utils import timezone
 from datetime import datetime, date
 '''
-Reads in a SoDAR file and creates entries in our database to query upon.
-
-file array length is a multiple of 136 because there are 1 header and 135 variable arrays
-
-    for each record i in the datafile:
-        line i*index, substr(4-20) contains the recordDate
-        line i*index+1 contains the heights array (only need to get this once)
-        line i*index + 121 contains VCL array
-        line i*index + 122 contains DCL array
+Reads in a SoDAR file and sends it along to our view.
 '''
 
 months = [None, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-tags   = {'DCL', 'VCL', 'SDR', 'H  '}
+tags = {'DCL', 'VCL', 'SDR', 'H  '}
 
 
-def readSDR(fileName, stationName, terrainName):
+def readSDR(file, station):
 
-    with open(os.path.join(MEDIA_ROOT, terrainName + '/' + stationName + '/' + fileName + '.sdr')) as datafile:
+    filePath = station.terrain.name + '/'\
+                + station.name + '/'\
+                + str(file.creationDate.year) + '/' \
+                + file.fileName
+    with open(os.path.join(MEDIA_ROOT, filePath)) as datafile:
         data = datafile.readlines()
     datafile.close()
     numLines = len(data)
@@ -99,4 +95,8 @@ def sdrDateToString(sdrDate):
     time =  day +' '+month+', ' + year +' - ' + hour+':' + minute +':'+ sec
     return time
 
-
+def sdrDateToString_YYYYMMDD(sdrDate):
+    year = str(2000 + int(sdrDate[0:2]))
+    month = str((sdrDate[2:4]))
+    day = str(int(sdrDate[4:6]))
+    return year + '-' + month + '-' + day

@@ -32,9 +32,6 @@ steal(function () {
             plane.computeFaceNormals();
             plane.computeVertexNormals();
 
-    	    // Import texture
-	        texture = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
-
             // Load the terrain and all stations
             manager.TerrainLoader.load('media/'+name+'/'+ name + '.bin', function(data) {
                 manager.rawDEM = data;
@@ -85,8 +82,11 @@ steal(function () {
                         "}"].join("\n")
                 });
 
-                //terrainGeo = new THREE.Mesh(plane, shaderMaterial);
-                terrainGeo = new THREE.Mesh(plane, texture);
+                terrainShader = new THREE.Mesh(plane, shaderMaterial);
+                scene.add(terrainShader);
+                terrainShader.visible = false;
+                material = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
+                terrainGeo = new THREE.Mesh(plane, material);
                 terrainGeo.name = 'terrain poly';
                 manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
                 scene.add(terrainGeo);
@@ -111,7 +111,10 @@ steal(function () {
             });
             camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
             animate();
-            $("#current-timestamp-label").html(name + "")
+
+            // Do any DOM element changes we need to do.
+            $("#current-timestamp-label").html(name + "");
+            document.getElementById('wireframeToggle').classList.remove('disabled');
         }
     });
 
@@ -119,7 +122,6 @@ steal(function () {
      * Initialize our workspace
      */
     function init() {
-        manager = new VisManager();
         CAM_START = new THREE.Vector3(0,-80,80);
         container = document.getElementById("scene");
 
@@ -147,13 +149,17 @@ steal(function () {
         THREEx.Screenshot.bindKey(renderer);
     }
     /** Draws the DEM with new specified values.
-     * Doesn't touch the arrows, as those are desired to be independent.
+     * Redraws the arrows based on new station base postition
      **/
     function redrawDEM() {
         for (var i = 0; i < manager.rawDEM.length; i++) {
             terrainGeo.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
         }
         terrainGeo.geometry.verticesNeedUpdate = true;
+        clearArrows();
+        $.each(manager.ActiveStations, function(id, station) {
+            renderArrows(station);
+        })
     }
 
     /**
@@ -217,7 +223,8 @@ steal(function () {
      * Calls WebGL to render the scene with the adjusted DEM
      */
     $(function() {
-        $("#sceneHeight").slider({
+        var s = $("#sceneHeight");
+        s.slider({
             disabled: true,
             value:1,
             min:.1,
@@ -235,6 +242,6 @@ steal(function () {
                 }
             }
         });
-        $("#amount").val("$" + $("#sceneHeight").slider("value"));
+        $("#amount").val("$" + s.slider("value"));
     });
 });

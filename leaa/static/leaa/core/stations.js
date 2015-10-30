@@ -53,11 +53,12 @@ Station.prototype.CheckForward = function() {
     return null;
 };
 
-Station.prototype.GetCurrentTimestamp = function() {
+Station.prototype.GetCurrentDate = function() {
     return this.dates[this.index];
 };
 
-Station.prototype.SetCurrentTimestamp = function(_timestamp) {
+/** This takes dates from the manager.CurrentDate */
+Station.prototype.SetCurrentDate = function(_timestamp) {
     //Make this better? Intelligent way to just find the right timestamp?
     var i, j;
 

@@ -47,18 +47,18 @@ button
 
 #header, #sidebar, #bottom-wrapper, #controls-1, #controls-2, #controls-3, #footer
 {
-    margin:0.5em;
+    /*margin:0.5em;*/
     /*border:1px solid;*/
 }
-
+/*
 #wrapper
 {
     min-width:56em;
 }
-
+*/
 #top-wrapper
 {
-    height:35em;
+    height:38em;
     padding:0.5em;
     /*border:1px solid black;*/
 }
@@ -92,7 +92,7 @@ button
 #bottom-wrapper
 {
     /*height:20em;*/
-    padding:0.5em;
+    /*padding:0.5em;*/
 }
 
 #controls-1, #controls-2, #controls-3, #controls-4, #sidebar
@@ -113,4 +113,26 @@ button
     height: auto;
     max-height: 200px;
     overflow-x: hidden;
+}
+
+/****ColorSelector tags****/
+
+#colorSelector {
+	position: relative;
+	width: 36px;
+	height: 36px;
+	background: url(images/colorpicker/select.png);
+}
+#colorSelector div {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 30px;
+	height: 30px;
+	background: url(images/colorpicker/select.png) center;
+}
+
+#customWidget {
+	position: relative;
+	height: 36px;
 }

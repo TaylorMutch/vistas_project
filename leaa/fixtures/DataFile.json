@@ -5,7 +5,7 @@
     "fields" : {
       "station": 1,
       "terrain": 1,
-      "fileName": "20120101",
+      "fileName": "0101",
       "creationDate": "2012-01-01"
     }
   },
@@ -15,7 +15,7 @@
     "fields" : {
       "station": 2,
       "terrain": 1,
-      "fileName": "20120101",
+      "fileName": "0101",
       "creationDate": "2012-01-01"
     }
   },
@@ -25,7 +25,7 @@
     "fields" : {
       "station": 1,
       "terrain": 1,
-      "fileName": "20120102",
+      "fileName": "0102",
       "creationDate": "2012-01-02"
     }
   },
@@ -35,7 +35,7 @@
     "fields" : {
       "station": 2,
       "terrain": 1,
-      "fileName": "20120102",
+      "fileName": "0102",
       "creationDate": "2012-01-02"
     }
   }

@@ -31,10 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    #'admin_tools',
-    #'admin_tools.theming',
-    #'admin_tools.dashboard',
-    #'admin_tools.menu',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -112,7 +108,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # TODO: Edit this when we go to production
-MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media'
+MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media/'
 
 
 TEMPLATE_DIRS = (
@@ -124,9 +120,3 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-
-# Custom Admin site tools, menu and dashboard
-
-#ADMIN_TOOLS_MENU = 'menu.CustomMenu'
-#ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
-#ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'

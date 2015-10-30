@@ -26,11 +26,11 @@ function calcTimestep(value) {
     var _month = currentDateStr.substr(4,3);
     var monthValue;
     $.each(months, function(month, value) {
-        if (month == _month) {monthValue = value;}});
+        if (month == _month) monthValue = value;
+    });
     var currentParsed = currentDateStr.substr(13,2) + monthValue + currentDateStr.substr(8,2)
         + currentDateStr.substr(16,2) + currentDateStr.substr(19,2) + currentDateStr.substr(22,2);
     return parseInt(currentParsed);
-    //console.log(currentInt);
 }
 
 /**
@@ -44,6 +44,7 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
 
     // Setable attributes
     this.ActiveStations = [];
+    this.RecordDate = null;
     this.SceneObjects = [];
     this.TerrainMap = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
@@ -53,7 +54,8 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.SceneHeight = 1;
     this.VectorHeight = 1;
     this.VectorLength = 1;
-    this.ArrowColor = null; //TODO: Add colorpicking back into the mix...
+    this.LiveUpdate = false;
+    this.ArrowColor = parseInt("ffff00", 16); //TODO: Add colorpicking back into the mix...
 }
 
 /**
@@ -69,20 +71,34 @@ VisManager.prototype.ResetStations = function() {
         this.ActiveStations[i].isCurrent = true;
         renderArrows(this.ActiveStations[i]);
     }
+    this.CurrentDate = calcTimestep(this.CurrentTimestamp);
+    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
 };
 /**
  * Step forward.
  * @constructor
  */
 VisManager.prototype.StepForward = function() {
-    $('#timelineSlider').slider({value: this.CurrentTimestamp + this.Timeline.timeStep});
-    this.Step(true);
+    if (this.CurrentTimestamp < this.Timeline.endTime.getTime()) {
+        $('#timelineSlider').slider({value: this.CurrentTimestamp + this.Timeline.timeStep});
+        this.Step(true);
+    } else if (this.CurrentTimestamp == this.Timeline.endTime.getTime()) {
+        var glyph = $('#play-glyph');
+        if (glyph.hasClass('glyphicon-pause')) {
+            manager.Animating = false;
+            clearInterval(intervalID);
+            glyph.removeClass('glyphicon-pause');
+            glyph.addClass('glyphicon-play');
+        }
+    }
+
 };
 /**
  * Step backward.
  * @constructor
  */
 VisManager.prototype.StepBackward = function() {
+    if (this.CurrentTimestamp > this.Timeline.beginTime.getTime())
     $('#timelineSlider').slider({value: this.CurrentTimestamp - this.Timeline.timeStep});
     this.Step(false);
 
@@ -110,6 +126,7 @@ VisManager.prototype.Step = function(forward) {
     }
     this.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
+    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
 };
 
 /**
@@ -133,10 +150,10 @@ VisManager.prototype.CompareDates = function(increasing) {
         });
     }
     console.log('Comparing these dates: ' + datesToCompare);
+
     // Now we check if we can just use all the stations or if we need to drop one or more.
     if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
         console.log('Dates match');
-        updateSodarLog('Timestamp: ' + formatTimestamp(Math.max.apply(Math, datesToCompare)), true);
         for (var i = 0; i < this.ActiveStations.length; i++) {
             this.ActiveStations[i].isCurrent = true;
         }
@@ -151,6 +168,19 @@ VisManager.prototype.CompareDates = function(increasing) {
         $.each(datesToCompare, function(id, date) {
             manager.ActiveStations[id].isCurrent = date == checkDate;
         });
-        updateSodarLog('Timestamp: ' + formatTimestamp(checkDate), true);
     }
+};
+
+VisManager.prototype.UpdateTimeline = function(val) {
+    console.log('Scrubber changed, updating values');
+    manager.CurrentTimestamp = val;            // values for the timeline
+    manager.CurrentDate = calcTimestep(val);   // values relevant to our stations
+    clearArrows();
+    for (var i = 0; i < manager.ActiveStations.length; i++) {
+        manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
+        if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
+            renderArrows(manager.ActiveStations[i]);
+        }
+    }
+    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
 };
