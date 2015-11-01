@@ -7,6 +7,7 @@ urlpatterns = [
     #url(r'^getVectors/', visViews.getVectors),
     #url(r'^getStations/', visViews.getStations),
     #url(r'^getTerrainNames/', visViews.getTerrainNames),
+    url(r'^getTerrain', visViews.getTerrain),
     url(r'^getDates/', visViews.getDates),
     url(r'^getStationObjects/', visViews.getStationObjects),
     ]
