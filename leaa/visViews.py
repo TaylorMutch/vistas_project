@@ -3,11 +3,9 @@ import json
 from django.db.models import Q
 from django.http import HttpResponse
 from rest_framework import status
-
 from rest_framework.decorators import api_view
-from vistas_project_alpha.settings import MEDIA_ROOT
 from leaa.models import Terrain, Station, DataFile
-from fileReader import readSDR, readRecordDateToString, dateStringToDate
+from fileReader import readSDR, readTerrain  # readRecordDateToString, dateStringToDate
 
 @api_view(['GET'])
 def getDates(request):
@@ -72,3 +70,10 @@ def getStationObjects(request):
             result[stationName] = stationResult
         '''
     return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getTerrain(request):
+    terrain = Terrain.objects.get(pk=request.GET.get('terrainID'))
+    file = readTerrain(terrain)
+    return HttpResponse(file, status=status.HTTP_200_OK)

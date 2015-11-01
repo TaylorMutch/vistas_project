@@ -33,7 +33,7 @@ steal(function () {
             plane.computeVertexNormals();
 
             // Load the terrain and all stations
-            manager.TerrainLoader.load('media/'+name+'/'+ name + '.bin', function(data) {
+            manager.TerrainLoader.load('getTerrain?terrainID=' + temp_terrain.id, function(data) {
                 manager.rawDEM = data;
                 for (var i = 0, l = plane.vertices.length; i < l; i++ ) {
                     plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
