@@ -34,6 +34,8 @@ def login_view(request):
             if user.is_active:
                 login(request, user)
                 return redirect('leaa.views.index')
+                #return redirect(request.POST['next'])
+                #return redirect('/login/?next=%s' % request.path)
             else:
                 return render(request, 'leaa/forms/login.html')
         else:
@@ -62,7 +64,6 @@ def add_user(request):
 
 
 def index(request):
-    # TODO: Replace with arbitrary user lookup
     return render(request, 'leaa/index.html')
 
 
@@ -77,6 +78,7 @@ def add_terrain(request):
     else:
         form = TerrainForm()
     return render(request, 'leaa/forms/add_terrain.html', {'form': form})
+
 
 @login_required(login_url='/login/')
 def add_station(request):
@@ -97,6 +99,7 @@ def add_station(request):
     else:
         form = StationForm()
     return render(request, 'leaa/forms/add_station.html', {'form': form})
+
 
 @login_required(login_url='/login/')
 def add_datafile(request):
@@ -150,10 +153,6 @@ def add_datafile(request):
     else:
         form = DataFileForm()
     return render(request, 'leaa/forms/add_datafile.html', {'form': form})
-
-
-def test(request):
-    return render(request, 'leaa/test_index_w_shaders.html')
 
 
 class TerrainList(generics.ListAPIView):

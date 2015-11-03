@@ -12,7 +12,6 @@
     <link href="{% static "leaa/css/jquery-ui.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/jquery-ui.structure.min.css" %}" rel="stylesheet">
     <link href="{% static "leaa/css/jquery-ui.theme.min.css" %}" rel="stylesheet">
-
     {% block css %}
     {% endblock css %}
     <link rel="shortcut icon" type="image/png" href="{% static "favicon.ico" %}">
@@ -22,7 +21,6 @@
     <script src="{% static "leaa/js/jquery-1.11.3.min.js" %}"></script>
     <script src="{% static "leaa/js/jquery-ui.min.js" %}"></script>
     <script src="{% static "leaa/bootstrap/bootstrap.min.js" %}"></script>
-
     {% block js %}
     {% endblock js %}
 
@@ -58,12 +56,20 @@
                 <ul class="nav navbar-nav">
                     <li><a href="#" data-toggle="modal" data-target="#howtomodal">How-To</a></li>
                     <li><a href="http://blogs.evergreen.edu/vistas/" target="_blank">VISTAS Blog</a></li>
+                    {% if user.is_authenticated %}
                     <li><a href="{% url "add_terrain" %}">Add Terrain</a></li>
                     <li><a href="{% url "add_station" %}">Add Station</a></li>
                     <li><a href="{% url "add_datafile" %}">Add Data</a></li>
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Welcome, {{ user.username }}</a></li>
+                    <li><a href="#">Welcome,
+                        {% if user.is_authenticated %}
+                        {{ user.username }}
+                        {% else %}
+                        Guest
+                        {% endif %}
+                    </a></li>
                     {% if not user.is_authenticated %}
                         <li><a href="{% url "login" %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
                         <li><a href="{% url "add_user" %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
