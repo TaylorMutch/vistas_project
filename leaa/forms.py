@@ -41,12 +41,13 @@ class StationForm(ModelForm):
         model = Station
         fields = ('name','terrain','lat','long')
         help_texts = {
+            'terrain': _('Station must reside with selected terrain'),
             'lat': _('Latitude within selected terrain (must be within terrain boundaries)'),
             'long': _('Longitude within selected terrain'),
         }
         labels = {
             'name': _('Station Name'),
-            'terrain': _('Terrain station resides within'),
+            'terrain': _('Select Terrain'),
             'lat' : _('Station Latitude'),
             'long': _('Station Longitude'),
         }
