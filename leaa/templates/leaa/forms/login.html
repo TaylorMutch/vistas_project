@@ -1,28 +1,23 @@
 {% extends "leaa/base.html" %}
+{% load staticfiles %}
+
+{% block css %}
+    <link href="{% static "leaa/css/login.css" %}" rel="stylesheet">
+{% endblock css %}
+
 {% block content %}
-    <div id="login">
-        <form class="form-horizontal" name="LoginForm" action="/login/" method="post">
-        {% csrf_token %}
-        {% if next %}
-            <input type="hidden" name="next" value="{{ next }}" />
-        {% endif %}
-        <div class="control-group">
-            <label class="control-label" for="username">Username</label>
-            <div class="controls">
-                <input type="text" id="username" name="username"  placeholder="Username">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-                <input type="password" name="password" id="password" placeholder="Password">
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn">Login</button>
-            </div>
-        </div>
+    <div id="login" class="container">
+        <form class="form-signin" name="LoginForm" method="post">
+            <h2 class="form-signin-heading">Please Sign In</h2>
+            {% csrf_token %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}" />
+            {% endif %}
+            <label class="sr-only" for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username"  placeholder="Username">
+            <label class="sr-only" for="password">Password</label>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Sign In</button>
         </form>
     </div>
-{% endblock %}
+{% endblock content %}
