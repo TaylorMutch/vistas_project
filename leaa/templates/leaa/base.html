@@ -75,8 +75,13 @@
                     <li><a href="{% url "add_datafile" %}">Add Data</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="">Welcome, {{ user.username }}</a></li>
+                    {% if not user.is_authenticated %}
+                        <li><a href="{% url "login" %}"><span class="glyphicon glyphicon-log-in"></span> Log In</a></li>
+                        <li><a href="{% url "add_user" %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    {% else %}
+                        <li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-out"> Log Out</span></a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
