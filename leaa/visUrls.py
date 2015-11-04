@@ -4,7 +4,8 @@ from leaa import visViews
 
 
 urlpatterns = [
-    url(r'^getTerrain', visViews.getTerrain),
+    url(r'^getTerrain/', visViews.getTerrain),
     url(r'^getDates/', visViews.getDates),
     url(r'^getStationObjects/', visViews.getStationObjects),
+    url(r'^getSettings/', visViews.getSettings),
     ]

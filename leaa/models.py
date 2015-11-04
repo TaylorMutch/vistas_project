@@ -49,16 +49,13 @@ class DataFile(models.Model):
 
 
 class Setting(models.Model):
-    vectorLength = models.IntegerField()
-    vectorHeight = models.IntegerField()
-    vectorColor = models.CharField(max_length=8) # hex colors are only 8 characters long
-    terrainScale = models.IntegerField()
-    animationSpeed = models.IntegerField()
+    vectorLength = models.FloatField(default=1)
+    vectorHeight = models.FloatField(default=1)
+    vectorColor = models.CharField(max_length=8, default="0xffff00") # hex colors are only 8 characters long
+    sceneHeight = models.FloatField(default=1)
+    liveUpdate = models.BooleanField(default=False)
     user = models.OneToOneField(User, primary_key=True)
 
-    def __str__(self):
-        user_name = "testname"
-        return user_name + ' ' + str(self.user_id)
 
 class TerrainView(models.Model):
     controlPos = (models.FloatField(), models.FloatField(), models.FloatField())

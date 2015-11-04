@@ -4,7 +4,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
-from leaa.models import Terrain, Station, DataFile
+from leaa.models import Terrain, Station, DataFile, Setting
+from django.contrib.auth.models import User
 from fileReader import readSDR, readTerrain  # readRecordDateToString, dateStringToDate
 
 @api_view(['GET'])
@@ -77,3 +78,19 @@ def getTerrain(request):
     terrain = Terrain.objects.get(pk=request.GET.get('terrainID'))
     file = readTerrain(terrain)
     return HttpResponse(file, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getSettings(request):
+    result = {}
+    if request.user.is_authenticated():
+        user = User.objects.get(username=request.user.username)
+        settings = Setting.objects.get(user=user)
+        result['VectorHeight'] = settings.vectorHeight
+        result['VectorLength'] = settings.vectorLength
+        result['SceneHeight'] = settings.sceneHeight
+        result['ArrowColor'] = settings.vectorColor
+        result['LiveUpdate'] = settings.liveUpdate
+        return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
+    else:
+        return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)

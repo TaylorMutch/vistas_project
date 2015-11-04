@@ -22,6 +22,9 @@
     <!-- VALCEX UI SCRIPTS (via steal.js) -->
     <script src="{% static "steal/steal.js" %}"></script>
     <script src="{% static "leaa/ui/leaa.js" %}"></script>
+    {% if user.is_authenticated %}
+        <script src="{% static "leaa/ui/settings.js" %}"></script>
+    {% endif %}
 {% endblock js %}
 
 {% block content %}
@@ -87,7 +90,7 @@
 			</div>
 
 			<div id="controls-3" class="col-md-4 text-center">
-					<h4>Wind Vector Controls</h4>
+                <h4>Wind Vector Controls</h4>
                 <div>Elevation Scale</div>
                 <div id="sceneHeight"></div>
                 <div>Vector Length</div>
@@ -104,6 +107,18 @@
                     <ul id="sodarLog" class="scrollable-menu"></ul>
                 </div>
 			</div>
+            <div id="controls-4" class="col-md-4 btn-group-vertical text-center">
+                <h4>User Controls</h4>
+                <button class="btn btn-default disabled">Save Settings</button>
+                <button class="btn btn-default disabled">Save View</button>
+                <div class="dropdown">
+                    <button  class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Saved Views
+                        <span class="caret"></span>
+				    </button>
+                    <ul id="viewPicker" class="dropdown-menu"></ul>
+                </div>
+            </div>
 		</div>
     </div>
 {% endblock content %}

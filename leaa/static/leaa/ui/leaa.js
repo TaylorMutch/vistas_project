@@ -16,7 +16,8 @@ manager = new VisManager();
  * Global functions that are pretty harmless overall
  */
 function updateSodarLog(string, updateCurrentLabel) {
-    $('#sodarLog').append('<li><a> ' + string + '</a></li>');
+    //$('#sodarLog').append('<li><a> ' + string + '</a></li>');
+    $('#sodarLog').prepend('<li><a> ' + string + '</a></li>');
     if (updateCurrentLabel) {
         $('#current-timestamp-label').html(string);
     }
@@ -94,19 +95,6 @@ $(document).ready(function() {
     steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
     steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
     steal("leaa/ui/animateWind.js", function() {}); // Wind controls
-    //steal("leaa/ui/registration.js", function() {}); //TODO: Add registration functionality
-    $("#registerBtn").on("click", function (event) {
-        /**
-         * Handle user clicking register button
-         */
-        //TODO: Implement
-    });
-    $("#signInBtn").on("click", function(event) {
-        event.preventDefault();
-        var loginForm = $("signInForm").serialize();
-        console.log(loginForm);
-        //TODO: Implement
-    });
 
     // Colorpicker
     var colorpicker = $('#colorSelector');
