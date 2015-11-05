@@ -31,23 +31,25 @@
 {% block content %}
     <div class="container">
 		<div id="top-controls" class="row">
-            <div class="col-xs-2 col-mid-1 dropdown">
-                <button  class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <div class="btn-group-vertical col-md-2" role="group">
+                <div class="dropdown">
+                    <button  class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 					Select Terrain
 					<span class="caret"></span>
-				</button>
-                <ul id="demPicker" class="dropdown-menu"></ul>
-            </div>
-            <div class="col-xs-2 col-mid-1 dropdown">
-                <button  class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				    </button>
+                    <ul id="demPicker" class="dropdown-menu"></ul>
+                </div>
+                <div class="dropdown">
+                    <button  class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown">
                     Select Data
                     <span class="caret"></span>
-                </button>
-                <ul id="dataPicker" class="dropdown-menu scrollable-menu">
-                    <li>No Data, Load a Terrain</li>
-                </ul>
+                    </button>
+                    <ul id="dataPicker" class="dropdown-menu scrollable-menu">
+                        <li>No Data, Load a Terrain</li>
+                    </ul>
+                </div>
             </div>
-			<div class="col-xs-6 col-md-5 well" data-toggle="tooltip"
+			<div class="col-xs-6 col-md-5 col-md-offset-1 well" data-toggle="tooltip"
 				data-placement="right" data-original-title="Current SODAR reading displayed in the scene">
 				<div id="current-timestamp-container">
 					<h3 id="current-timestamp-label" class="text-center">Scene Empty - Select Terrain</h3>
