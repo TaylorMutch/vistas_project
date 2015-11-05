@@ -70,7 +70,6 @@ steal(function () {
     $(function() {
         var s = $("#vectorLength");
         s.slider({
-            disabled: true,
             value:1,
             min:.1,
             max: 2.0,
@@ -91,7 +90,6 @@ steal(function () {
     $(function() {
         var s = $("#vectorHeight");
         s.slider({
-            disabled: true,
             value:1,
             min:.1,
             max: 2.0,

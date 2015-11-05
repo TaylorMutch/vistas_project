@@ -62,8 +62,6 @@ steal(function () {
                         max: manager.Timeline.endTime.getTime(),
                         step: manager.Timeline.timeStep
                     });
-                    $('#vectorHeight').slider({disabled: false});
-                    $('#vectorLength').slider({disabled: false});
                     $('#begin').removeClass('disabled');
                     $('#forward').removeClass('disabled');
                     $('#back').removeClass('disabled');

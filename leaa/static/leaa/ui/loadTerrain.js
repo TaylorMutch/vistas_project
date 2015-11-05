@@ -18,9 +18,9 @@ steal(function () {
         var name = temp_terrain.name;
         if (temp_terrain !== manager.ActiveDEM) {
             $('#timelineSlider').slider('option','disabled',true);
-            $('#sceneHeight').slider({disabled: false, value: 1});
-            $('#vectorHeight').slider({disabled: true, value: 1});
-            $('#vectorLength').slider({disabled: true, value: 1});
+            //$('#sceneHeight').slider({disabled: false, value: 1});
+            //$('#vectorHeight').slider({disabled: true, value: 1});
+            //$('#vectorLength').slider({disabled: true, value: 1});
             if (manager.ActiveDEM !== undefined) {
                 clearArrows();
                 cleanup();
@@ -37,7 +37,7 @@ steal(function () {
                 manager.rawDEM = data;
                 var i;
                 for (i = 0, l = plane.vertices.length; i < l; i++ ) {
-                    plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight;
+                    plane.vertices[i].z = data[i]/65535*temp_terrain.maxHeight*manager.SceneHeight;
                 }
                 var max = 0;
                 for (i = 0; i < plane.vertices.length; i++) {
@@ -85,6 +85,7 @@ steal(function () {
 
                 terrainShader = new THREE.Mesh(plane, shaderMaterial);
                 scene.add(terrainShader);
+                manager.SceneObjects.push(terrainShader);
                 terrainShader.visible = false;
                 material = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
                 terrainGeo = new THREE.Mesh(plane, material);
@@ -226,7 +227,6 @@ steal(function () {
     $(function() {
         var s = $("#sceneHeight");
         s.slider({
-            disabled: true,
             value:1,
             min:.1,
             max: 2.0,

@@ -16,6 +16,7 @@ h2
     font-size:125%;
     line-height:1.2em;
     color:black;
+    margin-bottom: 0;
 }
 
 h4
@@ -37,6 +38,12 @@ a:link, a:hover, a:active, a:visited
 {
     text-decoration:none;
     color: deepskyblue;
+}
+
+hr
+{
+    margin-top: 0.1em;
+    margin-bottom: 0.3em;
 }
 
 button

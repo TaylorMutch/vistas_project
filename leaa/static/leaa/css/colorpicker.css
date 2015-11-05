@@ -1,4 +1,5 @@
 .colorpicker {
+	z-index: 2; 	 /*This is so we are on top of our sliders*/
 	width: 356px;
 	height: 176px;
 	overflow: hidden;
@@ -8,7 +9,6 @@
 	display: none;
 }
 .colorpicker_color {
-	z-index: 2; /*This is so we are on top of our sliders*/
 	width: 150px;
 	height: 150px;
 	left: 14px;

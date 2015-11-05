@@ -55,7 +55,6 @@ function VisManager(){
     this.VectorLength = 1;
     this.LiveUpdate = false;
     this.ArrowColor = 16776960; // base 10 translation of yellow (0xffff00)
-    //this.ArrowColor = parseInt("0xffff00", 16);
 }
 
 /**

@@ -111,9 +111,14 @@ $(document).ready(function() {
         },
         onChange: function (hsb, hex, rgb) {
             manager.ArrowColor = parseInt(hex, 16);
-            clearArrows();
-            for (var i = 0; i < manager.ActiveStations.length; i++) {
-                renderArrows(manager.ActiveStations[i]);
+            var obj, i;
+            var newColor = new THREE.MeshBasicMaterial({color: manager.ArrowColor});
+            for (i = scene.children.length -1; i >= 0; i--) {
+                obj = scene.children[i];
+                if (obj.name == 'windvector') {
+                    obj.children[0].material = newColor;
+                }
+//                console.log('windvector color changed');
             }
             $('#colorSelector div').css('backgroundColor', '#' + hex);
         }

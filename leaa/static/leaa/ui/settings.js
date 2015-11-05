@@ -6,14 +6,23 @@
  * User settings handling
  */
 $(document).ready(function () {
-    $.getJSON('/getSettings/', function(response) {
-        manager.VectorHeight = response['VectorHeight'];
-        manager.VectorLength = response['VectorLength'];
-        manager.SceneHeight  = response['SceneHeight'];
-        manager.LiveUpdate  = response['LiveUpdate'];
-        manager.ArrowColor = parseInt(response['ArrowColor']);
-        $("#saveSettings").removeClass('disabled');
-        // TODO: Remove 'disabled' from $('#saveViews') when we get to loading saved views.
+    $("ul").on('click', 'a.dem', function(){
+        $.getJSON('/getSettings/', function(response) {
+            manager.VectorHeight = response['VectorHeight'];
+            manager.VectorLength = response['VectorLength'];
+            manager.SceneHeight  = response['SceneHeight'];
+            manager.LiveUpdate  = response['LiveUpdate'];
+            manager.ArrowColor = parseInt(response['ArrowColor']);
+            $("#saveSettings").removeClass('disabled');
+            // TODO: Remove 'disabled' from $('#saveViews') when we get to loading saved views.
+        }).done(function(){
+            $('#vectorHeight').slider('option','value',manager.VectorHeight);
+            $('#vectorLength').slider('option','value',manager.VectorLength);
+            $('#sceneHeight').slider('option','value',manager.SceneHeight);
+            //$('#colorSelector').ColorPicker({color: manager.ArrowColor.toString(16)});
+            $('#colorSelector').ColorPickerSetColor(manager.ArrowColor.toString(16));
+            $('#colorSelector div').css('backgroundColor', '#' + manager.ArrowColor.toString(16));
+        });
     });
 
     $('#saveSettings').on('click', function(){
