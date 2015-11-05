@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 # Create your models here.
 
@@ -51,11 +52,17 @@ class DataFile(models.Model):
 class Setting(models.Model):
     vectorLength = models.FloatField(default=1)
     vectorHeight = models.FloatField(default=1)
-    vectorColor = models.CharField(max_length=8, default="0xffff00") # hex colors are only 8 characters long
+    vectorColor  = models.IntegerField(default=16776960)    # default to yellow (base 10 translation of 0xffff00)
+    #vectorColor = models.CharField(max_length=8, default="0xffff00") # hex colors are only 8 characters long
     sceneHeight = models.FloatField(default=1)
     liveUpdate = models.BooleanField(default=False)
     user = models.OneToOneField(User, primary_key=True)
 
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Setting.objects.create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
 
 class TerrainView(models.Model):
     controlPos = (models.FloatField(), models.FloatField(), models.FloatField())

@@ -23,6 +23,7 @@
     <script src="{% static "steal/steal.js" %}"></script>
     <script src="{% static "leaa/ui/leaa.js" %}"></script>
     {% if user.is_authenticated %}
+        <!-- We have an active user, so load in their settings -->
         <script src="{% static "leaa/ui/settings.js" %}"></script>
     {% endif %}
 {% endblock js %}
@@ -86,7 +87,8 @@
 						<li><a id="setPerspective" href="#">Perspective</a></li>
 					</ul>
 				</div>
-                <button id="wireframeToggle" type="button" class="btn btn-default disabled">Toggle Wireframe</button>
+                <button id="wireframeToggle" type="button" class="btn btn-default disabled" data-toggle="tooltip"
+				data-placement="right" data-original-title="Discard texture and only show geometry.">Toggle Wireframe</button>
 			</div>
 
 			<div id="controls-3" class="col-md-4 text-center">
@@ -109,14 +111,14 @@
 			</div>
             <div id="controls-4" class="col-md-4 btn-group-vertical text-center">
                 <h4>User Controls</h4>
-                <button class="btn btn-default disabled">Save Settings</button>
-                <button class="btn btn-default disabled">Save View</button>
+                <button id="saveSettings" class="btn btn-default disabled">Save Settings</button>
+                <button id="saveViews" class="btn btn-default disabled">Save View</button>
                 <div class="dropdown">
                     <button  class="btn btn-default btn-block dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Saved Views
                         <span class="caret"></span>
 				    </button>
-                    <ul id="viewPicker" class="dropdown-menu"></ul>
+                <ul id="viewPicker" class="dropdown-menu"></ul>
                 </div>
             </div>
 		</div>

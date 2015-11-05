@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^getDates/', visViews.getDates),
     url(r'^getStationObjects/', visViews.getStationObjects),
     url(r'^getSettings/', visViews.getSettings),
+    url(r'^setSettings/', visViews.setSettings),
     ]

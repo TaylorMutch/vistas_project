@@ -2,6 +2,7 @@ __author__ = 'Taylor'
 import json
 from django.db.models import Q
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from leaa.models import Terrain, Station, DataFile, Setting
@@ -94,3 +95,18 @@ def getSettings(request):
         return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
     else:
         return HttpResponse(json.dumps(result), status=status.HTTP_200_OK)
+
+
+@csrf_exempt
+def setSettings(request):
+    if request.user.is_authenticated():
+        settings = Setting.objects.get(user=User.objects.get(username=request.user.username))
+        settings.liveUpdate = bool(request.POST['live'])
+        settings.vectorColor = request.POST['color']
+        settings.sceneHeight = float(request.POST['sheight'])
+        settings.vectorLength = float(request.POST['vlength'])
+        settings.vectorHeight = float(request.POST['vheight'])
+        settings.save()
+        return HttpResponse(status=status.HTTP_200_OK)
+    else:
+        return HttpResponse(status=status.HTTP_511_NETWORK_AUTHENTICATION_REQUIRED)

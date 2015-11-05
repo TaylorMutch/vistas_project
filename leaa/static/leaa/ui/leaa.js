@@ -99,7 +99,8 @@ $(document).ready(function() {
     // Colorpicker
     var colorpicker = $('#colorSelector');
     colorpicker.ColorPicker({
-        color: '#ffff00',
+        //color: '#ffff00',
+        color: manager.ArrowColor.toString(16),
         onShow: function (colpkr) {
             $(colpkr).fadeIn(500);
             return false;

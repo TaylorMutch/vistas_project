@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response
 from leaa.models import Terrain, Station, DataFile, TerrainView, Setting
-from django.db.models.signals import post_save
 from leaa.serializers import *
 from rest_framework import generics, permissions, renderers, status
 from rest_framework.decorators import api_view
@@ -23,6 +22,7 @@ def api_root(request):
         'terrains'  : reverse('terrain-list', request=request),
         'stations'  : reverse('station-list', request=request),
         'datafiles' : reverse('datafile-list', request=request),
+        'settings'  : reverse('setting-list', request=request),
     })
 
 
@@ -50,17 +50,12 @@ def logout_view(request):
     return redirect('leaa.views.index')
 
 
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Setting.objects.create(user=instance)
-
 def add_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
             new_user = User.objects.create_user(**form.cleaned_data)
             # TODO: Make this better? We need to associate our new user with settings now.
-            post_save.connect(create_user_profile, sender=User)
             return redirect('leaa.views.index')
     else:
         form = UserForm()
@@ -218,3 +213,16 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
+
+
+class SettingList(generics.ListAPIView):
+    queryset = Setting.objects.all()
+    serializer_class = SettingSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class SettingDetail(generics.RetrieveAPIView):
+    queryset = Setting.objects.all()
+    serializer_class = SettingSerializer

@@ -39,7 +39,7 @@ function calcTimestep(value) {
  * rendering the correct ones in the scene.
  * @constructor
  */
-function VisManager(){ //TODO: Could we use this to associate a given scene with our user? hmm...
+function VisManager(){
 
     // Setable attributes
     this.ActiveStations = [];
@@ -54,7 +54,8 @@ function VisManager(){ //TODO: Could we use this to associate a given scene with
     this.VectorHeight = 1;
     this.VectorLength = 1;
     this.LiveUpdate = false;
-    this.ArrowColor = parseInt("0xffff00", 16);
+    this.ArrowColor = 16776960; // base 10 translation of yellow (0xffff00)
+    //this.ArrowColor = parseInt("0xffff00", 16);
 }
 
 /**
