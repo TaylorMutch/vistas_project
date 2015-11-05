@@ -132,7 +132,6 @@ def add_datafile(request):
                             d_file.write(chunk)
                     d = DataFile(creationDate=date,station=s,terrain=t,fileName=uf.name)
                     d.save()
-
                 # We got a .zip
                 elif file_ext == '.zip':
                     zf = z.ZipFile(uf, 'r')
