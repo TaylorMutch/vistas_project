@@ -18,9 +18,6 @@ steal(function () {
         var name = temp_terrain.name;
         if (temp_terrain !== manager.ActiveDEM) {
             $('#timelineSlider').slider('option','disabled',true);
-            //$('#sceneHeight').slider({disabled: false, value: 1});
-            //$('#vectorHeight').slider({disabled: true, value: 1});
-            //$('#vectorLength').slider({disabled: true, value: 1});
             if (manager.ActiveDEM !== undefined) {
                 clearArrows();
                 cleanup();
@@ -33,7 +30,7 @@ steal(function () {
             plane.computeVertexNormals();
 
             // Load the terrain and all stations
-            manager.TerrainLoader.load('getTerrain?terrainID=' + temp_terrain.id, function(data) {
+            manager.TerrainLoader.load('getTerrain/?terrainID=' + temp_terrain.id, function(data) {
                 manager.rawDEM = data;
                 var i;
                 for (i = 0, l = plane.vertices.length; i < l; i++ ) {
@@ -179,6 +176,7 @@ steal(function () {
     function cleanup() {
         $.each(manager.SceneObjects, function(handle, threeObject) {
             scene.remove(threeObject);
+            renderer.dispose(threeObject);
             delete manager.SceneObjects.pop();
         });
         console.log("Scene cleared");

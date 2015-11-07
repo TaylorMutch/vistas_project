@@ -105,12 +105,14 @@ function clearArrows() {
         obj = scene.children[i];
         if (obj.name == 'windvector') {
             scene.remove(obj);
-            console.log('removed windvector');
+            renderer.dispose(obj);
+            //console.log('removed windvector');
         }
     }
 }
-
-// TOGGLE CONTOURS //TODO: Reuse or remove this code somehow
+//TODO: Reuse or remove this code somehow
+/*
+// TOGGLE CONTOURS
 function toggleContours(){
 	if (showContours){
 // turn contours off
@@ -125,3 +127,4 @@ function toggleContours(){
 		showContours=true;
 	}
 }
+    */

@@ -46,6 +46,7 @@ function VisManager(){
     this.RecordDate = null;
     this.SceneObjects = [];
     this.TerrainMap = [];
+    this.TerrainViews = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
     this.TerrainLoader = new THREE.TerrainLoader();
     this.Animating = false;

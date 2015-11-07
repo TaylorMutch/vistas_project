@@ -55,12 +55,10 @@ def add_user(request):
         form = UserForm(request.POST)
         if form.is_valid():
             new_user = User.objects.create_user(**form.cleaned_data)
-            # TODO: Make this better? We need to associate our new user with settings now.
             return redirect('leaa.views.index')
     else:
         form = UserForm()
     return render(request, 'leaa/forms/signup.html', {'form':form})
-
 
 
 def index(request):

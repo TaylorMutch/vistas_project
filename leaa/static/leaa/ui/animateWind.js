@@ -52,7 +52,7 @@ steal(function () {
 
 		// Reset camera
 		camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
-		orbit.reset();
+		//orbit.reset();
 		//flycontrols.reset();
 		/*
 		if (!flyThroughEnabled)
