@@ -137,6 +137,12 @@ steal(function () {
         // Initialze controls
         orbit = new THREE.OrbitControls(camera, container);
 
+        // Add performance monitor
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        //stats.domElement.style.top = '0px';
+        container.appendChild(stats.domElement);
+
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
         renderer.setSize(container.offsetWidth, container.offsetHeight);
@@ -185,6 +191,7 @@ steal(function () {
 
     function animate() {
         requestAnimationFrame(animate);
+        stats.update();
         render();
     }
 
