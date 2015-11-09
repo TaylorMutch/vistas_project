@@ -134,9 +134,6 @@ steal(function () {
         ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
 
-        // Initialze controls
-        orbit = new THREE.OrbitControls(camera, container);
-
         // Add performance monitor
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
@@ -159,7 +156,7 @@ steal(function () {
             Yes: true
         };
 
-        var h_gui = new dat.GUI({autoPlace: false});
+        h_gui = new dat.GUI({autoPlace: false});
         var Coordinates = h_gui.addFolder('Coordinates..', "a");
         Coordinates.add(obj, 'x');
         Coordinates.add(obj, 'y');
@@ -173,8 +170,8 @@ steal(function () {
         h_gui.domElement.style.position = 'absolute';
         h_gui.domElement.style.top = '0%';
         h_gui.domElement.style.left = '0%';
-
-        var v_gui = new dat.GUI({autoPlace: false});
+        //h_gui.remember(Options);
+        v_gui = new dat.GUI({autoPlace: false});
         var v_params = {
             'Vector Height': 1,
             'Vector Length': 1,
@@ -184,13 +181,12 @@ steal(function () {
         wvcontrols.add(v_params, 'Vector Height',.5, 2);
         wvcontrols.add(v_params, 'Vector Length',.5, 2);
         wvcontrols.add(v_params, 'Elevation Scale',.5,2);
-        container.appendChild(v_gui.domElement);
         v_gui.domElement.style.position='absolute';
         v_gui.domElement.style.top = '0%';
         v_gui.domElement.style.right = '0%';
         v_gui.open();
-
-
+        container.appendChild(v_gui.domElement);
+        //v_gui.remember(wvcontrols);
 
 
         // Declare renderer settings
@@ -203,6 +199,8 @@ steal(function () {
         window.addEventListener('resize', onWindowResize, false);
         THREEx.Screenshot.bindKey(renderer);
 
+        // Initialze controls
+        orbit = new THREE.OrbitControls(camera, renderer.domElement);
 
     }
     /** Draws the DEM with new specified values.
