@@ -113,12 +113,11 @@ $(document).ready(function() {
             manager.ArrowColor = parseInt(hex, 16);
             var obj, i;
             var newColor = new THREE.MeshBasicMaterial({color: manager.ArrowColor});
-            for (i = scene.children.length -1; i >= 0; i--) {
-                obj = scene.children[i];
+            for (i = wind.children.length -1; i >= 0; i--) {
+                obj = wind.children[i];
                 if (obj.name == 'windvector') {
-                    obj.children[0].material = newColor;
+                    obj.line.material = newColor;
                 }
-//                console.log('windvector color changed');
             }
             $('#colorSelector div').css('backgroundColor', '#' + hex);
         }
