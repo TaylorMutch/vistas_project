@@ -129,8 +129,9 @@ steal(function () {
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         camera.up.set(0,0,1);
 
-        // Setup Scene
+        // Setup Scenes
         scene = new THREE.Scene();
+        wind = new THREE.Scene();
         ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
 
@@ -190,13 +191,12 @@ steal(function () {
 
 
         // Declare renderer settings
-        renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
+        renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true}); // preserving is necessary for screenshot
         renderer.setSize(container.offsetWidth, container.offsetHeight);
-        //renderer.setClearColor(0xfefefe, 1);
         renderer.setClearColor(0x000000, 1);
-        renderer.autoClear = true;
+        renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
         container.appendChild(renderer.domElement);
-        window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('resize', onWindowResize(), false);
         THREEx.Screenshot.bindKey(renderer);
 
         // Initialze controls
@@ -247,7 +247,10 @@ steal(function () {
 
     function render() {
         orbit.update();
+        renderer.clear();
         renderer.render(scene,camera);
+        renderer.clearDepth();
+        renderer.render(wind,camera);
     }
 
     $("#setOrthographic").click(function () {

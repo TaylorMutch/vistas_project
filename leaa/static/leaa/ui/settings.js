@@ -50,7 +50,7 @@ $(document).ready(function () {
                 + "&sheight=" + manager.SceneHeight.toString()
                 + "&terrainID=" + manager.ActiveDEM.id.toString();
 
-            //http.send(params);
+            http.send(params);
                 //        http.onload = function(){
               //  alert(http.responseText);
             //};
