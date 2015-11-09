@@ -65,6 +65,10 @@ button
     /*margin:0 0.5em;*/
 }
 
+#scene {
+    position: relative;
+    z-index:0;
+}
 
 #console
 {
@@ -110,3 +114,20 @@ button
 	position: relative;
 	height: 36px;
 }
+
+/* HORIZONTAL dat.GUI control */
+
+#horizontal-gui > div{min-height: 28px; height: 28px; width: 100%; }
+#horizontal-gui > div > ul  {position: absolute; z-index: 0;}
+#horizontal-gui > div > ul { display: table-row;  }
+#horizontal-gui > div > ul > li { display: table-cell; min-width: 190px ;padding-left: 0px;padding-right:1px}
+#horizontal-gui > div > ul > li.cr { background: none; line-height: normal; vertical-align: top; border-left: 0px !important;border-bottom: 0px}
+#horizontal-gui > div > ul > li.cr >div { background: #1a1a1a; height: 27px !important;padding-left: 6px;}
+#horizontal-gui > div > ul > li.cr > div > span.property-name{padding-top: 6px; }
+#horizontal-gui > div > ul > li.cr.string >div { border-left:4px solid green; }
+#horizontal-gui > div > ul > li.cr.number >div { border-left:4px solid blue;}
+#horizontal-gui > div > ul > li.cr.function >div { border-left:4px solid red;}
+#horizontal-gui > div > ul > li.cr.color >div { border-left:4px solid orange;}
+#horizontal-gui > div > ul > li.cr.boolean>div { border-left:4px solid purple;}
+#horizontal-gui .close-button { display:none;}
+

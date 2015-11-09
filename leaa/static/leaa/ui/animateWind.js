@@ -51,6 +51,7 @@ steal(function () {
 		//showContours = false;
 
 		// Reset camera
+        orbit.reset();
 		camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
 		//orbit.reset();
 		//flycontrols.reset();

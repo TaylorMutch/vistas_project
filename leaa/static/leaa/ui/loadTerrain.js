@@ -140,8 +140,58 @@ steal(function () {
         // Add performance monitor
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
-        //stats.domElement.style.top = '0px';
+        stats.domElement.style.right = '0%';
+        stats.domElement.style.bottom = '0%';
         container.appendChild(stats.domElement);
+
+        // GUIs
+        var h = document.createElement("DIV");
+        h.style.position = 'relative';
+        h.id = 'horizontal-gui';
+
+        //TODO: Replace this with our starting values
+        var obj = {
+            x:5,
+            y:5,
+            'Z Translate': 0.5,
+            Color:"rgba(228,30,0,0.3)",
+            Interpolation: 0,
+            Yes: true
+        };
+
+        var h_gui = new dat.GUI({autoPlace: false});
+        var Coordinates = h_gui.addFolder('Coordinates..', "a");
+        Coordinates.add(obj, 'x');
+        Coordinates.add(obj, 'y');
+        var Options = h_gui.addFolder('Options..', "a");
+        Options.addColor(obj, 'Color');
+        Options.add(obj, 'Z Translate', 0.0, 1.0);
+        //var interpolation = gui.add(obj, 'Interpolation', {Bilinear: 0, Trilinear: 1});
+        //var interpolation = gui.add(obj, 'Yes');
+        h.appendChild(h_gui.domElement);
+        container.appendChild(h);
+        h_gui.domElement.style.position = 'absolute';
+        h_gui.domElement.style.top = '0%';
+        h_gui.domElement.style.left = '0%';
+
+        var v_gui = new dat.GUI({autoPlace: false});
+        var v_params = {
+            'Vector Height': 1,
+            'Vector Length': 1,
+            'Elevation Scale': 1
+        };
+        var wvcontrols = v_gui.addFolder('Wind Vector Controls', "a");
+        wvcontrols.add(v_params, 'Vector Height',.5, 2);
+        wvcontrols.add(v_params, 'Vector Length',.5, 2);
+        wvcontrols.add(v_params, 'Elevation Scale',.5,2);
+        container.appendChild(v_gui.domElement);
+        v_gui.domElement.style.position='absolute';
+        v_gui.domElement.style.top = '0%';
+        v_gui.domElement.style.right = '0%';
+        v_gui.open();
+
+
+
 
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer : true});
@@ -152,6 +202,8 @@ steal(function () {
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
         THREEx.Screenshot.bindKey(renderer);
+
+
     }
     /** Draws the DEM with new specified values.
      * Redraws the arrows based on new station base postition
