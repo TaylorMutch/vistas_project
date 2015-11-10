@@ -96,34 +96,6 @@ $(document).ready(function() {
     steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
     steal("leaa/ui/animateWind.js", function() {}); // Wind controls
 
-    // Colorpicker
-    var colorpicker = $('#colorSelector');
-    colorpicker.ColorPicker({
-        //color: '#ffff00',
-        color: manager.ArrowColor.toString(16),
-        onShow: function (colpkr) {
-            $(colpkr).fadeIn(500);
-            return false;
-        },
-        onHide: function (colpkr) {
-            $(colpkr).fadeOut(500);
-            return false;
-        },
-        onChange: function (hsb, hex, rgb) {
-            manager.ArrowColor = parseInt(hex, 16);
-            var obj, i;
-            var newColor = new THREE.MeshBasicMaterial({color: manager.ArrowColor});
-            for (i = wind.children.length -1; i >= 0; i--) {
-                obj = wind.children[i];
-                if (obj.name == 'windvector') {
-                    obj.line.material = newColor;
-                }
-            }
-            $('#colorSelector div').css('backgroundColor', '#' + hex);
-        }
-    });
-    colorpicker.ColorPickerSetColor(manager.ArrowColor.toString(16));
-
     // Tooltips
     $(function() {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})

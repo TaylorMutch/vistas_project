@@ -40,7 +40,6 @@ function calcTimestep(value) {
  * @constructor
  */
 function VisManager(){
-
     // Setable attributes
     this.ActiveStations = [];
     this.RecordDate = null;
@@ -55,7 +54,8 @@ function VisManager(){
     this.VectorHeight = 1;
     this.VectorLength = 1;
     this.LiveUpdate = false;
-    this.ArrowColor = 16776960; // base 10 translation of yellow (0xffff00)
+    //this.ArrowColor = 16776960; // base 10 translation of yellow (0xffff00)
+    this.ArrowColor = '#ffff00';
 }
 
 /**
@@ -91,7 +91,6 @@ VisManager.prototype.StepForward = function() {
             glyph.addClass('glyphicon-play');
         }
     }
-
 };
 /**
  * Step backward.

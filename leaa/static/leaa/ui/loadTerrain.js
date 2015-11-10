@@ -113,7 +113,6 @@ steal(function () {
 
             // Do any DOM element changes we need to do.
             $("#current-timestamp-label").html(name + "");
-            document.getElementById('wireframeToggle').classList.remove('disabled');
         }
     });
 
@@ -173,15 +172,30 @@ steal(function () {
         h_gui.domElement.style.left = '0%';
         //h_gui.remember(Options);
         v_gui = new dat.GUI({autoPlace: false});
+        // TODO: Make this play with our settings
+        // TODO: Since it's just JSON, we should be able to just adjust our settings to work with it...
         var v_params = {
-            'Vector Height': 1,
+            /*'Vector Height': 1,
             'Vector Length': 1,
-            'Elevation Scale': 1
+            'Elevation Scale': 1,*/
+            'Vector Height': manager.VectorHeight,
+            'Vector Length': manager.VectorLength,
+            'Elevation Scale': manager.SceneHeight,
+            'Vector Color': '#ffff00',
+            'Camera Type': 'camera',
+            'Toggle Wireframe': function() {
+                terrainGeo.material.wireframe = !terrainGeo.material.wireframe;
+            },
+            'Live Update': false
         };
         var wvcontrols = v_gui.addFolder('Wind Vector Controls', "a");
-        wvcontrols.add(v_params, 'Vector Height',.5, 2);
-        wvcontrols.add(v_params, 'Vector Length',.5, 2);
-        wvcontrols.add(v_params, 'Elevation Scale',.5,2);
+        var vheight = wvcontrols.add(v_params, 'Vector Height',.5, 2).listen();
+        var vlength = wvcontrols.add(v_params, 'Vector Length',.5, 2).listen();
+        var escale = wvcontrols.add(v_params, 'Elevation Scale',.5,2).listen();
+        var vcolor = wvcontrols.addColor(v_params, 'Vector Color').listen();
+        var cameraType = wvcontrols.add(v_params, 'Camera Type', ['Perspective', 'Orthographic']).listen();
+        wvcontrols.add(v_params, 'Toggle Wireframe');
+        var liveUpdate = wvcontrols.add(v_params, 'Live Update').listen();
         v_gui.domElement.style.position='absolute';
         v_gui.domElement.style.top = '0%';
         v_gui.domElement.style.right = '0%';
@@ -190,13 +204,56 @@ steal(function () {
         //v_gui.remember(wvcontrols);
 
 
+        vheight.onChange(function(value) {
+            manager.VectorHeight = value;
+            clearArrows();
+            drawArrows();
+        });
+
+        vlength.onChange(function(value) {
+            manager.VectorLength = value;
+            clearArrows();
+            drawArrows();
+        });
+
+        escale.onChange(function(value) {
+            manager.SceneHeight = value;
+            clearArrows();
+            redrawDEM();
+            drawArrows();
+        });
+
+        vcolor.onChange(function(value) {
+            manager.ArrowColor = value;
+            $.each(wind.children, function(id, vector) {
+                // Sometimes windvectors dont have lines attached (I.e. vectorLength == 0)
+                if (vector.children.length == 2) {
+                    vector.line.material.color = new THREE.Color(value);
+                }
+            })
+        });
+
+        cameraType.onChange(function(value) {
+            if (value == 'Orthographic') {
+                camera.toOrthographic();
+            } else if (value == 'Perspective') {
+                camera.toPerspective();
+            } else {
+                alert('Failure');
+            }
+        });
+
+        liveUpdate.onChange(function(value) {
+            manager.LiveUpdate = value;
+        });
+
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true}); // preserving is necessary for screenshot
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         renderer.setClearColor(0x000000, 1);
         renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
         container.appendChild(renderer.domElement);
-        window.addEventListener('resize', onWindowResize(), false);
+        window.addEventListener('resize', onWindowResize, false);
         THREEx.Screenshot.bindKey(renderer);
 
         // Initialze controls
@@ -222,8 +279,8 @@ steal(function () {
      */
     function onWindowResize() {
         camera.aspect = container.offsetWidth/container.offsetHeight;
-        camera.updateProjectionMatrix();
         renderer.setSize(container.offsetWidth, container.offsetHeight);
+        camera.updateProjectionMatrix();
     }
 
     /**
@@ -252,55 +309,4 @@ steal(function () {
         renderer.clearDepth();
         renderer.render(wind,camera);
     }
-
-    $("#setOrthographic").click(function () {
-        camera.toOrthographic();
-    });
-    $("#setPerspective").click(function () {
-        camera.toPerspective();
-    });
-
-
-    //TODO: See if we need this for adding arbitrary stations
-    function calcStationPos(utmX, utmY) {
-        var coords = [];
-        var x = Math.floor(utmX - MIN_UTMx)/STEP_SIZE;
-        coords.push(x);
-        var y = Math.floor(MAX_UTMy - utmY)/STEP_SIZE;
-        coords.push(y);
-        return coords;
-    }
-
-    /**
-     * Toggle wireframe
-     */
-    $('#wireframeToggle').on('click', function() {
-        terrainGeo.material.wireframe = !terrainGeo.material.wireframe;
-    });
-
-    /**
-     * Elevation slider
-     * Calls WebGL to render the scene with the adjusted DEM
-     */
-    $(function() {
-        var s = $("#sceneHeight");
-        s.slider({
-            value:1,
-            min:.1,
-            max: 2.0,
-            step: .1,
-            slide: function(event, ui) {
-                $( "#amount").val("$"+ui.value);
-            },
-            stop: function(event,ui) {
-                if (ui.value !== manager.SceneHeight) { //redraw only if the value is changed
-                    manager.SceneHeight = ui.value;
-                    redrawDEM();
-                    //terrainGeo.material.uniforms.displacement.value=ui.value;
-                    terrainGeo.geometry.verticesNeedUpdate = true;
-                }
-            }
-        });
-        $("#amount").val("$" + s.slider("value"));
-    });
 });

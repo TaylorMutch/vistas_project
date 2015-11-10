@@ -65,47 +65,5 @@ steal(function () {
 		// Reset terrain
 		//texture.map = THREE.ImageUtils.loadTexture('resources/reliefHJAndrews.png');
 		//terrainGeo.material = texture.map;
-
 	});
-    /** Slider functions for manipulating the vectors */
-    $(function() {
-        var s = $("#vectorLength");
-        s.slider({
-            value:1,
-            min:.1,
-            max: 2.0,
-            step: .1,
-            slide: function(event, ui) {
-                $( "#amount").val("$"+ui.value);
-            },
-            stop: function(event,ui) {
-                manager.VectorLength = ui.value;
-                clearArrows();
-                $.each(manager.ActiveStations, function(id, station) {
-                    renderArrows(station);
-                });
-            }
-        });
-        $("#amount").val("$" + s.slider("value"));
-    });
-    $(function() {
-        var s = $("#vectorHeight");
-        s.slider({
-            value:1,
-            min:.1,
-            max: 2.0,
-            step: .1,
-            slide: function(event, ui) {
-                $( "#amount").val("$"+ui.value);
-            },
-            stop: function(event,ui) {
-                manager.VectorHeight = ui.value;
-                clearArrows();
-                $.each(manager.ActiveStations, function(id, station) {
-                    renderArrows(station);
-                });
-            }
-        });
-        $("#amount").val("$" + s.slider("value"));
-    });
 });

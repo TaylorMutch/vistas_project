@@ -7,6 +7,15 @@
  * Kick off calls to our GPU to render.
  * @param station - a station object containing all relevant code to be shown.
  */
+
+function drawArrows() {
+    clearArrows();
+    $.each(manager.ActiveStations, function(id, station) {
+        renderArrows(station);
+    });
+}
+
+
 function renderArrows(station) {
     // Get the specific arrays we want
     var speedArray = station.speeds[station.index];

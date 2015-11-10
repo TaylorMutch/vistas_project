@@ -54,7 +54,7 @@ steal(function () {
                     manager.Timeline.numSteps = (manager.Timeline.endTime.getTime() - manager.Timeline.beginTime.getTime()) /
                         manager.Timeline.timeStep;
 
-                    // Enable the UI timeline, vector and playback controls
+                    // Enable the timeline and playback controls
                     $('#timelineSlider').slider({
                         disabled: false,
                         value: manager.Timeline.beginTime.getTime(),
@@ -62,12 +62,7 @@ steal(function () {
                         max: manager.Timeline.endTime.getTime(),
                         step: manager.Timeline.timeStep
                     });
-                    $('#begin').removeClass('disabled');
-                    $('#forward').removeClass('disabled');
-                    $('#back').removeClass('disabled');
-                    $('#play').removeClass('disabled');
-                    $('#reset').removeClass('disabled');
-                    $('#live-update').removeClass('disabled');
+                    $('.playback').removeClass('disabled');
                     // Initialize our initial values for this set of data.
                     manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
                     manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
@@ -75,12 +70,6 @@ steal(function () {
             );
 
         }
-
-        $('#live-update').on('click', function() {
-            manager.LiveUpdate = !manager.LiveUpdate;
-            //$(this).html(($(this).html().contains('Enable') ? 'Disable Live Update' : 'Enable Live Update'));
-        });
-
 
         console.log(recordDate);
         $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
