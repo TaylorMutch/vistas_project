@@ -11,11 +11,10 @@ steal(function () {
         if (recordDate !== manager.RecordDate) {
             clearArrows();
             manager.RecordDate = recordDate;
-            $.getJSON('/getStationObjects/', {'stations[]': stationNames, 'recordDate': recordDate}, function (result) {
-                rawStationData = result;
-            }).done(function () {
+            $.getJSON('/getStationObjects/', {'stations[]': stationNames, 'recordDate': recordDate})
+                .done(function (response) {
                     manager.ActiveStations = [];
-                    $.each(rawStationData, function (station, data) {
+                    $.each(response, function (station, data) {
                         manager.ActiveStations.push(new Station(data));
                     });
                     $.each(manager.ActiveStations, function (id, station) {
@@ -29,7 +28,6 @@ steal(function () {
                     $.each(manager.ActiveStations, function (id, station) {
                         minDates.push(Math.min.apply(Math, station.dates));
                         maxDates.push(Math.max.apply(Math, station.dates));
-
                     });
                     var step1 = '20' + manager.ActiveStations[0].dates[0].toString();
                     var step2 = '20' + manager.ActiveStations[0].dates[1].toString();
@@ -51,7 +49,9 @@ steal(function () {
                     var date2 = new Date(+step2.substr(0, 4), +step2.substr(4, 2) - 1, +step2.substr(6, 2),
                         +step2.substr(8, 2), +step2.substr(10, 2), +step2.substr(12, 2));
                     manager.Timeline.timeStep = date2.getTime() - date1.getTime();
-                    manager.Timeline.numSteps = (manager.Timeline.endTime.getTime() - manager.Timeline.beginTime.getTime()) /
+                    manager.Timeline.numSteps = (
+                        manager.Timeline.endTime.getTime()
+                        - manager.Timeline.beginTime.getTime()) /
                         manager.Timeline.timeStep;
 
                     // Enable the timeline and playback controls
@@ -63,14 +63,13 @@ steal(function () {
                         step: manager.Timeline.timeStep
                     });
                     $('.playback').removeClass('disabled');
+
                     // Initialize our initial values for this set of data.
                     manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
                     manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
                 }
             );
-
         }
-
         console.log(recordDate);
         $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
         updateSodarLog('Loaded records from: ' + recordDate, false);

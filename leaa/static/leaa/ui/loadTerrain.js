@@ -3,7 +3,6 @@
  */
 steal(function () {
 
-
     init();
     render(); // One call to render to prep the workspace.
 
@@ -79,11 +78,11 @@ steal(function () {
                             "height = position.z;",
                         "}"].join("\n")
                 });
-
-                terrainShader = new THREE.Mesh(plane, shaderMaterial);
-                scene.add(terrainShader);
-                manager.SceneObjects.push(terrainShader);
-                terrainShader.visible = false;
+                // TODO: Work on shader
+                //terrainShader = new THREE.Mesh(plane, shaderMaterial);
+                //scene.add(terrainShader);
+                //manager.SceneObjects.push(terrainShader);
+                //terrainShader.visible = false;
                 material = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture('media/'+name+'/'+name+'.png')});
                 terrainGeo = new THREE.Mesh(plane, material);
                 terrainGeo.name = 'terrain poly';
@@ -93,6 +92,7 @@ steal(function () {
                 manager.SceneObjects.push(terrainGeo);
                 // Get the related recordDates
                 $("#dataPicker").empty();
+                var dates;
                 $.getJSON('/getDates/', {'terrainID': temp_terrain.id}, function(result) {
                     dates = result['dates'];
                     stationNames = result['stationNames'];
@@ -101,6 +101,7 @@ steal(function () {
                         console.log("No data found for this terrain. Pick another terrain for data viewing.");
                         $("#dataPicker").append('<li>No data for this terrain</li>');
                     } else {
+                        dates.sort();
                         console.log("Data found, adding to \"Select Data\" dropdown.");
                         $.each(dates, function(id, name) {
                             $("#dataPicker").append('<li><a href="#" class="recordDate">' + name + '</a></li>');
@@ -163,89 +164,70 @@ steal(function () {
         var Options = h_gui.addFolder('Options..', "a");
         Options.addColor(obj, 'Color');
         Options.add(obj, 'Z Translate', 0.0, 1.0);
-        //var interpolation = gui.add(obj, 'Interpolation', {Bilinear: 0, Trilinear: 1});
-        //var interpolation = gui.add(obj, 'Yes');
         h.appendChild(h_gui.domElement);
         container.appendChild(h);
         h_gui.domElement.style.position = 'absolute';
         h_gui.domElement.style.top = '0%';
         h_gui.domElement.style.left = '0%';
         //h_gui.remember(Options);
+
         v_gui = new dat.GUI({autoPlace: false});
-        // TODO: Make this play with our settings
-        // TODO: Since it's just JSON, we should be able to just adjust our settings to work with it...
         var v_params = {
-            /*'Vector Height': 1,
-            'Vector Length': 1,
-            'Elevation Scale': 1,*/
-            'Vector Height': manager.VectorHeight,
-            'Vector Length': manager.VectorLength,
-            'Elevation Scale': manager.SceneHeight,
-            'Vector Color': '#ffff00',
             'Camera Type': 'camera',
             'Toggle Wireframe': function() {
                 terrainGeo.material.wireframe = !terrainGeo.material.wireframe;
-            },
-            'Live Update': false
+            }
         };
         var wvcontrols = v_gui.addFolder('Wind Vector Controls', "a");
-        var vheight = wvcontrols.add(v_params, 'Vector Height',.5, 2).listen();
-        var vlength = wvcontrols.add(v_params, 'Vector Length',.5, 2).listen();
-        var escale = wvcontrols.add(v_params, 'Elevation Scale',.5,2).listen();
-        var vcolor = wvcontrols.addColor(v_params, 'Vector Color').listen();
-        var cameraType = wvcontrols.add(v_params, 'Camera Type', ['Perspective', 'Orthographic']).listen();
+        wvcontrols.add(manager, 'VectorHeight',.5, 2).listen().onChange(
+            function() {
+                clearArrows();
+                drawArrows();
+            }
+        );
+        wvcontrols.add(manager, 'VectorLength',.5, 2).listen().onChange(
+            function() {
+                clearArrows();
+                drawArrows();
+            }
+        );
+        wvcontrols.add(manager, 'SceneHeight',.5,2).listen().onChange(
+            function() {
+                clearArrows();
+                redrawDEM();
+                drawArrows();
+            }
+        );
+        wvcontrols.addColor(manager, 'ArrowColor').onChange(
+            function(value) {
+                manager.ArrowColor = value;
+                $.each(wind.children, function(id, vector) {
+                    // Sometimes windvectors dont have lines attached (I.e. vectorLength == 0)
+                    if (vector.children.length == 2) {
+                        vector.line.material.color = new THREE.Color(value);
+                    }
+                })
+            }
+        );
+        wvcontrols.add(v_params, 'Camera Type', ['Perspective', 'Orthographic']).onChange(
+            function(value){
+                if (value == 'Orthographic') {
+                    camera.toOrthographic();
+                } else if (value == 'Perspective') {
+                    camera.toPerspective();
+                } else {
+                    alert('Failure');
+                }
+            }
+        );
         wvcontrols.add(v_params, 'Toggle Wireframe');
-        var liveUpdate = wvcontrols.add(v_params, 'Live Update').listen();
+        wvcontrols.add(manager, 'LiveUpdate').listen();
         v_gui.domElement.style.position='absolute';
         v_gui.domElement.style.top = '0%';
         v_gui.domElement.style.right = '0%';
         v_gui.open();
         container.appendChild(v_gui.domElement);
         //v_gui.remember(wvcontrols);
-
-
-        vheight.onChange(function(value) {
-            manager.VectorHeight = value;
-            clearArrows();
-            drawArrows();
-        });
-
-        vlength.onChange(function(value) {
-            manager.VectorLength = value;
-            clearArrows();
-            drawArrows();
-        });
-
-        escale.onChange(function(value) {
-            manager.SceneHeight = value;
-            clearArrows();
-            redrawDEM();
-            drawArrows();
-        });
-
-        vcolor.onChange(function(value) {
-            manager.ArrowColor = value;
-            $.each(wind.children, function(id, vector) {
-                // Sometimes windvectors dont have lines attached (I.e. vectorLength == 0)
-                if (vector.children.length == 2) {
-                    vector.line.material.color = new THREE.Color(value);
-                }
-            })
-        });
-
-        cameraType.onChange(function(value) {
-            if (value == 'Orthographic') {
-                camera.toOrthographic();
-            } else if (value == 'Perspective') {
-                camera.toPerspective();
-            } else {
-                alert('Failure');
-            }
-        });
-
-        liveUpdate.onChange(function(value) {
-            manager.LiveUpdate = value;
-        });
 
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true}); // preserving is necessary for screenshot

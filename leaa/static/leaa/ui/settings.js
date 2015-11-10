@@ -20,14 +20,9 @@ $(document).ready(function () {
             manager.VectorLength = response['VectorLength'];
             manager.SceneHeight  = response['SceneHeight'];  // TODO: Should scene height be saved?
             manager.LiveUpdate  = response['LiveUpdate'];
-            manager.ArrowColor = parseInt(response['ArrowColor']);
-        }).done(function(){
-            $('#vectorHeight').slider('option', 'value', manager.VectorHeight);
-            $('#vectorLength').slider('option', 'value', manager.VectorLength);
-            $('#sceneHeight').slider('option', 'value', manager.SceneHeight);
-            $('#colorSelector').ColorPickerSetColor(manager.ArrowColor.toString(16));
-            $('#colorSelector div').css('backgroundColor', '#' + manager.ArrowColor.toString(16));
-        }).fail(function(jqxhr, status, error){
+            manager.ArrowColor = response['ArrowColor'];
+        })
+        .fail(function(jqxhr, status, error){
             console.error("Request failed: " + status + ", " + error);
         }).always(function() {
             $("#saveSettings").removeClass('disabled');
@@ -49,12 +44,7 @@ $(document).ready(function () {
                 + "&vlength=" + manager.VectorLength.toString()
                 + "&sheight=" + manager.SceneHeight.toString()
                 + "&terrainID=" + manager.ActiveDEM.id.toString();
-
             http.send(params);
-                //        http.onload = function(){
-              //  alert(http.responseText);
-            //};
-             //alert(params);
         }
     });
     /***
@@ -66,7 +56,7 @@ $(document).ready(function () {
             dirty_views = confirm('You have created views which are not saved to the server. ' +
                 'Would you like to save them now?');
             if (dirty_views) {
-                // TODO: Implement way to save views not already added to the server.
+                // TODO: Implement way to save views that exist locally but are not added to the server.
                 dirty_views = false;
             }
         }

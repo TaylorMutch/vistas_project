@@ -52,7 +52,7 @@ class DataFile(models.Model):
 class Setting(models.Model):
     vectorLength = models.FloatField(default=1)
     vectorHeight = models.FloatField(default=1)
-    vectorColor = models.IntegerField(default=16776960)    # default to yellow (base 10 translation of 0xffff00)
+    vectorColor = models.CharField(default='#ffff00', max_length=8)
     sceneHeight = models.FloatField(default=1)
     liveUpdate = models.BooleanField(default=False)
     user = models.ForeignKey(User)
