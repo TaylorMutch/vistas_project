@@ -2,6 +2,13 @@ body
 {
     font-family: ‘Tahoma’, ‘Geneva’, sans-serif;
     background: slategrey;
+    padding-top: 50px;
+}
+.well
+{
+    position: absolute;
+    padding: 0;
+    margin-left: 42%;
 }
 
 h1
@@ -44,18 +51,26 @@ hr
 
 button
 {
-    /*border-radius: 0.2em;*/
     margin:0.1em 0;
+}
+
+.dg .cr.string input[type=text]
+{
+    color: black !important;
+}
+
+.c
+{
+    color: black;
 }
 
 #top-wrapper
 {
-    height:38em;
-    padding:0.5em;
-    /*border:1px solid black;*/
+    height:80vh;
+    margin:1.2em;
 }
 
-#scene, #sidebar, #controls-1, #controls-2, #controls-3
+#scene, #controls-1, #controls-2, #controls-3
 {
     height:100%;
     /*margin:0 0.5em;*/
@@ -74,7 +89,7 @@ button
     max-height: 250px;
 }
 
-#controls-1, #controls-2, #controls-3, #controls-4, #sidebar
+#controls-1, #controls-2, #controls-3, #controls-4
 {
     float:left;
     width:22%;
@@ -82,10 +97,24 @@ button
     padding-bottom: 2em;
 }
 
+#sidebar
+{
+    position: absolute;
+    left: 52px !important;
+    bottom: 0;
+    overflow: hidden;
+    width:22%
+}
+
+#windrose
+{
+    right: 0;
+    position: relative;
+    z-index: 5;
+}
 
 .scrollable-menu {
-    height: auto;
-    max-height: 200px;
+    max-height: 100px;
     overflow-x: hidden;
 }
 
@@ -113,6 +142,7 @@ button
 
 /* HORIZONTAL dat.GUI control */
 
+#horizontal-gui {padding-left:10px;}
 #horizontal-gui > div{min-height: 28px; height: 28px; width: 100%; }
 #horizontal-gui > div > ul  {position: absolute; z-index: 0;}
 #horizontal-gui > div > ul { display: table-row;  }
