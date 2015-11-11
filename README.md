@@ -10,3 +10,5 @@ Django 1.8.3
 django restframework 3.1.3
 
 Markdown 2.6.2
+
+requests 2.8.1
