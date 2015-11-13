@@ -118,7 +118,7 @@ function clearArrows() {
     var obj, i;
     for (i = wind.children.length -1; i >= 0; i--) {
         obj = wind.children[i];
-        if (obj.name == 'windvector') {
+        if (obj instanceof THREE.ArrowHelper) {
             wind.remove(obj);
             renderer.dispose(obj);
         }

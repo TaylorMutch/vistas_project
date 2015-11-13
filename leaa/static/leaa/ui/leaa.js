@@ -61,39 +61,20 @@ $(document).ready(function() {
             // This is triggered when a user picks up and drops the slider.
             stop: function( event, ui ) {
                 if (!manager.LiveUpdate) manager.UpdateTimeline(ui.value);
-                /*
-                if (manager.CurrentTimestamp !== ui.value) {
-                    console.log('Scrubber changed, updating values');
-                    manager.CurrentTimestamp = ui.value;            // values for the timeline
-                    manager.CurrentDate = calcTimestep(ui.value);   // values relevant to our stations
-                    clearArrows();
-                    for (var i = 0; i < manager.ActiveStations.length; i++) {
-                        manager.ActiveStations[i].SetCurrentDate(manager.CurrentDate);
-                        if (manager.ActiveStations[i].GetCurrentDate() == manager.CurrentDate) {
-                            renderArrows(manager.ActiveStations[i]);
-                        }
-                    }
-                    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
-                }
-                */
             }
         });
         $( "#amount" ).val( "$" + s.slider("value"));
     });
 
     terrains = [];
-    $.getJSON('/terrains/', function(json) {
-        $.each(json, function(id, item) {
-            terrains.push(item);
-        });
-    }).done(function(terrains) {
-        $.each(terrains, function (id, terrain) {
-            $("#demPicker").append('<li><a href="#" class="dem" value=' + id + '>' + terrain.name + '</a></li>');
-        });
+    $.getJSON('/terrains/')
+        .done(function(json) {
+            $.each(json, function(id, item) {
+                terrains.push(item);
+            });
     });
 
     steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
-    steal("leaa/ui/loadWind.js", function() {});    // Load data extraction tools
     steal("leaa/ui/animateWind.js", function() {}); // Wind controls
 
     // Tooltips

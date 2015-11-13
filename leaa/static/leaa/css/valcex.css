@@ -8,7 +8,6 @@ body
 {
     position: absolute;
     padding: 0;
-    margin-left: 42%;
 }
 
 h1
@@ -43,40 +42,14 @@ a:link, a:hover, a:active, a:visited
     color: deepskyblue;
 }
 
-hr
-{
-    margin-top: 0.1em;
-    margin-bottom: 0.3em;
-}
-
-button
-{
-    margin:0.1em 0;
-}
-
-.dg .cr.string input[type=text]
-{
-    color: black !important;
-}
-
-.c
-{
-    color: black;
-}
-
 #top-wrapper
 {
     height:80vh;
     margin:1.2em;
 }
 
-#scene, #controls-1, #controls-2, #controls-3
-{
-    height:100%;
-    /*margin:0 0.5em;*/
-}
-
 #scene {
+    height: 100%;
     position: relative;
     z-index:0;
 }
@@ -87,14 +60,6 @@ button
     font-size:80%;
     height:90%;
     max-height: 250px;
-}
-
-#controls-1, #controls-2, #controls-3, #controls-4
-{
-    float:left;
-    width:22%;
-    margin-bottom: 2em;
-    padding-bottom: 2em;
 }
 
 #sidebar
@@ -118,29 +83,8 @@ button
     overflow-x: hidden;
 }
 
-/****ColorSelector tags****/
 
-#colorSelector {
-	position: relative;
-	width: 36px;
-	height: 36px;
-	background: url(images/colorpicker/select.png);
-}
-#colorSelector div {
-	position: absolute;
-	top: 3px;
-	left: 3px;
-	width: 30px;
-	height: 30px;
-	background: url(images/colorpicker/select.png) center;
-}
-
-#customWidget {
-	position: relative;
-	height: 36px;
-}
-
-/* HORIZONTAL dat.GUI control */
+/* HORIZONTAL dat.GUI control
 
 #horizontal-gui {padding-left:10px;}
 #horizontal-gui > div{min-height: 28px; height: 28px; width: 100%; }
@@ -156,5 +100,18 @@ button
 #horizontal-gui > div > ul > li.cr.color >div { border-left:4px solid orange;}
 #horizontal-gui > div > ul > li.cr.boolean>div { border-left:4px solid purple;}
 #horizontal-gui .close-button { display:none;}
-
+*/
 /* VERTICAL dat.GUI control */
+
+/* color picker hack */
+.saturation-field {margin-right: 0 !important;}
+
+.dg .cr.string input[type=text]
+{
+    color: black !important;
+}
+
+.c
+{
+    color: black;
+}

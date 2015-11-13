@@ -114,7 +114,7 @@ VisManager.prototype.Step = function(forward) {
     for (var i = 0; i < this.ActiveStations.length; i++) {
         var station = this.ActiveStations[i];
         if (station.isCurrent) {
-            console.log('Rendering ' + station.name);
+            //console.log('Rendering ' + station.name);
             if (forward) {
                 station.Forward();
             }
@@ -149,16 +149,16 @@ VisManager.prototype.CompareDates = function(increasing) {
             datesToCompare.push(station.dates[station.CheckBackward()]);
         });
     }
-    console.log('Comparing these dates: ' + datesToCompare);
+    //console.log('Comparing these dates: ' + datesToCompare);
 
     // Now we check if we can just use all the stations or if we need to drop one or more.
     if (Math.max.apply(Math, datesToCompare) == Math.min.apply(Math, datesToCompare)) {
-        console.log('Dates match');
+        //console.log('Dates match');
         for (var i = 0; i < this.ActiveStations.length; i++) {
             this.ActiveStations[i].isCurrent = true;
         }
     } else {
-        console.log('Date mismatch, picking dates now');
+        //console.log('Date mismatch, picking dates now');
         var checkDate;
         if (increasing) {
             checkDate = Math.min.apply(Math, datesToCompare);
@@ -172,7 +172,7 @@ VisManager.prototype.CompareDates = function(increasing) {
 };
 
 VisManager.prototype.UpdateTimeline = function(val) {
-    console.log('Scrubber changed, updating values');
+    //console.log('Scrubber changed, updating values');
     manager.CurrentTimestamp = val;            // values for the timeline
     manager.CurrentDate = calcTimestep(val);   // values relevant to our stations
     clearArrows();
