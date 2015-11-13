@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^', include('leaa.urls')),
+    url(r'^login/$', 'leaa.views.login_view', name='login'),
+    url(r'^logout/$', 'leaa.views.logout_view', name='logout'),
     url(r'^admin/', include(admin.site.urls)),
 ]
-

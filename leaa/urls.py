@@ -8,6 +8,7 @@ from vistas_project_alpha import settings
 
 urlpatterns = [
     url(r'^$', views.index, name="index"),
+    url(r'^add_user/$', views.add_user, name="add_user"),
     url(r'^add_terrain/$', views.add_terrain, name="add_terrain"),
     url(r'^add_station/$', views.add_station, name="add_station"),
     url(r'^add_datafile/$', views.add_datafile, name="add_datafile"),
@@ -24,8 +25,11 @@ urlpatterns = [
         name='datafile-list'),
     url(r'^datafiles/(?P<pk>[0-9]+)/$', views.DataFileDetail.as_view(),
         name='datafile-detail'),
+    url(r'^settings/$', views.SettingList.as_view(),
+        name='setting-list'),
+    url(r'^settings/(?P<pk>[0-9]+)/$', views.SettingDetail.as_view(),
+        name='setting-detail'),
     url(r'^', include('leaa.visUrls')),
-
 ]
 
 urlpatterns += [
