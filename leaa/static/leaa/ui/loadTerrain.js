@@ -39,6 +39,7 @@ steal(function () {
 
         // Initialze camera controls
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
+        orbit.maxPolarAngle = Math.PI * .495; // we only want to view the top half of the terrain
     }
     /** Updates the DEM with new specified values.
      * Redraws the arrows based on new station base postition
@@ -64,9 +65,6 @@ steal(function () {
         container.appendChild(stats.domElement);
 
         // GUIs
-        var h = document.createElement("DIV");
-        h.style.position = 'relative';
-        h.id = 'horizontal-gui';
 
         //TODO: Replace this with our starting values
         var terrainNames = ['No Terrain'];
@@ -92,8 +90,7 @@ steal(function () {
 
         Views.add(h_params,'Save View');
         h_gui.add(h_params, 'Save Settings');
-        h.appendChild(h_gui.domElement);
-        container.appendChild(h);
+        container.appendChild(h_gui.domElement);
         h_gui.domElement.style.position = 'absolute';
         h_gui.domElement.style.top = '0%';
         h_gui.domElement.style.left = '0%';
