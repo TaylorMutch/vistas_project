@@ -28,8 +28,8 @@ function renderArrows(station) {
     $.each(arrowSet, function (handle, arrow) {
         if (arrow !== null) {
             arrow.name = "windvector";
-            //wind.add(arrow);
-            scene.add(arrow);
+            wind.add(arrow);
+            //scene.add(arrow);
         }
     });
 
@@ -42,7 +42,12 @@ function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 	var arrowSet = [];
 	for (var i in spdArray) {
 		var arrow = makeArrow(stationPos, spdArray[i], dirArray[i], heightArray[i]);
-		arrowSet.push(arrow);
+		arrow.userData = {
+            h: heightArray[i],
+            spd: spdArray[i],
+            dir: dirArray[i]
+        };
+        arrowSet.push(arrow);
 	}
 	return arrowSet;
 }
@@ -117,13 +122,13 @@ Remove all arrows from the scene
  */
 function clearArrows() {
     var obj, i;
-    //for (i = wind.children.length -1; i >= 0; i--) {
-        //obj = wind.children[i];
-    for (i = scene.children.length -1; i >= 0; i--) {
-        obj = scene.children[i];
+    for (i = wind.children.length -1; i >= 0; i--) {
+        obj = wind.children[i];
+    //for (i = scene.children.length -1; i >= 0; i--) {
+        //obj = scene.children[i];
         if (obj instanceof THREE.ArrowHelper) {
-            //wind.remove(obj);
-            scene.remove(obj);
+            wind.remove(obj);
+            //scene.remove(obj);
             renderer.dispose(obj);
         }
     }
