@@ -14,8 +14,6 @@ function drawArrows() {
         renderArrows(station);
     });
 }
-
-
 function renderArrows(station) {
     // Get the specific arrays we want
     var speedArray = station.speeds[station.index];
@@ -25,10 +23,9 @@ function renderArrows(station) {
 
     // Render the arrows in the wind scene
     var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
+    arrowSet.userData = {name: station.name};
     wind.add(arrowSet);
-
 }
-
 /**
 Generates a moment of arrows for a single station.
  */
@@ -46,15 +43,13 @@ function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
 	}
     return group;
 }
-
-
 /**
 Generates a single arrow within an arrowSet.
  */
 function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
     var origin = new THREE.Vector3(stationPos.x, stationPos.y, stationPos.z + cHeight*.1*manager.VectorHeight);
     var vectorColor = manager.ArrowColor;
-    if (isNaN(cSpeed) || cSpeed == 0) {
+    if (isNaN(cSpeed)) {
         return null;
     }
     else {
@@ -77,12 +72,9 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
         return result;
     }
 }
-
 /**
 Calculates the direction of the wind vector based on polor coordinates (credit from Christoph Thomas)
-
- '''Function converting wind speeds and wind direction (polar coordinates) into u and v (cartesian coordinates)
-
+ 'Function converting wind speeds and wind direction (polar coordinates) into u and v (cartesian coordinates)'
  Developed and written by Christoph Thomas,
  Dept. of Forest Science, Oregon State University, 2006
  last update 24-Mar-2009 @ COAS'''
@@ -111,7 +103,6 @@ else if (dirRadians > Math.PI * 1.5 || dirRadians == 0) {
 //console.log("u = " + u + " v = " + v);
 return new THREE.Vector3(u, v, 0);
 }
-
 /**
 Remove all arrows from the scene
  */

@@ -42,6 +42,7 @@ function calcTimestep(value) {
 function VisManager(){
     // Setable attributes
     this.ActiveStations = [];
+    this.CurrentStationSelected = null;
     this.RecordDate = null;
     this.Dates = ['No Date Selected'];
     this.SceneObjects = [];
@@ -72,7 +73,8 @@ VisManager.prototype.ResetStations = function() {
         renderArrows(this.ActiveStations[i]);
     }
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(this.CurrentDate));
+    updateSidebar();
 };
 /**
  * Step forward.
@@ -125,7 +127,8 @@ VisManager.prototype.Step = function(forward) {
     }
     this.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(manager.CurrentDate));
+    updateSidebar();
 };
 
 /**
@@ -181,5 +184,6 @@ VisManager.prototype.UpdateTimeline = function(val) {
             renderArrows(manager.ActiveStations[i]);
         }
     }
-    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(manager.CurrentDate));
+    updateSidebar();
 };

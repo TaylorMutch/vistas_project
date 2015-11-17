@@ -257,7 +257,6 @@ steal(function () {
                 }
             );
             $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
-            updateSodarLog('Loaded records from: ' + recordDate, false);
         }
         console.log(recordDate);
 
@@ -268,7 +267,6 @@ steal(function () {
         terrainGeo.name = 'terrain poly';
         manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
         scene.add(terrainGeo);
-        updateSodarLog('Added terrain: ' + manager.ActiveDEM.name, false);
         manager.SceneObjects.push(terrainGeo);
     }
 
@@ -449,12 +447,12 @@ steal(function () {
         if (intersects.length > 0) {
             if (INTERSECTED != intersects[0].object) {
                 INTERSECTED = intersects[0].object;
-                // TODO: Clicking it makes the data tag visible
-                console.log(INTERSECTED.parent);
                 if (INTERSECTED.parent.parent instanceof THREE.Group) {
-                    var data = INTERSECTED.parent.userData;
-                    var message = 'Height = ' + data.h + ', Speed = ' + data.spd + 'm/s' + ', Direction = ' + data.dir + '\xB0';
-                    $("#current-timestamp-label").html(message);
+                    var dataSet = INTERSECTED.parent.parent.children;
+                    if (manager.CurrentStationSelected != INTERSECTED.parent.parent.userData['name']) {
+                        manager.CurrentStationSelected = INTERSECTED.parent.parent.userData['name'];
+                    }
+                    updateSodarLog(dataSet);
                 }
             }
         } else {
