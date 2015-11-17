@@ -2,7 +2,8 @@
  * Created by Taylor on 9/8/2015.
  */
 steal(function () {
-
+    mouse = new THREE.Vector2();
+    INTERSECTED = null;
     init();
     render(); // One call to render to prep the workspace.
 
@@ -10,36 +11,34 @@ steal(function () {
      * Initialize our workspace
      */
     function init() {
-        CAM_START = new THREE.Vector3(0,-120,120);
+        raycaster = new THREE.Raycaster();
         var container = document.getElementById("scene");
-
         // Setup Camera
         camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 60, 0.1, 500, -500, 1000);
+        CAM_START = new THREE.Vector3(0,-120,120);
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         camera.up.set(0,0,1);
-
         // Setup Scenes
         scene = new THREE.Scene();
-        wind = new THREE.Scene();
-        ambient = new THREE.AmbientLight(0xffffff);
+        //wind = new THREE.Scene();
+        var ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
-
-        initGUIS(container);
-
         // Declare renderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true}); // preserving is necessary for screenshot
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         renderer.setClearColor(0x000000, 1);
-        renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
+        renderer.domElement.id = 'graphics';
+        //renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
-
+        document.addEventListener( 'mousedown', onDocumentMouseDown, false);
         // Screenshot capability - binds to 'p' key.
         THREEx.Screenshot.bindKey(renderer);
 
         // Initialze camera controls
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
         orbit.maxPolarAngle = Math.PI * .495; // we only want to view the top half of the terrain
+        initGUIS(container);
     }
     /** Updates the DEM with new specified values.
      * Redraws the arrows based on new station base postition
@@ -417,6 +416,34 @@ steal(function () {
     }
 
     /**
+     * Get the position of our mouse
+     */
+    function onDocumentMouseDown() {
+        //event.preventDefault();
+        //var container = document.getElementById('scene');
+        var offset = $('#scene').offset();
+        //mouse.x = ((event.clientX - container.offsetLeft) / container.offsetWidth) * 2 - 1;
+        //mouse.y = - ((event.clientY - container.offsetTop)/ container.offsetHeight) * 2 + 1;
+        //mouse.x = ((event.clientX - offset.left) / renderer.domElement.width) * 2 - 1;
+        //mouse.y = - ((event.clientY - offset.top)/ renderer.domElement.height) * 2 + 1;
+        mouse.x = ((event.clientX - offset.left) / renderer.domElement.width) * 2 - 1;
+        mouse.y = - ((event.clientY - offset.top)/ renderer.domElement.height) * 2 + 1;
+        if (camera.inPerspectiveMode) {
+            raycaster.setFromCamera(mouse, camera.cameraP);
+        } else {
+            raycaster.setFromCamera(mouse, camera.cameraO);
+        }
+
+        var intersects = raycaster.intersectObjects(scene.children);
+        if (intersects.length > 0) console.log('We hit something!');
+        var x = raycaster.ray.direction.x;
+        var y = raycaster.ray.direction.y;
+        if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
+            console.log(x,y);
+        }
+    }
+
+    /**
      * Remove all objects from scene and render once to clear UI.
      */
     function cleanup() {
@@ -431,15 +458,11 @@ steal(function () {
 
     function animate() {
         requestAnimationFrame(animate);
-        stats.update();
         render();
+        stats.update();
     }
-
     function render() {
         orbit.update();
-        renderer.clear();
         renderer.render(scene,camera);
-        renderer.clearDepth();
-        renderer.render(wind,camera);
     }
 });
