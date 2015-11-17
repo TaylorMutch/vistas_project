@@ -25,6 +25,7 @@ steal(function () {
         // Setup Scenes
         scene = new THREE.Scene();
         wind = new THREE.Scene();
+        labels = new THREE.Scene();
         var ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
         // Declare renderer settings
@@ -193,9 +194,11 @@ steal(function () {
                     $.each(response, function (station, data) {
                         manager.ActiveStations.push(new Station(data));
                     });
+                    var stationLabels = new THREE.Group();
                     $.each(manager.ActiveStations, function (id, station) {
                         station.pos = manager.TerrainMap[(station.demY * manager.ActiveDEM.DEMx) + station.demX];
                         renderArrows(station);
+                        // Add a label in context as a sprite
                         var message = station.name;
                         var txSprite = makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
                             {
@@ -203,8 +206,10 @@ steal(function () {
                                 borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"center"
                             }
                         );
-                        wind.add(txSprite);
+                        //labels.add(txSprite);
+                        stationLabels.add(txSprite);
                     });
+                    labels.add(stationLabels);
 
                     // Get the beginning and ending days from each station, and then set the timeline
                     var minDates = [];
@@ -308,6 +313,7 @@ steal(function () {
             if (temp_terrain !== manager.ActiveDEM) {   // We have a terrain, so start process
                 $('#timelineSlider').slider('option', 'disabled', true);
                 if (manager.ActiveDEM !== undefined) {  // If this isn't the first terrain, cleanup.
+                    manager.Dates = ['No Date Selected'];
                     clearArrows();
                     cleanup();
                     if (datesGUI != undefined) {
@@ -441,7 +447,6 @@ steal(function () {
         raycaster.setFromCamera(mouse, camera);
         var intersects = raycaster.intersectObjects(wind.children, true);
         if (intersects.length > 0) {
-            //console.log('We hit something!');
             if (INTERSECTED != intersects[0].object) {
                 INTERSECTED = intersects[0].object;
                 // TODO: Clicking it makes the data tag visible
@@ -468,6 +473,14 @@ steal(function () {
             delete manager.SceneObjects.pop();
         });
         console.log("Scene cleared");
+        $.each(labels.children, function(handle, obj) {
+
+            labels.remove(obj);
+            console.log('labels removed');
+        });
+        //for (var i in labels.children) {
+        //    labels.remove(labels.children[i]);
+        //}
         render();
     }
 
@@ -482,5 +495,6 @@ steal(function () {
         renderer.render(scene,camera);
         renderer.clearDepth();
         renderer.render(wind,camera);
+        renderer.render(labels,camera);
     }
 });
