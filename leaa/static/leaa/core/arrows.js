@@ -25,13 +25,7 @@ function renderArrows(station) {
 
     // Render the arrows in the wind scene
     var arrowSet = makeArrowSet(speedArray, dirArray, heightArray, stationPos);
-    $.each(arrowSet, function (handle, arrow) {
-        if (arrow !== null) {
-            arrow.name = "windvector";
-            wind.add(arrow);
-            //scene.add(arrow);
-        }
-    });
+    wind.add(arrowSet);
 
 }
 
@@ -39,7 +33,8 @@ function renderArrows(station) {
 Generates a moment of arrows for a single station.
  */
 function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
-	var arrowSet = [];
+    var group = new THREE.Group();
+    group.name = 'wind';
 	for (var i in spdArray) {
 		var arrow = makeArrow(stationPos, spdArray[i], dirArray[i], heightArray[i]);
 		arrow.userData = {
@@ -47,9 +42,9 @@ function makeArrowSet(spdArray, dirArray, heightArray, stationPos) {
             spd: spdArray[i],
             dir: dirArray[i]
         };
-        arrowSet.push(arrow);
+        group.add(arrow);
 	}
-	return arrowSet;
+    return group;
 }
 
 
@@ -126,10 +121,11 @@ function clearArrows() {
         obj = wind.children[i];
     //for (i = scene.children.length -1; i >= 0; i--) {
         //obj = scene.children[i];
-        if (obj instanceof THREE.ArrowHelper) {
+        /*if (obj instanceof THREE.ArrowHelper) {
             wind.remove(obj);
             //scene.remove(obj);
             renderer.dispose(obj);
-        }
+        }*/
+        if (obj.name === 'wind') wind.remove(obj);
     }
 }

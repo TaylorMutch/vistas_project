@@ -7,6 +7,8 @@ steal(function () {
     init();
     render(); // One call to render to prep the workspace.
 
+
+
     /**
      * Initialize our workspace
      */
@@ -62,9 +64,8 @@ steal(function () {
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0%';
-        stats.domElement.style.bottom = '15px';
+        stats.domElement.style.bottom = '10px';
         container.appendChild(stats.domElement);
-
         // GUIs
 
         //TODO: Replace this with our starting values
@@ -195,6 +196,14 @@ steal(function () {
                     $.each(manager.ActiveStations, function (id, station) {
                         station.pos = manager.TerrainMap[(station.demY * manager.ActiveDEM.DEMx) + station.demX];
                         renderArrows(station);
+                        var message = station.name;
+                        var txSprite = makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
+                            {
+                                fontsize: 18, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
+                                borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"center"
+                            }
+                        );
+                        wind.add(txSprite);
                     });
 
                     // Get the beginning and ending days from each station, and then set the timeline
@@ -435,9 +444,13 @@ steal(function () {
             //console.log('We hit something!');
             if (INTERSECTED != intersects[0].object) {
                 INTERSECTED = intersects[0].object;
-                // TODO: Write this function to get the data values associated with this vector.
-                var data = INTERSECTED.parent.userData;
-                console.log(data);
+                // TODO: Clicking it makes the data tag visible
+                console.log(INTERSECTED.parent);
+                if (INTERSECTED.parent.parent instanceof THREE.Group) {
+                    var data = INTERSECTED.parent.userData;
+                    var message = 'Height = ' + data.h + ', Speed = ' + data.spd + 'm/s' + ', Direction = ' + data.dir + '\xB0';
+                    $("#current-timestamp-label").html(message);
+                }
             }
         } else {
             INTERSECTED = null;
