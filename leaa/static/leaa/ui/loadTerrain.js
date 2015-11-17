@@ -14,13 +14,15 @@ steal(function () {
         raycaster = new THREE.Raycaster();
         var container = document.getElementById("scene");
         // Setup Camera
-        camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 60, 0.1, 500, -500, 1000);
-        CAM_START = new THREE.Vector3(0,-120,120);
+        //camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 40, 0.1, 500, -500, 1000);
+        camera = new THREE.PerspectiveCamera(40,container.offsetWidth/container.offsetHeight, 0.1, 1000);
+        //CAM_START = new THREE.Vector3(0,-120,120);
+        CAM_START = new THREE.Vector3(0,-165,80);
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         camera.up.set(0,0,1);
         // Setup Scenes
         scene = new THREE.Scene();
-        //wind = new THREE.Scene();
+        wind = new THREE.Scene();
         var ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
         // Declare renderer settings
@@ -28,7 +30,7 @@ steal(function () {
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         renderer.setClearColor(0x000000, 1);
         renderer.domElement.id = 'graphics';
-        //renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
+        renderer.autoClear = false;     // Necessary for drawing 'wind' scene on top of terrain
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener( 'mousedown', onDocumentMouseDown, false);
@@ -60,7 +62,7 @@ steal(function () {
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.left = '0%';
-        stats.domElement.style.bottom = '0%';
+        stats.domElement.style.bottom = '15px';
         container.appendChild(stats.domElement);
 
         // GUIs
@@ -91,7 +93,7 @@ steal(function () {
         h_gui.add(h_params, 'Save Settings');
         container.appendChild(h_gui.domElement);
         h_gui.domElement.style.position = 'absolute';
-        h_gui.domElement.style.top = '0%';
+        h_gui.domElement.style.top = '50px';
         h_gui.domElement.style.left = '0%';
         h_gui.domElement.style.textAlign = 'center';
 
@@ -158,7 +160,7 @@ steal(function () {
         );
         elevcontrols.add(v_params, 'Toggle Wireframe');
         v_gui.domElement.style.position='absolute';
-        v_gui.domElement.style.top = '0%';
+        v_gui.domElement.style.top = '50px';
         v_gui.domElement.style.right = '0%';
         v_gui.domElement.style.textAlign = 'center';
         v_gui.open();
@@ -171,7 +173,7 @@ steal(function () {
         };
         wr_img.src = '/static/leaa/resources/quick_windrose.png';
         wr_div.style.position='absolute';
-        wr_div.style.bottom = '0%';
+        wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
         container.appendChild(wr_div);
     }
@@ -410,7 +412,8 @@ steal(function () {
      */
     function onWindowResize() { // Using CombinedCamera API, which mimics perspectiveCamera API
         var container = document.getElementById('scene');
-        camera.setSize(container.offsetWidth, container.offsetHeight);
+        //camera.setSize(container.offsetWidth, container.offsetHeight);
+        camera.aspect = container.offsetWidth/container.offsetHeight;
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         camera.updateProjectionMatrix();
     }
@@ -419,27 +422,25 @@ steal(function () {
      * Get the position of our mouse
      */
     function onDocumentMouseDown() {
-        //event.preventDefault();
-        //var container = document.getElementById('scene');
-        var offset = $('#scene').offset();
-        //mouse.x = ((event.clientX - container.offsetLeft) / container.offsetWidth) * 2 - 1;
-        //mouse.y = - ((event.clientY - container.offsetTop)/ container.offsetHeight) * 2 + 1;
-        //mouse.x = ((event.clientX - offset.left) / renderer.domElement.width) * 2 - 1;
-        //mouse.y = - ((event.clientY - offset.top)/ renderer.domElement.height) * 2 + 1;
-        mouse.x = ((event.clientX - offset.left) / renderer.domElement.width) * 2 - 1;
-        mouse.y = - ((event.clientY - offset.top)/ renderer.domElement.height) * 2 + 1;
-        if (camera.inPerspectiveMode) {
-            raycaster.setFromCamera(mouse, camera.cameraP);
+        mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+        mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
+        //if (camera.inPerspectiveMode) { // TODO: Fix the broken combined camera... again
+        //    raycaster.setFromCamera(mouse, camera.cameraP);
+        //} else {
+        //    raycaster.setFromCamera(mouse, camera.cameraO);
+        //}
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(wind.children, true);
+        if (intersects.length > 0) {
+            //console.log('We hit something!');
+            if (INTERSECTED != intersects[0].object) {
+                INTERSECTED = intersects[0].object;
+                // TODO: Write this function to get the data values associated with this vector.
+                var data = INTERSECTED.parent.userData;
+                console.log(data);
+            }
         } else {
-            raycaster.setFromCamera(mouse, camera.cameraO);
-        }
-
-        var intersects = raycaster.intersectObjects(scene.children);
-        if (intersects.length > 0) console.log('We hit something!');
-        var x = raycaster.ray.direction.x;
-        var y = raycaster.ray.direction.y;
-        if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
-            console.log(x,y);
+            INTERSECTED = null;
         }
     }
 
@@ -449,7 +450,8 @@ steal(function () {
     function cleanup() {
         $.each(manager.SceneObjects, function(handle, threeObject) {
             scene.remove(threeObject);
-            renderer.dispose(threeObject);
+            threeObject.geometry.dispose();
+            threeObject.material.dispose();
             delete manager.SceneObjects.pop();
         });
         console.log("Scene cleared");
@@ -463,6 +465,9 @@ steal(function () {
     }
     function render() {
         orbit.update();
+        renderer.clear();
         renderer.render(scene,camera);
+        renderer.clearDepth();
+        renderer.render(wind,camera);
     }
 });
