@@ -2,33 +2,34 @@
  * Created by Taylor on 9/8/2015.
  */
 steal(function () {
-    mouse = new THREE.Vector2();
-    INTERSECTED = null;
-    init();
+
+    init();   // Init the workspace
     render(); // One call to render to prep the workspace.
 
-
-
     /**
-     * Initialize our workspace
+     * Initialize our workspace and graphics variables
      */
     function init() {
+        // Picking tools
+        mouse = new THREE.Vector2();
+        INTERSECTED = null;
         raycaster = new THREE.Raycaster();
+        // <div> element where everything takes place
         var container = document.getElementById("scene");
         // Setup Camera
         //camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 40, 0.1, 500, -500, 1000);
         camera = new THREE.PerspectiveCamera(40,container.offsetWidth/container.offsetHeight, 0.1, 1000);
-        //CAM_START = new THREE.Vector3(0,-120,120);
         CAM_START = new THREE.Vector3(0,-165,80);
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
         camera.up.set(0,0,1);
-        // Setup Scenes
-        scene = new THREE.Scene();
-        wind = new THREE.Scene();
-        labels = new THREE.Scene();
+        // Setup Scenes - each scene acts to serve a different purpose
+        scene = new THREE.Scene(); // contains the DEM and lighting. Elements that need to be displayed but not picked go here.
+        wind = new THREE.Scene();  // wind vector objects. Picking is done on this scene only.
+        labels = new THREE.Scene();// contains 2D canvas elements. Must go on top of DEM but not be pickable.
+        // Lighting
         var ambient = new THREE.AmbientLight(0xffffff);
         scene.add(ambient);
-        // Declare renderer settings
+        // WebGLRenderer settings
         renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true}); // preserving is necessary for screenshot
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         renderer.setClearColor(0x000000, 1);
@@ -45,20 +46,11 @@ steal(function () {
         orbit.maxPolarAngle = Math.PI * .495; // we only want to view the top half of the terrain
         initGUIS(container);
     }
-    /** Updates the DEM with new specified values.
-     * Redraws the arrows based on new station base postition
-     **/
-    function redrawDEM() {
-        for (var i = 0; i < manager.rawDEM.length; i++) {
-            terrainGeo.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
-        }
-        terrainGeo.geometry.verticesNeedUpdate = true;
-        clearArrows();
-        $.each(manager.ActiveStations, function(id, station) {
-            renderArrows(station);
-        })
-    }
-
+    
+    /**
+     * Initialize our interface
+     * @param container - the <div> container where everything will be placed.
+     */
     function initGUIS(container){
 
         // Add performance monitor
@@ -69,7 +61,6 @@ steal(function () {
         container.appendChild(stats.domElement);
         // GUIs
 
-        //TODO: Replace this with our starting values
         var terrainNames = ['No Terrain'];
         $.each(terrains, function(id, handle) {
             terrainNames.push(handle.name);
@@ -83,7 +74,7 @@ steal(function () {
             'Save Settings': function() {saveSettings();}
         };
         var Terrain = h_gui.addFolder('Terrain', "a");
-        Terrain.add(h_params, 'Select Terrain', terrainNames) //TODO: Simplify the logic in this function
+        Terrain.add(h_params, 'Select Terrain', terrainNames)
             .onChange(function(value) {
                 loadTerrain(value);
             }
@@ -180,125 +171,35 @@ steal(function () {
         container.appendChild(wr_div);
     }
 
-    function loadDates(chosenDate) {
-        var recordDate = chosenDate;
-        clearArrows();
-        if (recordDate !== manager.RecordDate && recordDate !== 'No Date Selected') {
-            manager.RecordDate = recordDate;
-            $.getJSON('/getStationObjects/', {
-                'stations[]': stationNames,
-                'recordDate': recordDate
-            })
-                .done(function (response) {
-                    manager.ActiveStations = [];
-                    $.each(response, function (station, data) {
-                        manager.ActiveStations.push(new Station(data));
-                    });
-                    var stationLabels = new THREE.Group();
-                    $.each(manager.ActiveStations, function (id, station) {
-                        station.pos = manager.TerrainMap[(station.demY * manager.ActiveDEM.DEMx) + station.demX];
-                        renderArrows(station);
-                        // Add a label in context as a sprite
-                        var message = station.name;
-                        var txSprite = makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
-                            {
-                                fontsize: 18, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
-                                borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"center"
-                            }
-                        );
-                        //labels.add(txSprite);
-                        stationLabels.add(txSprite);
-                    });
-                    labels.add(stationLabels);
-
-                    // Get the beginning and ending days from each station, and then set the timeline
-                    var minDates = [];
-                    var maxDates = [];
-                    $.each(manager.ActiveStations, function (id, station) {
-                        minDates.push(Math.min.apply(Math, station.dates));
-                        maxDates.push(Math.max.apply(Math, station.dates));
-                    });
-                    var step1 = '20' + manager.ActiveStations[0].dates[0].toString();
-                    var step2 = '20' + manager.ActiveStations[0].dates[1].toString();
-                    var max = '20' + Math.max.apply(Math, maxDates).toString();
-                    var min = '20' + Math.min.apply(Math, minDates).toString();
-
-                    /**
-                     * Initialize our timeline with the desired dates in Date() objects.
-                     */
-                    manager.Timeline.beginTime = new Date(+min.substr(0, 4), +min.substr(4, 2) - 1, +min.substr(6, 2),
-                        +min.substr(8, 2), +min.substr(10, 2), +min.substr(12, 2));
-                    manager.Timeline.endTime = new Date(+max.substr(0, 4), +max.substr(4, 2) - 1, +max.substr(6, 2),
-                        +max.substr(8, 2), +max.substr(10, 2), +max.substr(12, 2));
-                    manager.Timeline.currentTime = manager.Timeline.beginTime;
-
-                    //calculate timeStep
-                    var date1 = new Date(+step1.substr(0, 4), +step1.substr(4, 2) - 1, +step1.substr(6, 2),
-                        +step1.substr(8, 2), +step1.substr(10, 2), +step1.substr(12, 2));
-                    var date2 = new Date(+step2.substr(0, 4), +step2.substr(4, 2) - 1, +step2.substr(6, 2),
-                        +step2.substr(8, 2), +step2.substr(10, 2), +step2.substr(12, 2));
-                    manager.Timeline.timeStep = date2.getTime() - date1.getTime();
-                    manager.Timeline.numSteps = (
-                        manager.Timeline.endTime.getTime()
-                        - manager.Timeline.beginTime.getTime()) /
-                        manager.Timeline.timeStep;
-                    // Enable the timeline and playback controls
-                    $('#timelineSlider').slider({
-                        disabled: false,
-                        value: manager.Timeline.beginTime.getTime(),
-                        min: manager.Timeline.beginTime.getTime(),
-                        max: manager.Timeline.endTime.getTime(),
-                        step: manager.Timeline.timeStep
-                    });
-                    $('.playback').removeClass('disabled');
-                    // Initialize our initial values for this set of data.
-                    manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
-                    manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
-                }
-            );
-            $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
+    /** Updates the DEM with new specified values.
+     * Redraws the arrows based on new station base positions
+     **/
+    function redrawDEM() {
+        for (var i = scene.children.length - 1; i >= 0; i--) {
+            if (scene.children[i].name = 'terrain poly') {
+                var terrain = scene.children[i];
+                break;
+            }
         }
-        console.log(recordDate);
-
-    }
-
-    function addTerrainToScene(plane, material) {
-        terrainGeo = new THREE.Mesh(plane, material);
-        terrainGeo.name = 'terrain poly';
-        manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
-        scene.add(terrainGeo);
-        manager.SceneObjects.push(terrainGeo);
+        for (var i = 0; i < manager.rawDEM.length; i++) {
+            terrain.geometry.vertices[i].z = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
+        }
+        terrain.geometry.verticesNeedUpdate = true;
+        clearArrows();
+        $.each(manager.ActiveStations, function(id, station) {
+            renderArrows(station);
+            station.label.position.set(station.pos.x, station.pos.y, station.pos.z);
+        });
     }
 
     /**
      * Retrieves a selected DEM from our list of terrains.
+     * @param terrainName - terrain that was picked by the user
      */
     function loadTerrain(terrainName) {
-        var terrainFolder = h_gui.__folders.Terrain;
-        var datesGUI;
-        if (terrainFolder.__controllers[1]) {
-            datesGUI = terrainFolder.__controllers[1];
-        }
-        var viewsGUI;
-        if (h_gui.__folders.Views.__controllers[1]) {
-            viewsGUI = h_gui.__folders.Views.__controllers[1];
-        }
         if (terrainName == 'No Terrain') { // Either we had no terrain to start with or we need to clear everything from the scene
             clearArrows();
             cleanup();
-            manager.ActiveDEM = undefined;
-            manager.rawDEM = undefined;
-            manager.ActiveStations = [];
-            manager.Dates = ['No Date Selected'];
-            $('#timelineSlider').slider('option', 'disabled', true);
-            $('.playback').addClass('disabled');
-            if (datesGUI) {
-                terrainFolder.remove(datesGUI);
-            }
-            if (viewsGUI) {
-                h_gui.__folders.Views.remove(viewsGUI);
-            }
-
         } else {
             var temp_terrain;
             for (var i = 0; i < terrains.length; i++) {
@@ -311,14 +212,12 @@ steal(function () {
             if (temp_terrain !== manager.ActiveDEM) {   // We have a terrain, so start process
                 $('#timelineSlider').slider('option', 'disabled', true);
                 if (manager.ActiveDEM !== undefined) {  // If this isn't the first terrain, cleanup.
-                    manager.Dates = ['No Date Selected'];
                     clearArrows();
                     cleanup();
-                    if (datesGUI != undefined) {
-                        terrainFolder.remove(datesGUI);}
                 }
+
+                // prep for new terrain
                 manager.ActiveDEM = temp_terrain;
-                // Get initial terrain geo, to be updated with DEM data
                 var plane = new THREE.PlaneGeometry(temp_terrain.MAPx, temp_terrain.MAPy, temp_terrain.DEMx - 1, temp_terrain.DEMy - 1);
                 plane.computeFaceNormals();
                 plane.computeVertexNormals();
@@ -398,10 +297,10 @@ steal(function () {
                             $.each(dates, function (id, name) {
                                 manager.Dates.push(name);
                             });
-                            if (datesGUI != undefined) {
-                                terrainFolder.remove(datesGUI);
+                            if (h_gui.__folders.Terrain.__controllers[1] != undefined) {
+                                h_gui.__folders.Terrain.remove(h_gui.__folders.Terrain.__controllers[1]);
                             }
-                            terrainFolder.add(manager, 'Dates', manager.Dates)
+                            h_gui.__folders.Terrain.add(manager, 'Dates', manager.Dates)
                                 .onChange(function (value) {
                                     loadDates(value);
                                 }
@@ -420,8 +319,110 @@ steal(function () {
             }
         }
     }
+
     /**
-     * Our resizeing function
+     * Helper function for adding terrains to the scene
+     * @param plane - plane geometry that has been modified to suit the DEM for regional area.
+     * @param material - MeshPhongMaterial is a texture, ShaderMaterial is no texture found
+     */
+    function addTerrainToScene(plane, material) {
+        var terrain = new THREE.Mesh(plane, material);
+        terrain.name = 'terrain poly';
+        manager.TerrainMap = plane.vertices.slice(); //copy the vertices so we have a way to get back to normal
+        scene.add(terrain);
+        manager.SceneObjects.push(terrain);
+    }
+
+    /**
+     * Retrieves a selected dataset based on the date chosen
+     * @param chosenDate - date that was picked by the user
+     */
+    function loadDates(chosenDate) {
+        var recordDate = chosenDate;
+        clearArrows();
+        $('#sodarLog').empty();
+        if (recordDate !== manager.RecordDate && recordDate !== 'No Date Selected') {
+            manager.RecordDate = recordDate;
+            $.getJSON('/getStationObjects/', {
+                'stations[]': stationNames,
+                'recordDate': recordDate
+            })
+                .done(function (response) {
+                    manager.ActiveStations = [];
+                    $.each(response, function (station, data) {
+                        manager.ActiveStations.push(new Station(data));
+                    });
+                    var stationLabels = new THREE.Group();
+                    $.each(manager.ActiveStations, function (id, station) {
+                        station.pos = manager.TerrainMap[(station.demY * manager.ActiveDEM.DEMx) + station.demX];
+                        renderArrows(station);
+                        // Add a label in context as a sprite
+                        var message = station.name;
+                        var txSprite = makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
+                            {
+                                fontsize: 18, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
+                                borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"center"
+                            }
+                        );
+                        //txSprite.userData = {name: message};
+                        station.label = txSprite;
+                        stationLabels.add(txSprite);
+                    });
+                    labels.add(stationLabels);
+
+                    // Get the beginning and ending days from each station, and then set the timeline
+                    var minDates = [];
+                    var maxDates = [];
+                    $.each(manager.ActiveStations, function (id, station) {
+                        minDates.push(Math.min.apply(Math, station.dates));
+                        maxDates.push(Math.max.apply(Math, station.dates));
+                    });
+                    var step1 = '20' + manager.ActiveStations[0].dates[0].toString();
+                    var step2 = '20' + manager.ActiveStations[0].dates[1].toString();
+                    var max = '20' + Math.max.apply(Math, maxDates).toString();
+                    var min = '20' + Math.min.apply(Math, minDates).toString();
+
+                    /**
+                     * Initialize our timeline with the desired dates in Date() objects.
+                     */
+                    manager.Timeline.beginTime = new Date(+min.substr(0, 4), +min.substr(4, 2) - 1, +min.substr(6, 2),
+                        +min.substr(8, 2), +min.substr(10, 2), +min.substr(12, 2));
+                    manager.Timeline.endTime = new Date(+max.substr(0, 4), +max.substr(4, 2) - 1, +max.substr(6, 2),
+                        +max.substr(8, 2), +max.substr(10, 2), +max.substr(12, 2));
+                    manager.Timeline.currentTime = manager.Timeline.beginTime;
+
+                    //calculate timeStep
+                    var date1 = new Date(+step1.substr(0, 4), +step1.substr(4, 2) - 1, +step1.substr(6, 2),
+                        +step1.substr(8, 2), +step1.substr(10, 2), +step1.substr(12, 2));
+                    var date2 = new Date(+step2.substr(0, 4), +step2.substr(4, 2) - 1, +step2.substr(6, 2),
+                        +step2.substr(8, 2), +step2.substr(10, 2), +step2.substr(12, 2));
+                    manager.Timeline.timeStep = date2.getTime() - date1.getTime();
+                    manager.Timeline.numSteps = (
+                        manager.Timeline.endTime.getTime()
+                        - manager.Timeline.beginTime.getTime()) /
+                        manager.Timeline.timeStep;
+                    // Enable the timeline and playback controls
+                    $('#timelineSlider').slider({
+                        disabled: false,
+                        value: manager.Timeline.beginTime.getTime(),
+                        min: manager.Timeline.beginTime.getTime(),
+                        max: manager.Timeline.endTime.getTime(),
+                        step: manager.Timeline.timeStep
+                    });
+                    $('.playback').removeClass('disabled');
+                    // Initialize our initial values for this set of data.
+                    manager.CurrentTimestamp = manager.Timeline.beginTime.getTime();
+                    manager.CurrentDate = calcTimestep(manager.CurrentTimestamp);
+                }
+            );
+            $("#current-timestamp-label").html(manager.ActiveDEM.name + ': ' + recordDate);
+        }
+        console.log(recordDate);
+
+    }
+
+    /**
+     * Our window resize function, for adjusting the renderer sizes and camera aspects
      */
     function onWindowResize() { // Using CombinedCamera API, which mimics perspectiveCamera API
         var container = document.getElementById('scene');
@@ -432,7 +433,7 @@ steal(function () {
     }
 
     /**
-     * Get the position of our mouse
+     * Get the position of our mouse for picking
      */
     function onDocumentMouseDown() {
         mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
@@ -461,32 +462,65 @@ steal(function () {
     }
 
     /**
-     * Remove all objects from scene and render once to clear UI.
+     * Remove all objects from scene and render once to clear interface.
      */
     function cleanup() {
+        // Get active GUI Elements
+        var terrainFolder = h_gui.__folders.Terrain;
+        var viewsFolder = h_gui.__folders.Views;
+        var datesGUI;
+        if (terrainFolder.__controllers[1]) {
+            datesGUI = terrainFolder.__controllers[1];
+        }
+        var viewsGUI;
+        if (viewsFolder.__controllers[1]) {
+            viewsGUI = viewsFolder.__controllers[1];
+        }
+        // Remove elements from 3D scene
         $.each(manager.SceneObjects, function(handle, threeObject) {
             scene.remove(threeObject);
             threeObject.geometry.dispose();
             threeObject.material.dispose();
             delete manager.SceneObjects.pop();
         });
+        if (labels.children.length > 0)
+        {
+            for (var i= 0; i < labels.children.length; i++) {
+                labels.remove(labels.children[i]);
+            }
+        }
         console.log("Scene cleared");
-        $.each(labels.children, function(handle, obj) {
-
-            labels.remove(obj);
-            console.log('labels removed');
-        });
-        //for (var i in labels.children) {
-        //    labels.remove(labels.children[i]);
-        //}
+        // Clear out variables for receiving new data
+        manager.TerrainMap = [];
+        manager.CurrentStationSelected = null;
+        manager.ActiveDEM = undefined;
+        manager.rawDEM = undefined;
+        manager.ActiveStations = [];
+        manager.Dates = ['No Date Selected'];
+        manager.RecordDate = null;
+        manager.Animating = false;
+        manager.TerrainViews = ['Default'];
+        // Reset GUI elements
+        $('#timelineSlider').slider('option', 'disabled', true);
+        $('.playback').addClass('disabled');
+        if (datesGUI) {
+            terrainFolder.remove(datesGUI);
+        }
+        if (viewsGUI) {
+            viewsFolder.remove(viewsGUI);
+        }
+        // One call to render to visually clear the scene.
         render();
     }
 
+    // render loop; this determines system fps
     function animate() {
         requestAnimationFrame(animate);
         render();
         stats.update();
     }
+
+    // actions to perform on each render call
     function render() {
         orbit.update();
         renderer.clear();

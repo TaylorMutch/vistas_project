@@ -2,6 +2,16 @@
  * http://www.johannes-raida.de/tutorials/three.js/tutorial13/tutorial13.htm
  */
 
+/**
+ * Generates a textSprite (essentially a 2D html canvas) based on model coordinates
+ * that can be embedded in our WebGLRenderer scene.
+ * @param message - {string} to display
+ * @param x - station.pos.x
+ * @param y - station.pos.y
+ * @param z - station.pox.z
+ * @param parameters - JSON of parameters determine the size and shape of the textSprite
+ * @returns {THREE.Sprite} - our textSprite that we will render to the scene
+ */
 function makeTextSprite(message, x,y,z, parameters) {
     if (parameters === undefined) parameters = {};
 
@@ -96,7 +106,16 @@ function makeTextSprite(message, x,y,z, parameters) {
 }
 
 /**
- *  function for drawing rounded rectangles
+ * Helper function for drawing rounded rectangles
+ *  @param ctx - 2D canvas context
+ *  @param x
+ *  @param y
+ *  @param w
+ *  @param h
+ *  @param r
+ *  @param borderThickness
+ *  @param borderColor
+ *  @param fillColor
  */
 function roundRect(ctx, x, y, w, h, r, borderThickness, borderColor, fillColor)
 {
@@ -139,8 +158,10 @@ function roundRect(ctx, x, y, w, h, r, borderThickness, borderColor, fillColor)
 }
 
 /**
- * convenience for converting JSON color to rgba that canvas wants
+ * Helper function for converting JSON color to rgba that canvas wants
  * Be nice to handle different forms (e.g. no alpha, CSS style, etc.)
+ * @param color - the RGBA color value we want to show
+ * @returns {string} - rgba string acceptable by THREE.Color (inside of THREE.SpriteMaterial)
  */
 function getCanvasColor ( color ) {
     return "rgba(" + color.r + "," + color.g + "," + color.b + "," + color.a + ")";

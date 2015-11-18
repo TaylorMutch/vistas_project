@@ -16,7 +16,12 @@ months = {'Jan':'01',
           'Dec':'12'
 };
 
-//TODO: Make this function... prettier? It's pretty garbled
+/**
+ * Conversion function for interaction with the timeline slider. Takes values chosen from the timeline slider.
+ * @param value - Integer value of a date collected from the timeline slider
+ * @returns {Number} - Integer value corresponding to dates located in Station.dates array
+ * TODO: Make this function... prettier? It's pretty garbled (but functional)
+ */
 function calcTimestep(value) {
     var currentDate = new Date();
     currentDate.setTime(value);
