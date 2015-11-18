@@ -13,7 +13,10 @@ steal(function () {
         // Picking tools
         mouse = new THREE.Vector2();
         INTERSECTED = null;
+        INTERSECTED_STATIC = null;
+        currentHex = null;
         raycaster = new THREE.Raycaster();
+        raycaster.linePrecision = 100001;  // precision on detecting lines only, otherwise mesh collision is used
         // <div> element where everything takes place
         var container = document.getElementById("scene");
         // Setup Camera
@@ -38,6 +41,7 @@ steal(function () {
         container.appendChild(renderer.domElement);
         window.addEventListener('resize', onWindowResize, false);
         document.addEventListener( 'mousedown', onDocumentMouseDown, false);
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false);
         // Screenshot capability - binds to 'p' key.
         THREEx.Screenshot.bindKey(renderer);
 
@@ -46,7 +50,7 @@ steal(function () {
         orbit.maxPolarAngle = Math.PI * .495; // we only want to view the top half of the terrain
         initGUIS(container);
     }
-    
+
     /**
      * Initialize our interface
      * @param container - the <div> container where everything will be placed.
@@ -433,11 +437,9 @@ steal(function () {
     }
 
     /**
-     * Get the position of our mouse for picking
+     * Get the position of our mouse for picking stations and update the sodarLog
      */
     function onDocumentMouseDown() {
-        mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
-        mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
         //if (camera.inPerspectiveMode) { // TODO: Fix the broken combined camera... again
         //    raycaster.setFromCamera(mouse, camera.cameraP);
         //} else {
@@ -459,6 +461,33 @@ steal(function () {
         } else {
             INTERSECTED = null;
         }
+    }
+
+    /**
+     * Calculate position of the mouse.
+     * Also highlight arrows when the mouse is close to them.
+     */
+    function onDocumentMouseMove() {
+        mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+        mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(wind.children, true);
+        if (intersects.length > 0) {
+            if (INTERSECTED_STATIC != intersects[0].object) {
+                if (INTERSECTED_STATIC) INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
+                INTERSECTED_STATIC = intersects[0].object;
+                INTERSECTED_STATIC.currentHex = INTERSECTED_STATIC.parent.cone.material.emissive.getHex();
+                INTERSECTED_STATIC.parent.cone.material.emissive.setHex(0xffff00);
+                // Show the values in the current-timestamp-label
+                var data = INTERSECTED_STATIC.parent.userData;
+                var name = INTERSECTED_STATIC.parent.parent.userData.name;
+                var message = 'Station: ' + name + ', Height: ' + data.h + ', Speed: ' + data.spd + 'm/s' + ', Direction: ' + data.dir + '\xB0';
+                $('#current-timestamp-label').html(message);
+            }
+        } else {
+            if (INTERSECTED_STATIC) INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
+            INTERSECTED_STATIC = null;
+            }
     }
 
     /**

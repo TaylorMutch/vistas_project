@@ -72,7 +72,15 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
         var g = (colorDir.normalize().x < 0) ? parseInt(colorDir.normalize().x*-1*255) : 0;
         var b = (colorDir.normalize().y < 0) ? parseInt(colorDir.normalize().y*-1*255) : 0;
         var colorstring = "rgb(" + r.toString() + ',' + g.toString() + ',' + b.toString() +")";
-        result.cone.material.color = new THREE.Color(colorstring);
+        //result.cone.material.color = new THREE.Color(colorstring);
+        //var hex = rgbToHex(r,g,b);
+        //console.log(hex);
+        var color = new THREE.Color(colorstring);
+        result.cone.material = new THREE.MeshLambertMaterial();
+        //result.cone.material.color = color;
+        result.cone.material.emissive.r = color.r;
+        result.cone.material.emissive.g = color.g;
+        result.cone.material.emissive.b = color.b;
         return result;
     }
 }

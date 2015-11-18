@@ -71,11 +71,17 @@ a:link, a:hover, a:active, a:visited
 
 #sidebar
 {
-    left: 5px;
+    left: 2px;
     position: absolute;
+    width: 360px;
     top: 259px;
     bottom: 100px;
     overflow-y: auto;
+}
+
+#sodarLog
+{
+    padding-left: 15px;
 }
 
 #windrose
