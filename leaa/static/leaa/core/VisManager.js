@@ -178,6 +178,11 @@ VisManager.prototype.CompareDates = function(increasing) {
     }
 };
 
+/**
+ * Updates the abstract timeline (manager.Timeline) with values chosen from jQuery timeline slider
+ * @param val - value from slider (Date() integer)
+ * @constructor
+ */
 VisManager.prototype.UpdateTimeline = function(val) {
     //console.log('Scrubber changed, updating values');
     manager.CurrentTimestamp = val;            // values for the timeline
