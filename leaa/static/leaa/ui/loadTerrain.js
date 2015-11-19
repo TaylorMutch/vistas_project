@@ -14,9 +14,8 @@ steal(function () {
         mouse = new THREE.Vector2();
         INTERSECTED = null;
         INTERSECTED_STATIC = null;
-        currentHex = null;
         raycaster = new THREE.Raycaster();
-        raycaster.linePrecision = 100001;  // precision on detecting lines only, otherwise mesh collision is used
+        raycaster.linePrecision = 100000;  // precision on detecting lines only, otherwise mesh collision is used
         // <div> element where everything takes place
         var container = document.getElementById("scene");
         // Setup Camera
@@ -125,12 +124,14 @@ steal(function () {
         wvcontrols.addColor(manager, 'ArrowColor').name('Color').onChange(
             function(value) {
                 manager.ArrowColor = value;
-                $.each(wind.children, function(id, vector) {
-                    // Sometimes windvectors dont have lines attached (I.e. vectorLength == 0)
-                    if (vector.children.length == 2) {
-                        vector.line.material.color = new THREE.Color(value);
-                    }
-                })
+                for (var i = 0; i < wind.children.length; i++) { // For each group of vectors
+                    $.each(wind.children[i].children, function (id, vector) {   // For each vector in the group
+                        // Sometimes windvectors dont have lines attached (I.e. vectorLength == 0)
+                        if (vector.children.length == 2) {
+                            vector.line.material.color = new THREE.Color(value);
+                        }
+                    })
+                }
             }
         );
         wvcontrols.add(manager, 'LiveUpdate').name('Live Update?').listen();
@@ -246,8 +247,10 @@ steal(function () {
                             material = new THREE.MeshPhongMaterial({map: texture});
                             addTerrainToScene(plane, material);
                         },
-                        {//TODO: Maybe add a loading bar to the middle of the canvas?
+                        {// OnProgress
+                        //TODO: Maybe add a loading bar to the middle of the canvas?
                         },
+                        // OnFail
                         function () {
                             console.log('An error happened, or there was no image with the DEM. Using basic material instead...');
                             material = new THREE.ShaderMaterial({
@@ -286,6 +289,8 @@ steal(function () {
                                         "}"].join("\n")
                                 }
                             );
+                            console.log(material.vertexShader);
+                            console.log(material.fragmentShader);
                             addTerrainToScene(plane,material);
                         }
                     );
@@ -437,6 +442,42 @@ steal(function () {
     }
 
     /**
+     * Calculate position of the mouse. Also highlight arrows when the mouse is close to them.
+     */
+    function onDocumentMouseMove() {
+        mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+        mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(wind.children, true);
+        if (intersects.length > 0) {
+            // Pick the closest object
+            if (INTERSECTED_STATIC != intersects[0].object) {
+                if (INTERSECTED_STATIC) { //If we already have one, reset the previous to its former state
+                    INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
+                    INTERSECTED_STATIC.parent.scale.set(1,1,1);
+                }
+                // Get the new object and highlight it
+                INTERSECTED_STATIC = intersects[0].object;
+                INTERSECTED_STATIC.currentHex = INTERSECTED_STATIC.parent.cone.material.emissive.getHex();
+                INTERSECTED_STATIC.parent.cone.material.emissive.setHex(0xffff00);
+                INTERSECTED_STATIC.parent.scale.set(2,2,2);
+                // Show the values of the object we just moused over in the current-timestamp-label
+                var data = INTERSECTED_STATIC.parent.userData;
+                var name = INTERSECTED_STATIC.parent.parent.userData.name;
+                var message = 'Station: ' + name + ', Height: ' + data.h + ', Speed: ' + data.spd + 'm/s' + ', Direction: ' + data.dir + '\xB0';
+                $('#current-timestamp-label').html(message);
+            }
+        } else {
+            if (INTERSECTED_STATIC) { // If we selected an object, we want to restore its state
+                INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
+                INTERSECTED_STATIC.parent.scale.set(1,1,1);
+            }
+            // Clear the saved objects and wait for next object
+            INTERSECTED_STATIC = null;
+            }
+    }
+
+    /**
      * Get the position of our mouse for picking stations and update the sodarLog
      */
     function onDocumentMouseDown() {
@@ -461,33 +502,6 @@ steal(function () {
         } else {
             INTERSECTED = null;
         }
-    }
-
-    /**
-     * Calculate position of the mouse.
-     * Also highlight arrows when the mouse is close to them.
-     */
-    function onDocumentMouseMove() {
-        mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
-        mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        var intersects = raycaster.intersectObjects(wind.children, true);
-        if (intersects.length > 0) {
-            if (INTERSECTED_STATIC != intersects[0].object) {
-                if (INTERSECTED_STATIC) INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
-                INTERSECTED_STATIC = intersects[0].object;
-                INTERSECTED_STATIC.currentHex = INTERSECTED_STATIC.parent.cone.material.emissive.getHex();
-                INTERSECTED_STATIC.parent.cone.material.emissive.setHex(0xffff00);
-                // Show the values in the current-timestamp-label
-                var data = INTERSECTED_STATIC.parent.userData;
-                var name = INTERSECTED_STATIC.parent.parent.userData.name;
-                var message = 'Station: ' + name + ', Height: ' + data.h + ', Speed: ' + data.spd + 'm/s' + ', Direction: ' + data.dir + '\xB0';
-                $('#current-timestamp-label').html(message);
-            }
-        } else {
-            if (INTERSECTED_STATIC) INTERSECTED_STATIC.parent.cone.material.emissive.setHex(INTERSECTED_STATIC.currentHex);
-            INTERSECTED_STATIC = null;
-            }
     }
 
     /**
