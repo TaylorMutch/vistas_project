@@ -1,12 +1,7 @@
 /**
  * Created by Taylor on 9/8/2015.
  */
-/**
-    Steal document for LEAA.
-    Loads any scripts via jQuery and hands them over to the client, making them available
-    right as the DOM finishes loading. This ensures that all assets are loaded before
-    the user tries to do anything initially.
- */
+
 var VERSION ='1.0.1';
 
 /** Our manager that holds everything together **/
@@ -45,7 +40,7 @@ $(document).ready(function() {
         });
         $( "#amount" ).val( "$" + s.slider("value"));
     });
-    steal("leaa/ui/loadTerrain.js", function() {}); // Load rendering tools
+    steal("leaa/ui/loader.js", function() {}); // Load rendering tools
     // Playback UI controls
     steal(function() {
         $('#forward').on('click', function() {
