@@ -71,6 +71,32 @@ $(document).ready(function() {
                 glyph.addClass('glyphicon-play');
             }
 	    });
+        // Video recording
+        $('#rec_btn').on('click', function() {
+            var glyph = $('#play-glyph');
+            if ($(this).hasClass('active')) {
+                capturer.stop();
+                capturer.save(function(blob) {
+                    window.location = blob;
+                });
+                $(this).removeClass('active');
+                glyph.removeClass('glyphicon-pause');
+                glyph.addClass('glyphicon-play');
+                alert('Video is now ready for pickup. Have a nice day!');
+            } else {
+                var proceed = confirm('Begin capturing scene? This will affect system performance, and may not work on all browsers');
+                if (proceed) {
+                    $(this).addClass('active');
+                    capturer =  new CCapture( {format: 'webm', framerate: 10});
+                    capturer.start();
+                    manager.StepForward();
+                    manager.Animating = true;
+                    intervalID = setInterval(animateStepForward, 1000/2);
+                    glyph.removeClass('glyphicon-play');
+                    glyph.addClass('glyphicon-pause');
+                }
+            }
+        });
         // Animation loop
         function animateStepForward() {
             manager.StepForward();

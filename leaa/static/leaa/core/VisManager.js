@@ -95,6 +95,14 @@ VisManager.prototype.StepForward = function() {
             clearInterval(intervalID);
             glyph.removeClass('glyphicon-pause');
             glyph.addClass('glyphicon-play');
+            if (capturer) {
+                capturer.stop();
+                capturer.save(function(blob) {
+                    window.location = blob;
+                });
+                $('#rec_btn').removeClass('active');
+                alert('Video is now ready for pickup. Have a nice day!');
+            }
         }
     }
 };
