@@ -212,22 +212,14 @@ steal(function () {
         wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
         container.appendChild(wr_div);
-        /*
-        var rec_div = document.createElement('DIV');
-        rec_div.style.position='absolute';
-        rec_div.style.left= '20%';
-        var rec_btn = document.createElement('BUTTON');
-        rec_btn.className = 'btn btn-default btn-block';
-        rec_div.appendChild(rec_btn);
-        container.appendChild(rec_div);
-        */
     }
 
     /** Updates the DEM with new specified values.
      * Redraws the arrows based on new station base positions
      **/
     function redrawDEM() {
-        for (var i = scene.children.length - 1; i >= 0; i--) {
+        var i;
+        for (i = scene.children.length - 1; i >= 0; i--) {
             if (scene.children[i].name = 'terrain poly') {
                 var terrain = scene.children[i];
                 break;
@@ -235,7 +227,7 @@ steal(function () {
         }
 
         // Update the z values in the buffer
-        for (var i = 0; i < manager.rawDEM.length; i++) {
+        for (i = 0; i < manager.rawDEM.length; i++) {
             terrain.geometry.attributes.position.array[i*3 + 2] = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
         }
         terrain.geometry.attributes.position.needsUpdate = true;  // signal to send new data to GPU
@@ -307,8 +299,6 @@ steal(function () {
                             displacement: {type: 'f', value: manager.SceneHeight},
                             maxHeight: {type: 'f', value: max}
                         },
-                        //vertexShader: $('#vertex').text(),
-                        //fragmentShader: $('#fragment').text()
                         vertexShader: [
                             'uniform float displacement;',
                             'uniform float maxHeight;',
@@ -518,7 +508,7 @@ steal(function () {
     /**
      * Calculate position of the mouse. Also highlight arrows when the mouse is close to them.
      */
-    function onDocumentMouseMove() {
+    function onDocumentMouseMove(event) {
         mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
         mouse.y =  (-(event.clientY - 50) / renderer.domElement.height) * 2 + 1;
         raycaster.setFromCamera(mouse, camera);

@@ -90,7 +90,6 @@ $(document).ready(function() {
                     'and may not work on all browsers.',
                     '(Recommendation: use Chrome if you have issues with this feature.)'
                 ].join(' ');
-                //var proceed = confirm('Begin capturing scene? This will affect system performance, and may not work on all browsers. Use Chrome if you have issues with this feature.');
                 var proceed = confirm(message);
                 if (proceed) {
                     $(this).addClass('active');
