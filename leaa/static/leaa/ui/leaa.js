@@ -40,6 +40,9 @@ $(document).ready(function() {
         });
         $( "#amount" ).val( "$" + s.slider("value"));
     });
+    steal("leaa/js/CCapture.min.js", function() {});
+    steal("leaa/js/whammy.js", function() {});
+    steal("leaa/ui/settings.js", function() {});
     steal("leaa/ui/loader.js", function() {}); // Load rendering tools
     // Playback UI controls
     steal(function() {
@@ -88,6 +91,7 @@ $(document).ready(function() {
             }
         );
     });
+
     // Tooltips
     $(function() {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})

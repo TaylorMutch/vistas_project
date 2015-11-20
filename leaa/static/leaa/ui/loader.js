@@ -58,6 +58,10 @@ steal(function () {
         // Screenshot capability - binds to 'p' key.
         THREEx.Screenshot.bindKey(renderer);
 
+        // Video capture ability
+        //capturer = new CCapture( {format: 'webm', framerate: 10});
+        capturer = null; // Gets set when we need it, so as not to inhibit performance
+
         // Initialze camera controls
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
         orbit.maxPolarAngle = Math.PI * .495; // we only want to view the top half of the terrain
@@ -81,6 +85,7 @@ steal(function () {
         renderer.clearDepth();          // clearDepth only so we can overlay other objects
         renderer.render(wind,camera);   // Render the arrows on top of the scene
         renderer.render(labels,camera); // Last come the labels so they can be seen from any direction.
+        if (capturer) capturer.capture(renderer.domElement);
     }
 
     /**
@@ -207,6 +212,15 @@ steal(function () {
         wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
         container.appendChild(wr_div);
+        /*
+        var rec_div = document.createElement('DIV');
+        rec_div.style.position='absolute';
+        rec_div.style.left= '20%';
+        var rec_btn = document.createElement('BUTTON');
+        rec_btn.className = 'btn btn-default btn-block';
+        rec_div.appendChild(rec_btn);
+        container.appendChild(rec_div);
+        */
     }
 
     /** Updates the DEM with new specified values.

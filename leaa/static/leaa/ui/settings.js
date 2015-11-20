@@ -183,3 +183,22 @@ function formatTimestamp(date) {
 	return  month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + sec;
 }
 
+$('#rec_btn').on('click', function() {
+    console.log('I was clicked!');
+    if ($(this).hasClass('active')) {
+        capturer.stop();
+        capturer.save(function(blob) {
+            window.location = blob;
+        });
+        $(this).removeClass('active');
+        alert('Video is now ready for pickup. Have a nice day!');
+    } else {
+        var proceed = confirm('Begin capturing scene? This will affect system performance, and may not work on all browsers');
+        if (proceed) {
+            $(this).addClass('active');
+            capturer =  new CCapture( {format: 'webm', framerate: 10});
+            capturer.start();
+        }
+    }
+
+});

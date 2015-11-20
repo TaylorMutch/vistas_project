@@ -20,7 +20,6 @@
     <!-- VALCEX UI SCRIPTS (via steal.js) -->
     <script src="{% static "steal/steal.js" %}"></script>
     <script src="{% static "leaa/ui/leaa.js" %}"></script>
-    <script src="{% static "leaa/ui/settings.js" %}"></script>
 {% endblock js %}
 {% block content %}
     <div id="top-wrapper">
@@ -29,6 +28,9 @@
                 <div id="current-timestamp-container">
                     <h4 id="current-timestamp-label" class="text-center">Scene Empty - Select Terrain</h4>
                 </div>
+            </div>
+            <div id="rec_div">
+                <button id='rec_btn' class="btn btn-default" type="button">Start/Stop Recording</button>
             </div>
             <div id="sidebar">
                 <div id="console">
