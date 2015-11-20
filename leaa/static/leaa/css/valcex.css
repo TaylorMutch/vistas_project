@@ -79,7 +79,7 @@ a:link, a:hover, a:active, a:visited
     left: 2px;
     position: absolute;
     width: 360px;
-    /*top: 259px;*/
+    top: 295px;
     bottom: 100px;
     overflow-y: auto;
 }

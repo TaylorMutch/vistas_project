@@ -84,7 +84,14 @@ $(document).ready(function() {
                 glyph.addClass('glyphicon-play');
                 alert('Video is now ready for pickup. Have a nice day!');
             } else {
-                var proceed = confirm('Begin capturing scene? This will affect system performance, and may not work on all browsers');
+                var message = [
+                    'Begin capturing scene?',
+                    'This will affect system performance,',
+                    'and may not work on all browsers.',
+                    '(Recommendation: use Chrome if you have issues with this feature.)'
+                ].join(' ');
+                //var proceed = confirm('Begin capturing scene? This will affect system performance, and may not work on all browsers. Use Chrome if you have issues with this feature.');
+                var proceed = confirm(message);
                 if (proceed) {
                     $(this).addClass('active');
                     capturer =  new CCapture( {format: 'webm', framerate: 10});
