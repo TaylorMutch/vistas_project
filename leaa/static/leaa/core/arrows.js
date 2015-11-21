@@ -96,7 +96,7 @@ function makeArrow(stationPos, cSpeed, cDirection, cHeight) {
  * @returns {THREE.Vector3}, the vector direction in model coordinates.
  */
 function calcDirection(dir) {
-    var cDir = (dir - 180).mod(360);            // reverse the direction we are coming from
+    var cDir = (dir - 180).mod(360);            // reverse the direction we are coming from (convert to polar coordiantes)
     var dirRadians = (cDir/360.0)*2*Math.PI;    // convert to radians to use js math functions
     return new THREE.Vector3(Math.sin(dirRadians),Math.cos(dirRadians), 0); // return vector with cartesian uv coordinates
 }

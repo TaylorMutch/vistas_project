@@ -4,8 +4,7 @@
 
 var VERSION ='1.0.1';
 
-/** Our manager that holds everything together **/
-var manager = new VisManager();
+var manager;
 
 var terrains = [];
 $.getJSON('/terrains/')
@@ -16,30 +15,24 @@ $.getJSON('/terrains/')
     }
 );
 $(document).ready(function() {
-    /**
-     * Our timeline slider.
-     * Initialized to be disabled with dummy values because we don't know what the begin/end values are yet.
-     * When enabled, the stop event triggers a render event based on the timestamp that it receives
-     */
-    $(function() {
-        var s = $("#timelineSlider");
-        s.slider({
-            disabled: true,
-            value:0,
-            min: 0,
-            max: 1,
-            step: 1,
-            slide: function( event, ui ) {
-                $( "#amount" ).val( "$" + ui.value );
-                if (manager.LiveUpdate) manager.UpdateTimeline(ui.value);
-            },
-            // This is triggered when a user picks up and drops the slider.
-            stop: function( event, ui ) {
-                if (!manager.LiveUpdate) manager.UpdateTimeline(ui.value);
-            }
-        });
-        $( "#amount" ).val( "$" + s.slider("value"));
+
+    // External scripts
+    steal("leaa/js/stats.min.js", function() {});
+    steal("leaa/js/dat.gui.min.js", function() {});
+    steal("leaa/three/three.min.js", function() {});
+    steal("leaa/three/CombinedCamera.js", function() {});
+    steal("leaa/three/OrbitControls.js", function() {});
+    steal("leaa/three/TerrainLoader.js", function() {});
+    steal("leaa/three/Screenshot.js", function() {});
+
+    // Core Scripts
+    steal("leaa/core/stations.js", function() {});
+    steal("leaa/core/arrows.js", function() {});
+    steal("leaa/core/timeline.js", function() {});
+    steal("leaa/core/VisManager.js", function() {
+        manager = new VisManager(); //Our manager that holds everything together
     });
+    steal("leaa/core/sprites.js", function() {});
     steal("leaa/js/CCapture.min.js", function() {});
     steal("leaa/js/whammy.js", function() {});
     steal("leaa/ui/settings.js", function() {});
@@ -124,6 +117,30 @@ $(document).ready(function() {
         );
     });
 
+    /**
+     * Our timeline slider.
+     * Initialized to be disabled with dummy values because we don't know what the begin/end values are yet.
+     * When enabled, the stop event triggers a render event based on the timestamp that it receives
+     */
+    $(function() {
+        var s = $("#timelineSlider");
+        s.slider({
+            disabled: true,
+            value:0,
+            min: 0,
+            max: 1,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#amount" ).val( "$" + ui.value );
+                if (manager.LiveUpdate) manager.UpdateTimeline(ui.value);
+            },
+            // This is triggered when a user picks up and drops the slider.
+            stop: function( event, ui ) {
+                if (!manager.LiveUpdate) manager.UpdateTimeline(ui.value);
+            }
+        });
+        $( "#amount" ).val( "$" + s.slider("value"));
+    });
     // Tooltips
     $(function() {
         $('[data-toggle="tooltip-std"]').tooltip({placement: 'right', container: 'body'})
