@@ -68,13 +68,17 @@ function VisManager(){
  * @constructor
  */
 VisManager.prototype.ResetStations = function() {
+    var i;
     clearArrows();
     $('#timelineSlider').slider({value: this.Timeline.beginTime.getTime()});
     this.CurrentTimestamp = this.Timeline.beginTime.getTime();
-    for (var i = 0; i < this.ActiveStations.length; i++) {
+    for (i = 0; i < this.ActiveStations.length; i++) {
         this.ActiveStations[i].ResetIndex();
-        this.ActiveStations[i].isCurrent = true;
-        renderArrows(this.ActiveStations[i]);
+        //this.ActiveStations[i].isCurrent = true;
+    }
+    this.CompareDates(true);  // Since we are resetting, we check for forward. This must happen before we renderArrows
+    for (i = 0; i < this.ActiveStations.length; i++) {
+                if (this.ActiveStations[i].isCurrent) renderArrows(this.ActiveStations[i]);
     }
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
     $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(this.CurrentDate));

@@ -233,7 +233,7 @@ steal(function () {
         terrain.geometry.attributes.position.needsUpdate = true;  // signal to send new data to GPU
         clearArrows();
         $.each(manager.ActiveStations, function(id, station) {
-            updateStation(station);
+            updateStationPosition(station);
             station.label.position.set(station.pos.x, station.pos.y, station.pos.z);
         });
     }
@@ -282,6 +282,7 @@ steal(function () {
                     var imageloader = new THREE.TextureLoader();
                     imageloader.load('media/' + name + '/' + name + '.png',
                         function (texture) { // OnSuccess
+                            texture.minFilter = THREE.LinearFilter;
                             material = new THREE.MeshPhongMaterial({map: texture});
                             addTerrainToScene(bufferPlane, material);
                         },
@@ -399,9 +400,10 @@ steal(function () {
                     $.each(response, function (station, data) {
                         manager.ActiveStations.push(new Station(data));
                     });
+                    manager.CompareDates(true); // First time checking the dates for this station, maintain chronological order
                     var stationLabels = new THREE.Group();
                     $.each(manager.ActiveStations, function (id, station) {
-                        updateStation(station);
+                        updateStationPosition(station);
                         // Add a label in context as a sprite
                         station.label = generateLabel(station);
                         stationLabels.add(station.label);
@@ -420,12 +422,12 @@ steal(function () {
      * Updates the station position. Called whenever a change is made to the terrain height.
      * @param station - the station to update.
      */
-    function updateStation(station) {
+    function updateStationPosition(station) {
         var positions = scene.children[1].geometry.attributes.position.array;
         station.pos.x = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX)];
         station.pos.y = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX) + 1];
         station.pos.z = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX) + 2];
-        renderArrows(station);
+        if (station.isCurrent) renderArrows(station);
     }
 
     /**
