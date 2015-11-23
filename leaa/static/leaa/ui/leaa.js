@@ -7,12 +7,6 @@ var VERSION ='1.0.1';
 var manager;
 
 var terrains = [];
-/*$.getJSON('/getTerrainList')
-    .done(function(response){
-        terrains = response;
-    });
-*/
-
 $.getJSON('/terrains/')
     .done(function(json) {
         $.each(json, function(id, item) {
@@ -40,10 +34,10 @@ $(document).ready(function() {
         manager = new VisManager(); //Our manager that holds everything together
     });
     steal("leaa/core/sprites.js", function() {});
-    steal("leaa/js/CCapture.min.js", function() {});
     steal("leaa/js/whammy.js", function() {});
     steal("leaa/ui/settings.js", function() {});
     steal("leaa/ui/loader.js", function() {}); // Load rendering tools
+
     // Playback UI controls
     steal(function() {
         $('#forward').on('click', function() {
@@ -71,40 +65,42 @@ $(document).ready(function() {
                 glyph.addClass('glyphicon-play');
             }
 	    });
-        // Video recording
         $('#rec_btn').on('click', function() {
             var glyph = $('#play-glyph');
-            if ($(this).hasClass('active')) {
-                capturer.stop();
-                capturer.save(function(blob) {
-                    window.location = blob;
-                });
-                $(this).removeClass('active');
+            if ($(this).hasClass('recording')) {
+                manager.Recording = false;
+                var blob = window.URL.createObjectURL(Whammy.fromImageArray(frames, 1000/ 60));
+                window.open(blob);
+                stopAnimation();
+                $(this).removeClass('recording');
                 glyph.removeClass('glyphicon-pause');
                 glyph.addClass('glyphicon-play');
-                alert('Video is now ready for pickup. Have a nice day!');
+                frames = [];
             } else {
                 var message = [
                     'Begin capturing scene?',
                     'This will affect system performance,',
                     'and may not work on all browsers.',
-                    '(Recommendation: use Chrome if you have issues with this feature.)'
+                    '\n\v',
+                    'Recommendation: use Chrome if you have issues with this feature.'
                 ].join(' ');
                 var proceed = confirm(message);
                 if (proceed) {
-                    $(this).addClass('active');
-                    capturer =  new CCapture( {format: 'webm', framerate: 10});
-                    capturer.start();
-                    manager.StepForward();
-                    manager.Animating = true;
-                    intervalID = setInterval(animateStepForward, 1000/2);
+                    //recorder.record();
                     glyph.removeClass('glyphicon-play');
                     glyph.addClass('glyphicon-pause');
+                    $(this).addClass('recording');
+                    manager.StepForward();
+                    console.log('merp');
+                    manager.Animating = true;
+                    manager.Recording = true;
+                    intervalID = setInterval(animateStepForward, 1000/2);
                 }
             }
         });
         // Animation loop
         function animateStepForward() {
+            console.log('merp');
             manager.StepForward();
         }
         // Disable animation

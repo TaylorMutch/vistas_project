@@ -52,7 +52,7 @@ steal(function () {
         INTERSECTED = null;
         INTERSECTED_STATIC = null;
         raycaster = new THREE.Raycaster();
-        raycaster.linePrecision = 100000;  // precision on detecting lines only, otherwise mesh collision is used
+        raycaster.linePrecision = 50000;  // precision on detecting lines only, otherwise mesh collision is used
 
         // Listeners for picking
         document.addEventListener( 'mousedown', onDocumentMouseDown, false);
@@ -62,8 +62,8 @@ steal(function () {
         THREEx.Screenshot.bindKey(renderer);
 
         // Video capture ability
-        //capturer = new CCapture( {format: 'webm', framerate: 10});
-        capturer = null; // Gets set when we need it, so as not to inhibit performance
+        //recorder = new CanvasRecorder(renderer.domElement);
+        frames = [];
 
         // Initialze camera controls
         orbit = new THREE.OrbitControls(camera, renderer.domElement);
@@ -88,7 +88,7 @@ steal(function () {
         renderer.clearDepth();          // clearDepth only so we can overlay other objects
         renderer.render(wind,camera);   // Render the arrows on top of the scene
         renderer.render(labels,camera); // Last come the labels so they can be seen from any direction.
-        if (capturer) capturer.capture(renderer.domElement);
+        if (manager.Recording) frames.push(renderer.domElement.toDataURL('image/webp', 1));
     }
 
     /**
@@ -556,7 +556,7 @@ steal(function () {
                 INTERSECTED_STATIC = intersects[0].object;
                 INTERSECTED_STATIC.currentHex = INTERSECTED_STATIC.parent.cone.material.emissive.getHex();
                 INTERSECTED_STATIC.parent.cone.material.emissive.setHex(0xffff00);
-                INTERSECTED_STATIC.parent.scale.set(2,2,2);
+                INTERSECTED_STATIC.parent.scale.set(1.1,1.1,1.1);
 
                 // Show the values of the object we just moused over in the current-timestamp-label
                 var data = INTERSECTED_STATIC.parent.userData;
