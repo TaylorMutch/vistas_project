@@ -18,15 +18,15 @@ server = 'http://dodeca.coas.oregonstate.edu:8080/terrainextraction.ashx?'
 
 def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 
-    _fileName = _name + '.bin'
+    _fileName = _name + '.bin'  # our filename
 
-    if numlats == -1:
+    if numlats == -1:   # Should we let the server determine the number of segments?
         payload = {'lat1': str(lat1),
                    'lat2': str(lat2),
                    'lng1': str(lng1),
                    'lng2': str(lng2),
                    'numlngs': str(numlngs)}
-    else:
+    else:               # We specify the number of segments
         payload = {'lat1': str(lat1),
                    'lat2': str(lat2),
                    'lng1': str(lng1),
@@ -34,11 +34,11 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
                    'numlats': str(numlats),
                    'numlngs': str(numlngs)}
 
-    try:
+    try:        # Attempt to reach the server with our payload
         r = requests.get(server, params=payload)
         print(r.content)
     except requests.HTTPError:
-        return
+        return  # Fail silently, TODO: Find a way to let the user know that we failed and ask if we should try again
 
     lat1 = float(lat1)
     lat2 = float(lat2)
@@ -99,6 +99,8 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 '''
     Creates a DB row in our stations table based off of values from the terrain row passed to it.
 '''
+
+
 def create_station(name, t, lat, long):
 
     t_dist_lng = t.east_lng - t.west_lng
