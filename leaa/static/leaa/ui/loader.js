@@ -1,5 +1,8 @@
 /**
  * Created by Taylor on 9/8/2015.
+ *
+ *
+ * This is where all the action happens
  */
 steal(function () {
 
@@ -137,10 +140,12 @@ steal(function () {
             'Camera Type': 'camera',
             'Toggle Wireframe': function() {
                 for (var i = scene.children.length-1; i >= 0 ; i--) {
-                    if (scene.children[i] instanceof THREE.Mesh) {
+                    if (scene.children[i].geometry instanceof THREE.PlaneBufferGeometry) {
                         scene.children[i].material.wireframe = !scene.children[i].material.wireframe;
                     }
-                    else {
+                    else if (scene.children[i] instanceof THREE.BoundingBoxHelper) {
+                        scene.children[i].visible = !scene.children[i].visible;
+                    } else {
                         break;
                     }
                 }
@@ -212,6 +217,17 @@ steal(function () {
         wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
         container.appendChild(wr_div);
+
+        if (window.chrome !== undefined) { // Since recording only works with Chrome...
+            var rec_div = document.createElement('DIV');
+            rec_div.id = 'rec_div';
+            var rec_btn = document.createElement('BUTTON');
+            rec_btn.id = 'rec_btn';
+            rec_btn.textContent = 'Start/Stop Recording';
+            rec_btn.className = 'btn btn-default disabled playback';
+            rec_div.appendChild(rec_btn);
+            container.insertBefore(rec_div, container.firstChild);
+        }
     }
 
     /** Updates the DEM with new specified values.
@@ -220,15 +236,17 @@ steal(function () {
     function redrawDEM() {
         var i;
         for (i = scene.children.length - 1; i >= 0; i--) {
-            if (scene.children[i].name = 'terrain poly') {
+            if (scene.children[i].name = 'terrain poly' && scene.children[i].geometry instanceof THREE.PlaneBufferGeometry) {
                 var terrain = scene.children[i];
                 break;
             }
         }
 
+        var max = Math.max.apply(null, manager.rawDEM);
+        var offset = ((max / 65535) * manager.ActiveDEM.maxHeight) / 2; // amount to translate down so we can look at terrains with arb. height
         // Update the z values in the buffer
         for (i = 0; i < manager.rawDEM.length; i++) {
-            terrain.geometry.attributes.position.array[i*3 + 2] = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight;
+            terrain.geometry.attributes.position.array[i*3 + 2] = manager.rawDEM[i]/65535 * manager.ActiveDEM.maxHeight * manager.SceneHeight - offset;
         }
         terrain.geometry.attributes.position.needsUpdate = true;  // signal to send new data to GPU
         clearArrows();
@@ -236,6 +254,8 @@ steal(function () {
             updateStationPosition(station);
             station.label.position.set(station.pos.x, station.pos.y, station.pos.z);
         });
+        var bbox = scene.children[2];
+        bbox.update();
     }
 
     /**
@@ -269,14 +289,17 @@ steal(function () {
 
                 // Load the terrain and its stations
                 manager.TerrainLoader.load('getTerrain/?terrainID=' + temp_terrain.id, function (data) {
-                    manager.rawDEM = new Float32Array(data);
+                    manager.rawDEM = new Float32Array(data); // copy the data so we can redraw when we need to
+
                     var i;
+                    var max = Math.max.apply(null, manager.rawDEM);
+                    var offset = ((max / 65535) * manager.ActiveDEM.maxHeight) / 2; // amount to translate down so we can look at terrains with arb. height
+
                     var bufferPlane = new THREE.PlaneBufferGeometry(temp_terrain.MAPx, temp_terrain.MAPy, temp_terrain.DEMx-1, temp_terrain.DEMy-1);
-
+                    var bufferArray = bufferPlane.attributes.position.array;
                     for (i = 0; i < manager.rawDEM.length; i++) { // Update z coordinate based on DEM values
-                        bufferPlane.attributes.position.array[i*3 + 2] = manager.rawDEM[i] / 65535 * temp_terrain.maxHeight * manager.SceneHeight;
+                        bufferArray[i*3 + 2] = ((manager.rawDEM[i] / 65535 * manager.ActiveDEM.maxHeight) * manager.SceneHeight) - offset;
                     }
-
                     // Load terrain color
                     var material;
                     var imageloader = new THREE.TextureLoader();
@@ -293,7 +316,6 @@ steal(function () {
                         function () {
                             console.log('No texture found with the DEM. Using generic texture instead...');
                             var heights = new THREE.BufferAttribute(manager.rawDEM, 1);
-                            var max = Math.max.apply(null, manager.rawDEM);
                             bufferPlane.addAttribute('height', heights);
                             material = new THREE.ShaderMaterial({
                         uniforms: {
@@ -372,7 +394,13 @@ steal(function () {
         var terrain = new THREE.Mesh(geometry, material);
         terrain.name = 'terrain poly';
         scene.add(terrain);
+        var hex = 0xf0f0f0;
+        var bbox = new THREE.BoundingBoxHelper(terrain, hex);
+        bbox.visible = false;
+        bbox.update();
+        scene.add(bbox);
         manager.SceneObjects.push(terrain);
+        manager.SceneObjects.push(bbox);
     }
 
     /**
@@ -604,10 +632,13 @@ steal(function () {
         // Remove elements from 3D scene
         $.each(manager.SceneObjects, function(handle, threeObject) {
             scene.remove(threeObject);
-            threeObject.geometry.dispose();
-            threeObject.material.dispose();
-            delete manager.SceneObjects.pop();
+            if (threeObject instanceof THREE.Mesh) {
+                threeObject.geometry.dispose();
+                threeObject.material.dispose();
+            }
+            //delete manager.SceneObjects.pop();
         });
+        manager.SceneObjects = [];
 
         // Remove labels from the scene
         if (labels.children.length > 0)

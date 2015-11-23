@@ -14,11 +14,13 @@ server = 'http://dodeca.coas.oregonstate.edu:8080/terrainextraction.ashx?'
     Makes a request to our terrain generation server and then outputs a .bin in web-friendly format.
     Uses a version of convert_envi.py
 '''
+
+
 def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 
     _fileName = _name + '.bin'
 
-    if (numlats == -1):
+    if numlats == -1:
         payload = {'lat1': str(lat1),
                    'lat2': str(lat2),
                    'lng1': str(lng1),
@@ -46,7 +48,7 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
     numlats = int(numlats)
 
     _maxHeight = 0
-    if (numlats == -1): # Get the correct number of latitudes from the server
+    if numlats == -1: # Get the correct number of latitudes from the server
         form_feed = b'\x0c'
         index = 0
         myChar = b''

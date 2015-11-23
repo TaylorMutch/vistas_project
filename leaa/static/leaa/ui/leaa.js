@@ -7,6 +7,12 @@ var VERSION ='1.0.1';
 var manager;
 
 var terrains = [];
+/*$.getJSON('/getTerrainList')
+    .done(function(response){
+        terrains = response;
+    });
+*/
+
 $.getJSON('/terrains/')
     .done(function(json) {
         $.each(json, function(id, item) {
@@ -14,6 +20,7 @@ $.getJSON('/terrains/')
         });
     }
 );
+
 $(document).ready(function() {
 
     // External scripts
