@@ -99,13 +99,13 @@ VisManager.prototype.StepForward = function() {
             clearInterval(intervalID);
             glyph.removeClass('glyphicon-pause');
             glyph.addClass('glyphicon-play');
-            if (capturer) {
-                capturer.stop();
-                capturer.save(function(blob) {
-                    window.location = blob;
-                });
-                $('#rec_btn').removeClass('active');
-                alert('Video is now ready for pickup. Have a nice day!');
+            if (manager.Recording) {
+                manager.Recording = false;
+                var blob = window.URL.createObjectURL(Whammy.fromImageArray(frames, 1000/ 60));
+                $('#rec_div').append('<a class="download" href=' + blob.toString() +
+                ' + download="' + manager.ActiveDEM.name + manager.RecordDate + '.webm">Download Video</a>');
+                $('#rec_btn').removeClass('recording');
+                frames = [];
             }
         }
     }

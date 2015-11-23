@@ -66,41 +66,31 @@ $(document).ready(function() {
             }
 	    });
         $('#rec_btn').on('click', function() {
-            var glyph = $('#play-glyph');
             if ($(this).hasClass('recording')) {
-                manager.Recording = false;
-                var blob = window.URL.createObjectURL(Whammy.fromImageArray(frames, 1000/ 60));
-                window.open(blob);
-                stopAnimation();
-                $(this).removeClass('recording');
-                glyph.removeClass('glyphicon-pause');
-                glyph.addClass('glyphicon-play');
-                frames = [];
+                stopRecording();
             } else {
                 var message = [
                     'Begin capturing scene?',
                     'This will affect system performance,',
                     'and may not work on all browsers.',
                     '\n\v',
-                    'Recommendation: use Chrome if you have issues with this feature.'
+                    'MUST USE Chrome to use recording features.'
                 ].join(' ');
                 var proceed = confirm(message);
                 if (proceed) {
-                    //recorder.record();
+                    var glyph = $('#play-glyph');
                     glyph.removeClass('glyphicon-play');
                     glyph.addClass('glyphicon-pause');
                     $(this).addClass('recording');
-                    manager.StepForward();
-                    console.log('merp');
-                    manager.Animating = true;
                     manager.Recording = true;
-                    intervalID = setInterval(animateStepForward, 1000/2);
+                    manager.StepForward();
+                    manager.Animating = true;
+                    intervalID = setInterval(animateStepForward, 1000);
                 }
             }
         });
         // Animation loop
         function animateStepForward() {
-            console.log('merp');
             manager.StepForward();
         }
         // Disable animation
@@ -108,6 +98,20 @@ $(document).ready(function() {
             manager.Animating = false;
             clearInterval(intervalID);
         }
+        // Disable recording
+        function stopRecording() {
+            var glyph = $('#play-glyph');
+            manager.Recording = false;
+            var blob = window.URL.createObjectURL(Whammy.fromImageArray(frames, 1000/ 60));
+            $('#rec_div').append('<a class="download" href=' + blob.toString() +
+                ' + download="' + manager.ActiveDEM.name + manager.RecordDate + '.webm">Download Video</a>');
+            stopAnimation();
+            $(this).removeClass('recording');
+            glyph.removeClass('glyphicon-pause');
+            glyph.addClass('glyphicon-play');
+            frames = [];
+        }
+
 	    // RESET
 	    $('#reset').on('click', function() {
                 if (manager.Animating) {

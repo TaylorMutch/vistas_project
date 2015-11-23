@@ -29,6 +29,7 @@ steal(function () {
 
         // Setup Scenes - each scene acts to serve a different purpose
         scene = new THREE.Scene(); // contains the DEM and lighting. Elements that need to be displayed but not picked go here.
+        scene.add(camera);
         wind = new THREE.Scene();  // wind vector objects. Picking is done on this scene only.
         labels = new THREE.Scene();// contains 2D canvas elements. Must go on top of DEM but not be pickable.
 
@@ -83,12 +84,52 @@ steal(function () {
     // actions to perform on each render call
     function render() {
         orbit.update();
-        renderer.clear();               // Called every time since we set autoClear to false
-        renderer.render(scene,camera);  // Render the background scene first
-        renderer.clearDepth();          // clearDepth only so we can overlay other objects
-        renderer.render(wind,camera);   // Render the arrows on top of the scene
-        renderer.render(labels,camera); // Last come the labels so they can be seen from any direction.
-        if (manager.Recording) frames.push(renderer.domElement.toDataURL('image/webp', 1));
+        if (manager.Recording) {
+            var timeSprite = makeTextSprite(formatTimestamp(manager.CurrentDate), 0, 16, -50,
+                { // parameters
+                    fontsize: 18,
+                    fontface: "Georgia",
+                    borderColor: {r: 0, g: 0, b: 255, a: 1.0},
+                    borderThickness: 4,
+                    fillColor: {r: 255, g: 255, b: 255, a: 1.0},
+                    radius: 0,
+                    vAlign: "bottom",
+                    hAlign: "center"
+                }
+            );
+            timeSprite.scale.set(16, 8, 1);
+            camera.add(timeSprite);
+            var labelSprite = makeTextSprite(manager.ActiveDEM.name, -20, 16, -50,
+                { // parameters
+                    fontsize: 18,
+                    fontface: "Georgia",
+                    borderColor: {r: 0, g: 0, b: 255, a: 1.0},
+                    borderThickness: 4,
+                    fillColor: {r: 255, g: 255, b: 255, a: 1.0},
+                    radius: 0,
+                    vAlign: "bottom",
+                    hAlign: "center"
+                }
+            );
+            labelSprite.scale.set(32, 16, 1);
+            camera.add(labelSprite);
+            //} else {
+            renderer.clear();               // Called every time since we set autoClear to false
+            renderer.render(scene, camera);  // Render the background scene first
+            renderer.clearDepth();          // clearDepth only so we can overlay other objects
+            renderer.render(wind, camera);   // Render the arrows on top of the scene
+            renderer.render(labels, camera); // Last come the labels so they can be seen from any direction.
+            //}
+            frames.push(renderer.domElement.toDataURL('image/webp', 1));
+            camera.remove(timeSprite);
+            camera.remove(labelSprite);
+        } else {
+            renderer.clear();               // Called every time since we set autoClear to false
+            renderer.render(scene, camera);  // Render the background scene first
+            renderer.clearDepth();          // clearDepth only so we can overlay other objects
+            renderer.render(wind, camera);   // Render the arrows on top of the scene
+            renderer.render(labels, camera); // Last come the labels so they can be seen from any direction.
+        }
     }
 
     /**
@@ -451,7 +492,14 @@ steal(function () {
      * @param station - the station to update.
      */
     function updateStationPosition(station) {
-        var positions = scene.children[1].geometry.attributes.position.array;
+        var terrain;
+        for (var i = scene.children.length - 1; i >= 0; i--) {
+            if (scene.children[i].geometry instanceof THREE.PlaneBufferGeometry) {
+                terrain = scene.children[i];
+                break;
+            }
+        }
+        var positions = terrain.geometry.attributes.position.array;
         station.pos.x = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX)];
         station.pos.y = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX) + 1];
         station.pos.z = positions[3*((station.demY * manager.ActiveDEM.DEMx) + station.demX) + 2];
@@ -465,12 +513,14 @@ steal(function () {
      */
     function generateLabel(station) {
         var message = station.name;
-        return makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
+        var sprite = makeTextSprite( message, station.pos.x, station.pos.y, station.pos.z,
             { // parameters
                 fontsize: 18, fontface: "Georgia", borderColor: {r:0, g:0, b:255, a:1.0},
                 borderThickness:4, fillColor: {r:255, g:255, b:255, a:1.0}, radius:0, vAlign:"bottom", hAlign:"center"
             }
         );
+        sprite.scale.set(35,17.5,1);
+        return sprite;
     }
 
     /**
