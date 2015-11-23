@@ -16,7 +16,12 @@ months = {'Jan':'01',
           'Dec':'12'
 };
 
-//TODO: Make this function... prettier? It's pretty garbled
+/**
+ * Conversion function for interaction with the timeline slider. Takes values chosen from the timeline slider.
+ * @param value - Integer value of a date collected from the timeline slider
+ * @returns {Number} - Integer value corresponding to dates located in Station.dates array
+ * TODO: Make this function... prettier? It's pretty garbled (but functional)
+ */
 function calcTimestep(value) {
     var currentDate = new Date();
     currentDate.setTime(value);
@@ -42,11 +47,11 @@ function calcTimestep(value) {
 function VisManager(){
     // Setable attributes
     this.ActiveStations = [];
+    this.CurrentStationSelected = null;
     this.RecordDate = null;
     this.Dates = ['No Date Selected'];
     this.SceneObjects = [];
-    this.TerrainMap = [];
-    this.TerrainViews = ['Default'];
+    this.TerrainViews = [];
     this.ActiveDEM = undefined; // gets set later, we just need an initial attribute to define later.
     this.TerrainLoader = new THREE.TerrainLoader();
     this.Animating = false;
@@ -55,7 +60,6 @@ function VisManager(){
     this.VectorHeight = 1;
     this.VectorLength = 1;
     this.LiveUpdate = false;
-    //this.ArrowColor = 16776960; // base 10 translation of yellow (0xffff00)
     this.ArrowColor = '#ffff00';
 }
 
@@ -64,16 +68,21 @@ function VisManager(){
  * @constructor
  */
 VisManager.prototype.ResetStations = function() {
+    var i;
     clearArrows();
     $('#timelineSlider').slider({value: this.Timeline.beginTime.getTime()});
     this.CurrentTimestamp = this.Timeline.beginTime.getTime();
-    for (var i = 0; i < this.ActiveStations.length; i++) {
+    for (i = 0; i < this.ActiveStations.length; i++) {
         this.ActiveStations[i].ResetIndex();
-        this.ActiveStations[i].isCurrent = true;
-        renderArrows(this.ActiveStations[i]);
+        //this.ActiveStations[i].isCurrent = true;
+    }
+    this.CompareDates(true);  // Since we are resetting, we check for forward. This must happen before we renderArrows
+    for (i = 0; i < this.ActiveStations.length; i++) {
+                if (this.ActiveStations[i].isCurrent) renderArrows(this.ActiveStations[i]);
     }
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(this.CurrentDate));
+    updateSidebar();
 };
 /**
  * Step forward.
@@ -90,6 +99,14 @@ VisManager.prototype.StepForward = function() {
             clearInterval(intervalID);
             glyph.removeClass('glyphicon-pause');
             glyph.addClass('glyphicon-play');
+            if (capturer) {
+                capturer.stop();
+                capturer.save(function(blob) {
+                    window.location = blob;
+                });
+                $('#rec_btn').removeClass('active');
+                alert('Video is now ready for pickup. Have a nice day!');
+            }
         }
     }
 };
@@ -126,7 +143,8 @@ VisManager.prototype.Step = function(forward) {
     }
     this.CurrentTimestamp = $('#timelineSlider').slider('option', 'value');
     this.CurrentDate = calcTimestep(this.CurrentTimestamp);
-    updateSodarLog('Timestamp: ' + formatTimestamp(this.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(manager.CurrentDate));
+    updateSidebar();
 };
 
 /**
@@ -171,6 +189,11 @@ VisManager.prototype.CompareDates = function(increasing) {
     }
 };
 
+/**
+ * Updates the abstract timeline (manager.Timeline) with values chosen from jQuery timeline slider
+ * @param val - value from slider (Date() integer)
+ * @constructor
+ */
 VisManager.prototype.UpdateTimeline = function(val) {
     //console.log('Scrubber changed, updating values');
     manager.CurrentTimestamp = val;            // values for the timeline
@@ -182,5 +205,6 @@ VisManager.prototype.UpdateTimeline = function(val) {
             renderArrows(manager.ActiveStations[i]);
         }
     }
-    updateSodarLog('Timestamp: ' + formatTimestamp(manager.CurrentDate), true);
+    $('#current-timestamp-label').html('Timestamp: ' + formatTimestamp(manager.CurrentDate));
+    updateSidebar();
 };

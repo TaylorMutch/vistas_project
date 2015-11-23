@@ -1,32 +1,37 @@
-uniform float max_height;
-varying float height;
+    varying float fragHeight;
+    vec4 colorScale(float yval) {
+    float a[7];
+    a[0] = 0.;
+    a[1] = .1;
+    a[2] = .2;
+    a[3] = .5;
+    a[4] = .75;
+    a[5] = .8;
+    a[6] = 1.;
+    vec4 colors[8];
+    colors[0] = vec4(.4,.4,1,1);
+    colors[1] = vec4(.75,.75,.56,1);
+    colors[2] = vec4(.3,.8,.3,1);
+    colors[3] = vec4(.2,.6,.2,1);
+    colors[4] = vec4(.4,.38,.0,1);
+    colors[5] = vec4(.8,.8,.8,1);
+    colors[6] = vec4(1,1,1,1);
+    colors[7] = vec4(1,1,1,1);
 
-vec3 color_from_height( const float height )
-{
-    vec3 terrain_colours[4];
-    terrain_colours[0] = vec3(0.0,0.0,0.6);
-    terrain_colours[1] = vec3(0.1, 0.3, 0.1);
-    terrain_colours[2] =  vec3(0.4, 0.8, 0.4);
-    terrain_colours[3] = vec3(1.0,1.0,1.0);
-    if (height < 0.0)
-        return terrain_colours[0];
-    else
-    {
-        float hscaled = height*2.0 - 1e-05; // hscaled should range in [0,2)
-        int hi = int(hscaled); // hi should range in [0,1]
-        float hfrac = hscaled-float(hi); // hfrac should range in [0,1]
-        if( hi == 0)
-            return mix( terrain_colours[1],terrain_colours[2],hfrac); // blends between the two colours
-        else
-            return mix( terrain_colours[2],terrain_colours[3],hfrac); // blends between the two colours
+    vec4 myColor;
+    if (yval <= a[0]) {
+         myColor = colors[0];
     }
-    return vec3(0.0,0.0,0.0);
-}
-
-void main()
-{
-    float norm_height = height/max_height;
-    vec3 myColor = color_from_height(norm_height);
-    gl_FragColor = vec4(myColor, 1.0);
-
-}
+    else {
+         for (int i = 1; i < 7; i++) {
+            if (yval < a[i]) {
+              myColor = mix(colors[i], colors[i+1],  smoothstep(a[i-1],a[i],yval)  );
+              break;
+            }
+         }
+    }
+   return myColor;
+    }
+    void main() {
+        gl_FragColor = colorScale(fragHeight);
+    }

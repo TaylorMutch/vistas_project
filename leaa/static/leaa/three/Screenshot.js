@@ -90,7 +90,7 @@ var THREEx	= THREEx 		|| {};
 	var bindKey	= function(renderer, opts){
 		// handle parameters
 		opts		= opts		|| {};
-		var charCode	= opts.charCode	|| 'p'.charCodeAt(0);
+		var charCode	= opts.charCode	|| 'p'.charCodeAt(0); // This is where we set the key
 		var width	= opts.width;
 		var height	= opts.height;
 		var callback	= opts.callback	|| function(url){
