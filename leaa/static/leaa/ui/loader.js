@@ -21,7 +21,7 @@ steal(function () {
         var container = document.getElementById("scene");
 
         // Setup Camera
-        //camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 40, 0.1, 500, -500, 1000);
+        //camera = new THREE.CombinedCamera(container.offsetWidth, container.offsetHeight, 40, 0.1, 500, -500, 1000); // TODO: Fix combined camera
         camera = new THREE.PerspectiveCamera(40,container.offsetWidth/container.offsetHeight, 0.1, 1000);
         CAM_START = new THREE.Vector3(0,-165,80);
         camera.position.set(CAM_START.x, CAM_START.y, CAM_START.z);
@@ -178,7 +178,7 @@ steal(function () {
         // Vertical GUI, for setting scene options
         var v_gui = new dat.GUI({autoPlace: false});
         var v_params = {
-            'Camera Type': 'camera',
+            /*'Camera Type': 'camera',*/
             'Toggle Wireframe': function() {
                 for (var i = scene.children.length-1; i >= 0 ; i--) {
                     if (scene.children[i].geometry instanceof THREE.PlaneBufferGeometry) {
@@ -229,6 +229,7 @@ steal(function () {
                 }
             }
         );
+        /*  // TODO: Fix combined camera
         elevcontrols.add(v_params, 'Camera Type', ['Perspective', 'Orthographic']).onChange(
             function(value){
                 if (value == 'Orthographic') {
@@ -240,6 +241,7 @@ steal(function () {
                 }
             }
         );
+        */
         elevcontrols.add(v_params, 'Toggle Wireframe');
         v_gui.domElement.style.position='absolute';
         v_gui.domElement.style.top = '50px';
