@@ -80,11 +80,16 @@ $(document).ready(function() {
                 var proceed = confirm(message);
                 if (proceed) {
                     var glyph = $('#play-glyph');
+                    if (manager.Animating) {
+                        stopAnimation();
+                        glyph.removeClass('glyphicon-pause');
+                        glyph.addClass('glyphicon-play');
+                    }
                     glyph.removeClass('glyphicon-play');
                     glyph.addClass('glyphicon-pause');
                     $(this).addClass('recording');
                     manager.ResetStations();
-                    manager.Recording = true;
+                    manager.Recording = true;   // Enable recording in the render loop
                     manager.Animating = true;
                     intervalID = setInterval(animateStepForward, 1500);
                 }
