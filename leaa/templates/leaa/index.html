@@ -1,7 +1,7 @@
 {% extends "leaa/base.html" %}
 {% load staticfiles %}
 {% block css %}
-    <link href="{% static "leaa/css/valcex.css" %}" rel="stylesheet">
+    <link href="{% static "leaa/min/valcex.min.css" %}" rel="stylesheet">
 {% endblock css %}
 {% block js %}
     <script src="{% static "steal/steal.js" %}"></script>
@@ -15,9 +15,6 @@
                     <h4 id="current-timestamp-label" class="text-center">Scene Empty - Select Terrain</h4>
                 </div>
             </div>
-            <!--div id="rec_div">
-                <button id='rec_btn' class="btn btn-default disabled playback" type="button">Start/Stop Recording</button>
-            </div-->
             <div id="sidebar">
                 <div id="console">
                     <ul id="sodarLog" class="scrollable-menu"></ul>
