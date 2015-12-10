@@ -38,6 +38,7 @@ steal(function () {
         windrose.position.set(12.8,-4,-20);
         windrose.scale.set(.8,5,1);
         windrose.name = 'windrose';
+        windrose.visible = false;
         camera.add(windrose);
 
         wind = new THREE.Scene();  // wind vector objects. Picking is done on this scene only.
@@ -261,7 +262,8 @@ steal(function () {
         v_gui.domElement.style.textAlign = 'center';
         v_gui.open();
         container.appendChild(v_gui.domElement);
-        /*
+
+        /** static windrose object, which isn't shown in video recording */
         var wr_div = document.createElement('DIV');
         var wr_img = new Image();
         wr_img.onload = function() {
@@ -272,7 +274,7 @@ steal(function () {
         wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
         container.appendChild(wr_div);
-        */
+
 
         if (window.chrome !== undefined) { // Since recording only works with Chrome...
             var rec_div = document.createElement('DIV');
