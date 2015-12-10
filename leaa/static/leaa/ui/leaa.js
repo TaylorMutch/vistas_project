@@ -122,6 +122,10 @@ $(document).ready(function() {
 	    $('#reset').on('click', function() {
                 if (manager.Animating) {
                     stopAnimation();
+                    var glyph = $('#play-glyph');
+                    glyph.removeClass('glyphicon-pause');
+                    glyph.addClass('glyphicon-play');
+
                 }
                 manager.ResetStations();
                 orbit.reset();
