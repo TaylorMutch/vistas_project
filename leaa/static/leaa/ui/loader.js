@@ -595,13 +595,13 @@ steal(function () {
      * Our window resize function, for adjusting the renderer sizes and camera aspects
      */
     function onWindowResize() { // Using CombinedCamera API, which mimics perspectiveCamera API
-
-        var container = document.getElementById('scene');
-        //camera.setSize(container.offsetWidth, container.offsetHeight); // TODO: Fix combined camera
-        camera.aspect = container.offsetWidth/container.offsetHeight;
-        renderer.setSize(container.offsetWidth, container.offsetHeight);
-        camera.updateProjectionMatrix();
-
+        if (!manager.Recording) {   // Resizing the window while recording breaks video encoding
+            var container = document.getElementById('scene');
+            //camera.setSize(container.offsetWidth, container.offsetHeight); // TODO: Fix combined camera
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            camera.updateProjectionMatrix();
+        }
     }
 
     /**
