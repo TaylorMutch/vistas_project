@@ -72,8 +72,7 @@ $(document).ready(function() {
             } else {
                 var message = [
                     'Begin capturing scene?',
-                    'This will affect system performance,',
-                    'and may not work on all browsers.',
+                    'This will affect system performance.',
                     '\n\v',
                     'MUST USE Chrome to use recording features.'
                 ].join(' ');
