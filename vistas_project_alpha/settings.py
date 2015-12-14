@@ -103,8 +103,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#STATIC_ROOT = ''
-
 MEDIA_URL = '/media/'
 
 # TODO: Edit this when we go to production
