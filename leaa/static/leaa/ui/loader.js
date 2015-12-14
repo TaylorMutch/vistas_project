@@ -7,7 +7,7 @@
 steal(function () {
 
     init();   // Init the workspace
-    //render(); // One call to render to prep the workspace.
+    render(); // One call to render to prep the workspace.
 
     /**
      * Initialize our workspace and graphics variables
