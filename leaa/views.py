@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response
+from django.http import HttpResponseRedirect
 from leaa.models import Terrain, Station, DataFile, TerrainView, Setting
 from leaa.serializers import *
 from rest_framework import generics, permissions, renderers, status
@@ -20,34 +21,35 @@ import zipfile as z
 def api_root(request):
     return Response({
         'terrains'  : reverse('terrain-list', request=request),
-        #'stations'  : reverse('station-list', request=request),
-        #'datafiles' : reverse('datafile-list', request=request),
-        #'settings'  : reverse('setting-list', request=request),
+        'stations'  : reverse('station-list', request=request),
+        'datafiles' : reverse('datafile-list', request=request),
     })
 
 
 def login_view(request):
     if request.method == 'POST':
+
+        redirect_to = request.POST.get('next', request.GET.get('next', ''))
+
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('leaa.views.index')
-                #return redirect(request.POST['next'])
-                #return redirect('/login/?next=%s' % request.path)
-            else:
-                return render(request, 'leaa/forms/login.html')
-        else:
-            return render(request, 'leaa/forms/login.html')
+                if redirect_to is not None:
+                    return HttpResponseRedirect(redirect_to)
+                else:
+                    return redirect('leaa.views.index')
+        return redirect('leaa.views.index')
+
     else:
         return render(request, 'leaa/forms/login.html')
 
 
 def logout_view(request):
     logout(request)
-    return redirect('leaa.views.index')
+    return redirect('leaa.views.index') # redirect to logout page
 
 
 def add_user(request):
@@ -65,7 +67,12 @@ def index(request):
     return render(request, 'leaa/index.html')
 
 
-@login_required(login_url='/login/')
+@login_required
+def add_noform(request):
+    return render(request, 'leaa/forms/no_form.html')
+
+
+@login_required
 def add_terrain(request):
     if request.method == "POST":
         form = TerrainForm(request.POST)
@@ -78,7 +85,7 @@ def add_terrain(request):
     return render(request, 'leaa/forms/add_terrain.html', {'form': form})
 
 
-@login_required(login_url='/login/')
+@login_required
 def add_station(request):
     if request.method == "POST":
         form = StationForm(request.POST)
@@ -99,7 +106,7 @@ def add_station(request):
     return render(request, 'leaa/forms/add_station.html', {'form': form})
 
 
-@login_required(login_url='/login/')
+@login_required
 def add_datafile(request):
     if request.method == "POST":
         form = DataFileForm(request.POST, request.FILES)
@@ -166,7 +173,7 @@ class TerrainDetail(generics.RetrieveUpdateAPIView):
     serializer_class = TerrainSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-'''
+
 class StationList(generics.ListAPIView):
     queryset = Station.objects.all()
     serializer_class = StationSerializer
@@ -195,34 +202,3 @@ class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DataFile.objects.all()
     serializer_class = DataFileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-# TODO: Permission changes to actually see users? Do we even need this?
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    #permission_classes = (permissions.IsAuthenticatedOrReadOnly)
-
-
-class SettingList(generics.ListAPIView):
-    queryset = Setting.objects.all()
-    serializer_class = SettingSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class SettingDetail(generics.RetrieveAPIView):
-    queryset = Setting.objects.all()
-    serializer_class = SettingSerializer
-
-'''

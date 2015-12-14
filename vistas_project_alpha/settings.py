@@ -110,6 +110,7 @@ MEDIA_URL = '/media/'
 # TODO: Edit this when we go to production
 MEDIA_ROOT = 'C:/Users/Taylor/PycharmProjects/media/'
 
+LOGIN_URL = '/login/'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),

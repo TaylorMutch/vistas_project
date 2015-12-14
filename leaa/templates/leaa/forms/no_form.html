@@ -1,0 +1,16 @@
+{% extends "leaa/base.html" %}
+{% load staticfiles %}
+{% block css %}
+        <link href="{% static "leaa/css/forms.css" %}" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+    <div class="container form-signin">
+        <h2>What item were you trying to add, {{ user.username }}?</h2>
+        <ul>
+            <li><a  href="{% url "add_terrain" %}">Terrain</a></li>
+            <li><a  href="{% url "add_station" %}">Station</a></li>
+            <li><a  href="{% url "add_datafile" %}">Datafile</a></li>
+        </ul>
+    </div>
+{% endblock content %}
