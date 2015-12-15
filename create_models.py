@@ -16,7 +16,7 @@ server = 'http://dodeca.coas.oregonstate.edu:8080/terrainextraction.ashx?'
 '''
 
 
-def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
+def create_terrain(user, _name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 
     _fileName = _name + '.bin'  # our filename
 
@@ -81,6 +81,7 @@ def create_terrain(_name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
     _MAPx = 100
     _MAPy = int(100*numlats/numlngs)
     t = Terrain(name=_name,
+                owner=user,
                 fileName=_fileName,
                 DEMx=_DEMx,
                 DEMy=_DEMy,

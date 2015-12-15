@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^add/terrain/$', views.add_terrain, name="add_terrain"),
     url(r'^add/station/$', views.add_station, name="add_station"),
     url(r'^add/datafile/$', views.add_datafile, name="add_datafile"),
-    url(r'^api-root/', views.api_root),
+    url(r'^api-root/', views.api_root, name="api_root"),
     url(r'^terrains/$', views.TerrainList.as_view(),
         name='terrain-list'),
     url(r'^terrains/(?P<pk>[0-9]+)/$', views.TerrainDetail.as_view(),

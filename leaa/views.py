@@ -9,7 +9,8 @@ from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
-from .forms import TerrainForm, StationForm, DataFileForm, UserForm
+from leaa.forms import TerrainForm, StationForm, DataFileForm, UserForm
+from leaa.permissions import IsOwnerOrReadOnly
 from create_models import *
 import os
 from fileReader import sdrDateToString_YYYYMMDD
@@ -37,12 +38,11 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                if redirect_to is not None:
+                if redirect_to is not "":
                     return HttpResponseRedirect(redirect_to)
                 else:
                     return redirect('leaa.views.index')
-        return redirect('leaa.views.index')
-
+        return render(request, 'leaa/forms/login.html')
     else:
         return render(request, 'leaa/forms/login.html')
 
@@ -77,7 +77,7 @@ def add_terrain(request):
     if request.method == "POST":
         form = TerrainForm(request.POST)
         if form.is_valid():
-            create_terrain(request.POST['name'],request.POST['north_lat'],request.POST['south_lat'],
+            create_terrain(request.user, request.POST['name'],request.POST['north_lat'],request.POST['south_lat'],
                            request.POST['east_lng'],request.POST['west_lng'],request.POST['DEMx'],request.POST['DEMy'],)
             return redirect('leaa.views.index')
     else:
@@ -160,18 +160,23 @@ def add_datafile(request):
 
 
 class TerrainList(generics.ListAPIView):
+    #queryset = Terrain.objects.filter(owner=1)
     queryset = Terrain.objects.all()
     serializer_class = TerrainSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    #def perform_create(self, serializer):
+    #    serializer.save(owner=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
 class TerrainDetail(generics.RetrieveUpdateAPIView):
+
     queryset = Terrain.objects.all()
     serializer_class = TerrainSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class StationList(generics.ListAPIView):

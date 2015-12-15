@@ -7,8 +7,14 @@ from django.contrib.auth.models import User
 
 class TerrainSerializer(serializers.ModelSerializer):
 
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Terrain
+        fields = ('id', 'name', 'MAPx', 'MAPy', 'DEMx', 'DEMy',
+                  'maxHeight', 'fileName', 'north_lat',
+                  'south_lat', 'east_lng', 'west_lng', 'owner',
+                  )
 
 
 class StationSerializer(serializers.ModelSerializer):

@@ -11,7 +11,7 @@ class Terrain(models.Model):
     DEMx = models.IntegerField()
     DEMy = models.IntegerField()
     maxHeight = models.IntegerField()
-    #user = models.ManyToManyField(User)
+    owner = models.ForeignKey('auth.User')
     fileName = models.CharField(max_length=100)
     north_lat = models.FloatField()
     south_lat = models.FloatField()

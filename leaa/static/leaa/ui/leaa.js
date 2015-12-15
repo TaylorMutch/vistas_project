@@ -6,9 +6,11 @@ var VERSION ='1.0.1';
 
 var manager;
 
+var myTerrains;
 var terrains = [];
 $.getJSON('/terrains/')
     .done(function(json) {
+        myTerrains = json;
         $.each(json, function(id, item) {
             terrains.push(item);
         });
@@ -23,9 +25,9 @@ $(document).ready(function() {
     steal("leaa/js/dat.gui.min.js", function() {});
     steal("leaa/js/whammy.js", function() {});
     steal("leaa/three/three.min.js", function() {});
-    steal("leaa/min/OrbitControl.min.js", function() {});
-    steal("leaa/min/TerrainLoader.min.js", function() {});
-    steal("leaa/min/Screenshot.min.js", function() {});
+    steal("leaa/three/OrbitControls.js", function() {});
+    steal("leaa/three/TerrainLoader.js", function() {});
+    steal("leaa/three/Screenshot.js", function() {});
 
     // Core Scripts
 
