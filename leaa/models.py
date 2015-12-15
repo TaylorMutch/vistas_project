@@ -7,10 +7,6 @@ from vistas_project_alpha.settings import MEDIA_ROOT
 
 logger = logging.getLogger('valcex.logger')
 
-
-# Create your models here.
-
-# Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
     '''
         A terrain with a north/south latitude and east/west longitude bounding box
@@ -31,7 +27,7 @@ class Terrain(models.Model):
     def __str__(self):
         return self.name
 
-# Contains Latitude/Longitude to orient the station with a terrain
+
 class Station(models.Model):
     '''
         A station located within a terrain's bounding box
@@ -48,10 +44,6 @@ class Station(models.Model):
         return self.name
 
 
-#def datafile_directory_path(instance, filename):
-#    return '{0}/{1}/{2}/{3}'.format(instance.terrain.name,instance.station.name,instance.creationDate[:4], filename)
-
-# Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
     '''
         Django representation of datafiles that can be sent to the application
