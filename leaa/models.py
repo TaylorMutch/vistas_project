@@ -1,10 +1,20 @@
 from django.db import models
-# from django.db.models.signals import post_save
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.contrib.auth.models import User
+import logging, os
+from vistas_project_alpha.settings import MEDIA_ROOT
+
+logger = logging.getLogger('valcex.logger')
+
+
 # Create your models here.
 
 # Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
+    '''
+        A terrain with a north/south latitude and east/west longitude bounding box
+    '''
     name = models.CharField(max_length=100)
     owner = models.ForeignKey('auth.User')
     MAPx = models.IntegerField()
@@ -23,6 +33,9 @@ class Terrain(models.Model):
 
 # Contains Latitude/Longitude to orient the station with a terrain
 class Station(models.Model):
+    '''
+        A station located within a terrain's bounding box
+    '''
     name    = models.CharField(max_length=100)
     owner   = models.ForeignKey('auth.User')
     lat     = models.FloatField()
@@ -35,11 +48,14 @@ class Station(models.Model):
         return self.name
 
 
-def datafile_directory_path(instance, filename):
-    return '{0}/{1}/{2}/{3}'.format(instance.terrain.name,instance.station.name,instance.creationDate[:4], filename)
+#def datafile_directory_path(instance, filename):
+#    return '{0}/{1}/{2}/{3}'.format(instance.terrain.name,instance.station.name,instance.creationDate[:4], filename)
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
+    '''
+        Django representation of datafiles that can be sent to the application
+    '''
     owner = models.ForeignKey('auth.User')
     creationDate = models.DateField(auto_now_add=False)
     station = models.ForeignKey('Station')
@@ -52,6 +68,9 @@ class DataFile(models.Model):
 
 
 class Setting(models.Model):
+    '''
+        Settings for a user looking at a specific terrain/visualization
+    '''
     vectorLength = models.FloatField(default=1)
     vectorHeight = models.FloatField(default=1)
     vectorColor = models.CharField(default='#ffff00', max_length=8)
@@ -62,9 +81,27 @@ class Setting(models.Model):
 
 
 class TerrainView(models.Model):
+    '''
+        Camera positions with respect to a given terrain
+    '''
     name  = models.CharField(max_length=50)
     pos_x = models.FloatField()
     pos_y = models.FloatField()
     pos_z = models.FloatField()
     terrain = models.ForeignKey('Terrain')
     user = models.ForeignKey(User)
+
+
+@receiver(pre_delete, sender=DataFile)
+def delete_sodar_file(sender, instance, **kwargs):
+    '''
+        We handle deleting sodar files manually based on the project structure
+    '''
+    file = os.path.join(MEDIA_ROOT, "{0}/{1}/{2}/{3}"
+                        .format(instance.terrain.name,
+                                instance.station.name,
+                                instance.creationDate.year,
+                                instance.fileName)
+                        )
+    os.remove(file)
+    logger.info("Deleted record {0} from station {1}".format(instance.creationDate, instance.station.name))
