@@ -7,8 +7,8 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     '''
 
     def has_object_permission(self, request, view, obj):
-        # Allow read permissions if method is GET, HEAD or OPTIONS
-        if request.method in permissions.SAFE_METHODS:
+        # Allow read permissions if method is GET, HEAD or OPTIONS, or is an admin/superuser
+        if request.method in permissions.SAFE_METHODS or request.user.is_superuser:
             return True
 
         # Otherwise, check the owner

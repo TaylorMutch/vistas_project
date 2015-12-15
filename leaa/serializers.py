@@ -5,38 +5,38 @@ from leaa.models import *
 from django.contrib.auth.models import User
 
 
-class TerrainSerializer(serializers.ModelSerializer):
+class TerrainSerializer(serializers.HyperlinkedModelSerializer):
 
-    owner = serializers.ReadOnlyField(source='owner.username')
+    url = serializers.HyperlinkedIdentityField(view_name='terrain-detail', format='json')
 
     class Meta:
         model = Terrain
-        fields = ('id', 'name', 'MAPx', 'MAPy', 'DEMx', 'DEMy',
+        fields = ('id', 'url', 'name', 'MAPx', 'MAPy', 'DEMx', 'DEMy',
                   'maxHeight', 'fileName', 'north_lat',
-                  'south_lat', 'east_lng', 'west_lng', 'owner',
+                  'south_lat', 'east_lng', 'west_lng',
                   )
 
 
-class StationSerializer(serializers.ModelSerializer):
+class StationSerializer(serializers.HyperlinkedModelSerializer):
 
-    owner = serializers.ReadOnlyField(source='owner.username')
+    url = serializers.HyperlinkedIdentityField(view_name='station-detail', format='json')
 
     class Meta:
         model = Station
-        fields = ('id', 'name', 'lat', 'long',
-                  'demX', 'demY', 'terrain', 'owner'
+        fields = ('id', 'url', 'name', 'lat', 'long',
+                  'demX', 'demY', 'terrain',
                   )
 
 
-class DataFileSerializer(serializers.ModelSerializer):
+class DataFileSerializer(serializers.HyperlinkedModelSerializer):
 
-    owner = serializers.ReadOnlyField(source='owner.username')
+    url = serializers.HyperlinkedIdentityField(view_name='datafile-detail', format='json')
 
     class Meta:
         model = DataFile
         fields = ('id', 'creationDate',
                   'station', 'terrain',
-                  'fileName', 'owner'
+                  'url', 'fileName',
                   )
 
 
