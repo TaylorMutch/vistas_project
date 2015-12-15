@@ -19,14 +19,25 @@ class TerrainSerializer(serializers.ModelSerializer):
 
 class StationSerializer(serializers.ModelSerializer):
 
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Station
+        fields = ('id', 'name', 'lat', 'long',
+                  'demX', 'demY', 'terrain', 'owner'
+                  )
 
 
 class DataFileSerializer(serializers.ModelSerializer):
 
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = DataFile
+        fields = ('id', 'creationDate',
+                  'station', 'terrain',
+                  'fileName', 'owner'
+                  )
 
 
 class TerrainViewSerializer(serializers.ModelSerializer):

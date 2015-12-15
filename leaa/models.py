@@ -6,12 +6,12 @@ from django.contrib.auth.models import User
 # Contains info specific to the Terrain that needs to be generated
 class Terrain(models.Model):
     name = models.CharField(max_length=100)
+    owner = models.ForeignKey('auth.User')
     MAPx = models.IntegerField()
     MAPy = models.IntegerField()
     DEMx = models.IntegerField()
     DEMy = models.IntegerField()
     maxHeight = models.IntegerField()
-    owner = models.ForeignKey('auth.User')
     fileName = models.CharField(max_length=100)
     north_lat = models.FloatField()
     south_lat = models.FloatField()
@@ -24,6 +24,7 @@ class Terrain(models.Model):
 # Contains Latitude/Longitude to orient the station with a terrain
 class Station(models.Model):
     name    = models.CharField(max_length=100)
+    owner   = models.ForeignKey('auth.User')
     lat     = models.FloatField()
     long    = models.FloatField()
     demX    = models.IntegerField()
@@ -39,6 +40,7 @@ def datafile_directory_path(instance, filename):
 
 # Mimic a .SDR file, we collect the initial and ending timestamp from the file (first/last)
 class DataFile(models.Model):
+    owner = models.ForeignKey('auth.User')
     creationDate = models.DateField(auto_now_add=False)
     station = models.ForeignKey('Station')
     terrain = models.ForeignKey('Terrain')

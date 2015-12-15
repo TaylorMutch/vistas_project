@@ -4,6 +4,7 @@
     "model" : "leaa.Station",
     "fields" : {
       "name": "McRae",
+      "owner" : 1,
       "demX": 186,
       "demY": 169,
       "lat": 44.24037,
@@ -16,6 +17,7 @@
     "model" : "leaa.Station",
     "fields" : {
       "name": "Primet",
+      "owner" : 1,
       "demX": 35,
       "demY": 276,
       "lat": 44.211777,

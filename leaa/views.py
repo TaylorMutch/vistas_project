@@ -96,7 +96,7 @@ def add_station(request):
             # check if the station actually lies inside of the specified terrain
             if lat <= t.north_lat and lat >= t.south_lat and long <= t.east_lng and long >= t.west_lng:
                 name = request.POST['name']
-                create_station(name, t, lat, long)
+                create_station(request.user, name, t, lat, long)
                 return redirect('leaa.views.index')
             else:
                 form = StationForm()
@@ -130,7 +130,7 @@ def add_datafile(request):
                     with open(os.path.join(d_path, uf.name), 'wb') as d_file:
                         for chunk in uf.chunks():
                             d_file.write(chunk)
-                    d = DataFile(creationDate=date,station=s,terrain=t,fileName=uf.name)
+                    d = DataFile(owner=request.user,creationDate=date,station=s,terrain=t,fileName=uf.name)
                     d.save()
                 # We got a .zip
                 elif file_ext == '.zip':
@@ -147,7 +147,7 @@ def add_datafile(request):
                         d_file = open(os.path.join(d_path, filename), 'wb')
                         d_file.write(data)
                         d_file.close()
-                        d = DataFile(creationDate=date,station=s,terrain=t,fileName=filename)
+                        d = DataFile(owner=request.user,creationDate=date,station=s,terrain=t,fileName=filename)
                         d.save()
                 else:
                     form = DataFileForm()
@@ -160,7 +160,6 @@ def add_datafile(request):
 
 
 class TerrainList(generics.ListAPIView):
-    #queryset = Terrain.objects.filter(owner=1)
     queryset = Terrain.objects.all()
     serializer_class = TerrainSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -172,7 +171,7 @@ class TerrainList(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class TerrainDetail(generics.RetrieveUpdateAPIView):
+class TerrainDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Terrain.objects.all()
     serializer_class = TerrainSerializer
@@ -191,7 +190,7 @@ class StationList(generics.ListAPIView):
 class StationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Station.objects.all()
     serializer_class = StationSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class DataFileList(generics.ListAPIView):
@@ -206,4 +205,4 @@ class DataFileList(generics.ListAPIView):
 class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DataFile.objects.all()
     serializer_class = DataFileSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsOwnerOrReadOnly,)

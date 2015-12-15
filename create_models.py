@@ -102,7 +102,7 @@ def create_terrain(user, _name, lat1, lat2, lng1, lng2, numlngs, numlats=-1):
 '''
 
 
-def create_station(name, t, lat, long):
+def create_station(user, name, t, lat, long):
 
     t_dist_lng = t.east_lng - t.west_lng
     t_dist_lat = t.north_lat - t.south_lat

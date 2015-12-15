@@ -166,8 +166,7 @@ steal(function () {
         h_gui = new dat.GUI({autoPlace: false});
         var h_params = {
             'Select Terrain': 'Null',   // because dat.GUI is kinda broken...
-            'Save View': function() {saveView();},
-            'Save Settings': function() {saveSettings();}
+            'Save View': function() {saveView();}
         };
         var Terrain = h_gui.addFolder('Terrain', "a");
         Terrain.add(h_params, 'Select Terrain', terrainNames)
@@ -179,7 +178,6 @@ steal(function () {
         var Views = h_gui.addFolder('Views', "a");
 
         Views.add(h_params,'Save View');
-        h_gui.add(h_params, 'Save Settings');
         container.appendChild(h_gui.domElement);
         h_gui.domElement.style.position = 'absolute';
         h_gui.domElement.style.top = '50px';
@@ -201,7 +199,8 @@ steal(function () {
                         break;
                     }
                 }
-            }
+            },
+            'Save Settings': function() {saveSettings();}
         };
         var wvcontrols = v_gui.addFolder('Wind Vector Controls', "a");
         wvcontrols.add(manager, 'VectorHeight',.5, 2).name('Height').listen().onChange(
@@ -260,6 +259,7 @@ steal(function () {
         v_gui.domElement.style.top = '50px';
         v_gui.domElement.style.right = '0%';
         v_gui.domElement.style.textAlign = 'center';
+        v_gui.add(v_params, 'Save Settings');
         v_gui.open();
         container.appendChild(v_gui.domElement);
 

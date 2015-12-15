@@ -1,7 +1,7 @@
 {% extends "rest_framework/base.html" %}
-
+{% load staticfiles %}
 {% block bootstrap_theme %}
-    <link rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static "leaa/css/bootswatch-slate.min.css" %}">
 {% endblock %}
 
 {% block bootstrap_navbar_variant %}{% endblock %}
