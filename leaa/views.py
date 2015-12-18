@@ -164,12 +164,6 @@ class TerrainList(generics.ListAPIView):
     serializer_class = TerrainSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    #def perform_create(self, serializer):
-    #    serializer.save(owner=self.request.user)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
 
 class TerrainDetail(generics.RetrieveUpdateDestroyAPIView):
 
@@ -183,9 +177,6 @@ class StationList(generics.ListAPIView):
     serializer_class = StationSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
 
 class StationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Station.objects.all()
@@ -197,9 +188,6 @@ class DataFileList(generics.ListAPIView):
     queryset = DataFile.objects.all()
     serializer_class = DataFileSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
 
 class DataFileDetail(generics.RetrieveUpdateDestroyAPIView):
