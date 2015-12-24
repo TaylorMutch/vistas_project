@@ -255,6 +255,7 @@ steal(function () {
         );
         */
         elevcontrols.add(v_params, 'Toggle Wireframe');
+        elevcontrols.open();
         v_gui.domElement.style.position='absolute';
         v_gui.domElement.style.top = '50px';
         v_gui.domElement.style.right = '0%';
@@ -266,6 +267,9 @@ steal(function () {
         /** static windrose object, which isn't shown in video recording */
         var wr_div = document.createElement('DIV');
         var wr_img = new Image();
+        wr_img.style.height = '360px';
+        wr_img.style.width = '37.5px';
+
         wr_img.onload = function() {
             wr_div.appendChild(wr_img);
         };
@@ -273,6 +277,7 @@ steal(function () {
         wr_div.style.position='absolute';
         wr_div.style.bottom = '15px';
         wr_div.style.right = '0%';
+
         container.appendChild(wr_div);
 
 
