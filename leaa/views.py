@@ -30,6 +30,7 @@ def api_root(request):
 def login_view(request):
     if request.method == 'POST':
 
+
         redirect_to = request.POST.get('next', request.GET.get('next', ''))
 
         username = request.POST['username']
