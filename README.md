@@ -1,4 +1,4 @@
-# vistas_project
+# valcex
 A repository for web-based VISTAS applications. Currently contains an updated version of the [VALCEX](https://github.com/TaylorMutch/leaa) application for visualizing wind data.
 
 Backend is written in [Django](https://www.djangoproject.com/) 1.8.3, frontend application is pure javascript with some jQuery usage and light application of [steal.js](http://www.stealjs.com);
